@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/scss/main.scss"],"names":[],"mappings":"AAAA;AACA;AACA;AACA,aAAa","file":"main.css","sourcesContent":[".care-tips .title {\n  font-size: 1.5em;\n  text-align: center;\n  color: red; }\n"],"sourceRoot":""}
