@@ -1,7 +1,53 @@
-.care-tips .title {
-  font-size: 1.5em;
-  text-align: center;
+@charset "UTF-8";
+.half-w {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px 0px;
+  width: 100%; }
+  @media only screen and (min-width: 640px) {
+    .half-w {
+      width: calc(50% - 20px);
+      margin: 10px; } }
+
+.full-w {
+  display: block;
+  margin: 10px 0px;
+  width: 100%; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: visible; }
+
+* {
+  box-sizing: border-box;
+  font-family: "\5FAE\8EDF\6B63\9ED1\9AD4", "Microsoft JhengHei"; }
+
+.center {
+  display: block;
+  margin: auto;
+  clear: both;
+  text-align: center; }
+
+.hide {
+  display: none; }
+
+.warning {
   color: red; }
+
+.bold {
+  font-weight: bold; }
+
+.main-container {
+  width: 100%;
+  margin: 100px auto 20px auto;
+  padding: 10px 10px 50px 10px;
+  color: #333333; }
+  .main-container .title {
+    font-size: 1.5em;
+    text-align: center;
+    color: red; }
 
 
 /*# sourceMappingURL=main.css.map*/
