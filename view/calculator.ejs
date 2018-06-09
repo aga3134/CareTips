@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+	<head>
+		<title><%=meta.title%></title>
+		<link rel="icon" href="/static/image/logo.png?v=<%=version%>">
+
+		<link rel="canonical" href="<%=meta.hostname%>/calculator" />
+		<meta property="og:url" content="<%=meta.hostname%>/calculator" />
+
+		<meta name="description" content="<%=meta.desc%>"/>
+		<meta property="og:description" content="<%=meta.desc%>" />
+		<meta property="og:site_name" content="<%=meta.title%>" />
+		<meta property="og:title" content="<%=meta.title%>" />
+		<meta property="og:image" content="<%=meta.hostname%>/static/image/banner.png" />
+		<meta property="og:locale" content="zh_TW" />
+		<meta property="og:type" content="website" />
+
+		<meta http-equiv="Content-Language" content="zh-tw" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/dist/main.css?v=<%=version%>">
+
+	</head>
+	<body>
+		<div class="care-tips" id="careTips">
+			<topbar></topbar>
+			<div class="main-container">
+				<calculator></calculator>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+		<script src="/dist/main.js?v=<%=version%>"></script>
+	</body>
+</html>

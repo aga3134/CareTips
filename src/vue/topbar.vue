@@ -23,17 +23,16 @@
 export default {
 	data: function () {
 		return {
-			logoImg: "/static/image/logo.png",
+			logoImg: "/static/image/logo-text.png",
 			menuImg: "/static/image/menu-button.png",
 			version: "1.0.0",
 			isOpen: false,
 			isLogin: false,
 			itemInBar: 2,
-    		itemList: [{name:"案例查詢",link:"/search",login: 0},
-    					{name:"照服計算機",link:"/calculator",login: 0},
+    		itemList: [{name:"照服計算機",link:"/calculator",login: 0},
     					{name:"關於本站",link:"/about",login: 0},
-    					{name:"新增案例",link:"/create",login: 1},
-    					{name:"專業連結",link:"/link",login: 1},
+    					{name:"新增案例",link:"/create",login: 0},
+    					{name:"專業連結",link:"/link",login: 0},
     					{name:"帳號設定",link:"/setting",login: 1},
     					{name:"登入帳號",link:"/login",login: -1}],
     		activeItem: []
@@ -68,6 +67,7 @@ export default {
 @import "../scss/main.scss";
 
 $enhance-color: #BE9063;
+$text-color: #333333;
 
 .topbar{
 	position: fixed;
@@ -83,20 +83,12 @@ $enhance-color: #BE9063;
 		position: absolute;
 		top: 10px;
 		left: 20px;
-		width: 50px;
+		width: 200px;
 		height: 50px;
 		img{
 			width: 100%;
 			cursor: pointer;
 		}
-	}
-	.logo-text{
-		margin: 10px;
-		position: absolute;
-		left: 70px;
-		text-decoration: none;
-		font-size: 1.2em;
-		color: #333333;
 	}
 	.menu-bt{
 		display: block;
@@ -127,7 +119,7 @@ $enhance-color: #BE9063;
 			padding: 5px 10px;
 			margin: 5px 10px;
 			text-align: center;
-			color: #333333;
+			color: $text-color;
 		    cursor: pointer;
 		    &:hover{
 		    	color: $enhance-color;
@@ -149,7 +141,7 @@ $enhance-color: #BE9063;
 	box-shadow: 0px 2px 4px 0px #888;
 	background-color: #f8f8f8;
 	font-size: 1.25em;
-	color: #333333;
+	color: $text-color;
 	z-index: 9;
 	&.open{
 		display: block;
@@ -159,7 +151,7 @@ $enhance-color: #BE9063;
 		border-bottom: 1px solid $enhance-color;
 		a{
 			display: block;
-			color: #333333;
+			color: $text-color;
 			text-decoration: none;
 		}
 		&:last-of-type{

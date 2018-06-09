@@ -1,0 +1,219 @@
+{
+	"service": [
+		{"code":"A", "name": "照顧管理與服務加計", "items": [
+			{"code":"AA", "name": "照顧管理與服務加計", "items":[
+				{"code": "AA01", "name": "照顧計畫擬定與服務連結", "price": 1500, "priceRemote": 1800},
+				{"code": "AA02", "name": "照顧管理", "price": 300, "priceRemote": 360},
+				{"code": "AA03", "name": "照顧服務員配合專業服務", "price": 600, "priceRemote": 720},
+				{"code": "AA04", "name": "於臨終日提供服務加計", "price": 1200, "priceRemote": 1440}, 
+				{"code": "AA05", "name": "照顧困難之服務加計", "price": 100, "priceRemote": 120}, 
+				{"code": "AA06", "name": "身體照顧困難加計", "price": 200, "priceRemote": 240}, 
+				{"code": "AA07", "name": "家庭照顧功能微弱之服務加計", "price": 760, "priceRemote": 915}, 
+				{"code": "AA08", "name": "晚間服務", "price": 385, "priceRemote": 465}, 
+				{"code": "AA09", "name": "例假日服務", "price": 770, "priceRemote": 925}, 
+				{"code": "AA10", "name": "夜間緊急服務", "price": 1000, "priceRemote": 1200}
+			]}
+		]},
+		{"code":"B", "name": "照顧服務", "items": [
+			{"code":"BA", "name": "居家照顧服務", "items":[
+				{"code": "BA01", "name": "基本身體清潔", "price": 260, "priceRemote": 310}, 
+				{"code": "BA02", "name": "基本日常照顧", "price": 310, "priceRemote": 370}, 
+				{"code": "BA03", "name": "測量生命徵象", "price": 35, "priceRemote": 40}, 
+				{"code": "BA04", "name": "協助餵食或灌食", "price": 130, "priceRemote": 155}, 
+				{"code": "BA05", "name": "餐食照顧", "price": 310, "priceRemote": 370}, 
+				{"code": "BA06", "name": "協助沐浴", "price": 290, "priceRemote": 350}, 
+				{"code": "BA07", "name": "協助沐浴及洗頭", "price": 325, "priceRemote": 385}, 
+				{"code": "BA08", "name": "足部照護", "price": 500, "priceRemote": 600}, 
+				{"code": "BA09", "name": "到宅沐浴車服務", "price": 1500, "priceRemote": 1800}, 
+				{"code": "BA10", "name": "翻身拍背", "price": 155, "priceRemote": 190}, 
+				{"code": "BA11", "name": "肢體關節活動", "price": 195, "priceRemote": 235}, 
+				{"code": "BA12", "name": "協助上(下)樓梯", "price": 130, "priceRemote": 155}, 
+				{"code": "BA13", "name": "陪同外出", "price": 195, "priceRemote": 235}, 
+				{"code": "BA14", "name": "陪同就醫", "price": 685, "priceRemote": 825}, 
+				{"code": "BA15", "name": "家務協助", "price": 195, "priceRemote": 235}, 
+				{"code": "BA16", "name": "代購或代領或代送服務", "price": 130, "priceRemote": 155}, 
+				{"code": "BA17", "name": "協助執行輔助性醫療", "price": 65, "priceRemote": 80}, 
+				{"code": "BA18", "name": "安全看視", "price": 400, "priceRemote": 480}, 
+				{"code": "BA19", "name": "安全看視（續）", "price": 200, "priceRemote": 240}, 
+				{"code": "BA20", "name": "陪伴服務", "price": 350, "priceRemote": 420}, 
+				{"code": "BA21", "name": "陪伴服務（續）", "price": 175, "priceRemote": 210}, 
+				{"code": "BA22", "name": "巡視服務", "price": 130, "priceRemote": 160}
+			]},
+			{"code":"BB", "name": "日間照顧服務", "items":[
+				{"code": "BB01", "name": "日間照顧（全日）--第1型", "price": 675, "priceRemote": 810}, 
+				{"code": "BB02", "name": "日間照顧（半日）--第1型", "price": 340, "priceRemote": 405}, 
+				{"code": "BB03", "name": "日間照顧（全日）--第2型", "price": 840, "priceRemote": 1005}, 
+				{"code": "BB04", "name": "日間照顧（半日）--第2型", "price": 420, "priceRemote": 505}, 
+				{"code": "BB05", "name": "日間照顧（全日）--第3型", "price": 920, "priceRemote": 1105}, 
+				{"code": "BB06", "name": "日間照顧（半日）--第3型", "price": 460, "priceRemote": 555}, 
+				{"code": "BB07", "name": "日間照顧（全日）--第4型", "price": 1045, "priceRemote": 1255}, 
+				{"code": "BB08", "name": "日間照顧（半日）--第4型", "price": 525, "priceRemote": 630}, 
+				{"code": "BB09", "name": "日間照顧（全日）--第5型", "price": 1130, "priceRemote": 1355}, 
+				{"code": "BB10", "name": "日間照顧（半日）--第5型", "price": 565, "priceRemote": 680}, 
+				{"code": "BB11", "name": "日間照顧（全日）--第6型", "price": 1210, "priceRemote": 1450}, 
+				{"code": "BB12", "name": "日間照顧（半日）--第6型", "price": 605, "priceRemote": 725}, 
+				{"code": "BB13", "name": "日間照顧（全日）--第7型", "price": 1285, "priceRemote": 1540}, 
+				{"code": "BB14", "name": "日間照顧（半日）--第7型", "price": 645, "priceRemote": 770}
+			]},
+			{"code":"BC", "name": "家庭托顧服務", "items":[
+				{"code": "BC01", "name": "家庭托顧（全日）--第1型", "price": 625, "priceRemote": 750}, 
+				{"code": "BC02", "name": "家庭托顧（半日）--第1型", "price": 315, "priceRemote": 375}, 
+				{"code": "BC03", "name": "家庭托顧（全日）--第2型", "price": 760, "priceRemote": 915}, 
+				{"code": "BC04", "name": "家庭托顧（半日）--第2型", "price": 380, "priceRemote": 460}, 
+				{"code": "BC05", "name": "家庭托顧（全日）--第3型", "price": 785, "priceRemote": 945}, 
+				{"code": "BC06", "name": "家庭托顧（半日）--第3型", "price": 395, "priceRemote": 475}, 
+				{"code": "BC07", "name": "家庭托顧（全日）--第4型", "price": 880, "priceRemote": 1055}, 
+				{"code": "BC08", "name": "家庭托顧（半日）--第4型", "price": 440, "priceRemote": 530}, 
+				{"code": "BC09", "name": "家庭托顧（全日）--第5型", "price": 960, "priceRemote": 1155}, 
+				{"code": "BC10", "name": "家庭托顧（半日）--第5型", "price": 480, "priceRemote": 580}, 
+				{"code": "BC11", "name": "家庭托顧（全日）--第6型", "price": 980, "priceRemote": 1180}, 
+				{"code": "BC12", "name": "家庭托顧（半日）--第6型", "price": 490, "priceRemote": 590}, 
+				{"code": "BC13", "name": "家庭托顧（全日）--第7型", "price": 1040, "priceRemote": 1250}, 
+				{"code": "BC14", "name": "家庭托顧（半日）--第7型", "price": 520, "priceRemote": 625}
+			]},
+			{"code":"BD", "name": "社區式服務", "items":[
+				{"code": "BD01", "name": "社區式協助沐浴", "price": 200, "priceRemote": 240}, 
+				{"code": "BD02", "name": "社區式晚餐", "price": 150, "priceRemote": 180}, 
+				{"code": "BD03", "name": "社區式服務交通接送", "price": 35, "priceRemote": 45}
+			]}
+		]},
+		{"code":"C", "name": "專業服務", "items": [
+			{"code":"CA", "name": "復能照護與社區適應", "items":[
+				{"code": "CA01", "name": "IADLs復能照護--居家", "price": 4500, "priceRemote": 5400}, 
+				{"code": "CA02", "name": "IADLs復能照護--社區", "price": 4050, "priceRemote": 4860}, 
+				{"code": "CA03", "name": "ADLs復能照護--居家", "price": 4500, "priceRemote": 5400}, 
+				{"code": "CA04", "name": "ADLs復能照護--社區", "price": 4050, "priceRemote": 4860}, 
+				{"code": "CA05", "name": "社區適應--居家", "price": 6000, "priceRemote": 7200}, 
+				{"code": "CA06", "name": "社區適應--社區", "price": 5400, "priceRemote": 6480}
+			]},
+			{"code":"CB", "name": "營養、行為、臥床照護", "items":[
+				{"code": "CB01", "name": "營養照護", "price": 4000, "priceRemote": 4800}, 
+				{"code": "CB02", "name": "進食與吞嚥照護", "price": 9000, "priceRemote": 10800}, 
+				{"code": "CB03", "name": "困擾行為照護", "price": 4500, "priceRemote": 5400}, 
+				{"code": "CB04", "name": "臥床或長期活動受限照護", "price": 9000, "priceRemote": 10800}
+			]},
+			{"code":"CC", "name": "環境安全", "items":[
+				{"code": "CC01", "name": "居家環境安全或無障礙空間規劃", "price": 2000, "priceRemote": 2400}
+			]},
+			{"code":"CD", "name": "護理訪視", "items":[
+				{"code": "CD01", "name": "居家護理訪視", "price": 1300, "priceRemote": 1300}
+			]}
+		]},
+		{"code":"D", "name": "交通接送服務", "items": [
+			{"code":"DA", "name": "交通接送", "items":[
+				{"code": "DA01", "name": "交通接送", "price": "依各縣市政府核定價格", "priceRemote": "依各縣市政府核定價格"}
+			]}
+		]},
+		{"code":"E", "name": "輔具服務", "items": [
+			{"code":"EA", "name": "衛浴輔具", "items":[
+				{"code": "EA01", "name": "馬桶增高器、便盆椅或沐浴椅", "payForRent": "不適用", "payForBuy": 1200}
+			]},
+			{"code":"EB", "name": "步行輔具", "items":[
+				{"code": "EB01", "name": "單支枴杖-不銹鋼製", "payForRent": "不適用", "payForBuy": 1000}, 
+				{"code": "EB02", "name": "單支枴杖-鋁製", "payForRent": "不適用", "payForBuy": 500}, 
+				{"code": "EB03", "name": "助行器", "payForRent": "不適用", "payForBuy": 800}, 
+				{"code": "EB04", "name": "帶輪型助步車(助行椅)", "payForRent": 300, "payForBuy": 3000}
+			]},
+			{"code":"EC", "name": "輪椅、代步車", "items":[
+				{"code": "EC01", "name": "輪椅-A款(非輕量化量產型)", "payForRent": "不適用", "payForBuy": 3500}, 
+				{"code": "EC02", "name": "輪椅-B款(輕量化量產型)", "payForRent": 450, "payForBuy": 4000}, 
+				{"code": "EC03", "name": "輪椅-C款(量身訂製型)", "payForRent": "不適用", "payForBuy": 9000}, 
+				{"code": "EC04", "name": "輪椅附加功能-A款（具利於移位功能）", "payForRent": 150, "payForBuy": 5000}, 
+				{"code": "EC05", "name": "輪椅附加功能-B款（具仰躺功能）", "payForRent": 150, "payForBuy": 2000}, 
+				{"code": "EC06", "name": "輪椅附加功能-C款（具空中傾倒功能）", "payForRent": 150, "payForBuy": 4000}, 
+				{"code": "EC07", "name": "擺位系統-A款（平面型輪椅背靠）", "payForRent": "不適用", "payForBuy": 1000}, 
+				{"code": "EC08", "name": "擺位系統-B款（曲面適形輪椅背靠）", "payForRent": "不適用", "payForBuy": 6000}, 
+				{"code": "EC09", "name": "擺位系統-C款（輪椅軀幹側支撐架）", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "EC10", "name": "擺位系統-D款（輪椅頭靠系統）", "payForRent": "不適用", "payForBuy": 2500}, 
+				{"code": "EC11", "name": "電動輪椅", "payForRent": 2500, "payForBuy": "不適用"}, 
+				{"code": "EC12", "name": "電動代步車", "payForRent": 1200, "payForBuy": "不適用"}
+			]},
+			{"code":"ED", "name": "移位輔具", "items":[
+				{"code": "ED01", "name": "移位腰帶", "payForRent": "不適用", "payForBuy": 1500}, 
+				{"code": "ED02", "name": "移位板", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "ED03", "name": "人力移位吊帶", "payForRent": "不適用", "payForBuy": 4000}, 
+				{"code": "ED04", "name": "移位滑墊-A款", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "ED05", "name": "移位滑墊-B款", "payForRent": "不適用", "payForBuy": 8000}, 
+				{"code": "ED06", "name": "移位轉盤", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "ED07", "name": "移位機", "payForRent": 2000, "payForBuy": 40000}, 
+				{"code": "ED08", "name": "移位機吊帶", "payForRent": "不適用", "payForBuy": 6000}
+			]},
+			{"code":"EE", "name": "警示輔具", "items":[
+				{"code": "EE01", "name": "電話擴音器", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "EE02", "name": "電話閃光震動器", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "EE03", "name": "火警閃光警示器", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "EE04", "name": "門鈴閃光器", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "EE05", "name": "無線震動警示器", "payForRent": "不適用", "payForBuy": 2000}
+			]},
+			{"code":"EF", "name": "生活輔具", "items":[
+				{"code": "EF01", "name": "衣著用輔具", "payForRent": "不適用", "payForBuy": 500}, 
+				{"code": "EF02", "name": "居家用生活輔具", "payForRent": "不適用", "payForBuy": 500}, 
+				{"code": "EF03", "name": "飲食用輔具", "payForRent": "不適用", "payForBuy": 500}
+			]},
+			{"code":"EG", "name": "氣墊床、輪椅座墊", "items":[
+				{"code": "EG01", "name": "氣墊床-A款", "payForRent": 300, "payForBuy": 8000}, 
+				{"code": "EG02", "name": "氣墊床-B款", "payForRent": 500, "payForBuy": 12000}, 
+				{"code": "EG03", "name": "輪椅座墊-A款（連通管型氣囊氣墊座-塑膠材質）", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "EG04", "name": "輪椅座墊-B款（連通管型氣囊氣墊座-橡膠材質）", "payForRent": "不適用", "payForBuy": 10000}, 
+				{"code": "EG05", "name": "輪椅座墊-C款（液態凝膠座墊）", "payForRent": "不適用", "payForBuy": 10000}, 
+				{"code": "EG06", "name": "輪椅座墊-D款（固態凝膠座墊）", "payForRent": "不適用", "payForBuy": 8000}, 
+				{"code": "EG07", "name": "輪椅座墊-E款（填充式氣囊氣墊座）", "payForRent": "不適用", "payForBuy": 8000}, 
+				{"code": "EG08", "name": "輪椅座墊-F款（交替充氣型座墊）", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "EG09", "name": "輪椅座墊-G款（量製型座墊）", "payForRent": "不適用", "payForBuy": 10000}
+			]},
+			{"code":"EH", "name": "照顧床、爬梯機", "items":[
+				{"code": "EH01", "name": "居家用照顧床", "payForRent": 1000, "payForBuy": 8000}, 
+				{"code": "EH02", "name": "居家用照顧床-附加功能A款（床面升降功能）", "payForRent": 200, "payForBuy": 5000}, 
+				{"code": "EH03", "name": "居家用照顧床-附加功能B款（電動升降功能）", "payForRent": 500, "payForBuy": 5000}, 
+				{"code": "EH04", "name": "爬梯機（單趟）", "payForRent": 700, "payForBuy": "不適用"}, 
+				{"code": "EH05", "name": "爬梯機（月）", "payForRent": 4000, "payForBuy": "不適用"}
+			]}
+		]},
+		{"code":"F", "name": "居家無障礙環境改善服務", "items": [
+			{"code":"FA", "name": "居家無障礙設施", "items":[
+				{"code": "FA01", "name": "居家無障礙設施-扶手", "payForRent": "不適用", "payForBuy": 150}, 
+				{"code": "FA02", "name": "居家無障礙設施-可動式扶手", "payForRent": "不適用", "payForBuy": 3600}, 
+				{"code": "FA03", "name": "居家無障礙設施-非固定式斜坡板A款", "payForRent": "不適用", "payForBuy": 3500}, 
+				{"code": "FA04", "name": "居家無障礙設施-非固定式斜坡板B款", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "FA05", "name": "居家無障礙設施-非固定式斜坡板C款", "payForRent": "不適用", "payForBuy": 10000}, 
+				{"code": "FA06", "name": "居家無障礙設施-固定式斜坡道", "payForRent": "不適用", "payForBuy": 10000}, 
+				{"code": "FA07", "name": "居家無障礙設施-架高式和式地板拆除", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "FA08", "name": "居家無障礙設施-反光貼條或消光", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "FA09", "name": "居家無障礙設施-隔間", "payForRent": "不適用", "payForBuy": 600}, 
+				{"code": "FA10", "name": "居家無障礙設施-防滑措施", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "FA11", "name": "居家無障礙設施-門A款", "payForRent": "不適用", "payForBuy": 7000}, 
+				{"code": "FA12", "name": "居家無障礙設施-門B款", "payForRent": "不適用", "payForBuy": 10000}, 
+				{"code": "FA13", "name": "居家無障礙設施-水龍頭", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "FA14", "name": "居家無障礙設施-改善浴缸（新增、改換、移除-居家環境改善含原處填補）", "payForRent": "不適用", "payForBuy": 7000}, 
+				{"code": "FA15", "name": "居家無障礙設施-改善洗臉台（槽）（新增、改換、移除-含原處填補）", "payForRent": "不適用", "payForBuy": 3000}, 
+				{"code": "FA16", "name": "居家無障礙設施-改善馬桶（新增、改換、移除-含原處填補）", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "FA17", "name": "居家無障礙設施-壁掛式淋浴椅（床）", "payForRent": "不適用", "payForBuy": 5000}, 
+				{"code": "FA18", "name": "居家無障礙設施-改善流理台（新增、改換）", "payForRent": "不適用", "payForBuy": 15000}, 
+				{"code": "FA19", "name": "居家無障礙設施-改善抽油煙機（位置調整）", "payForRent": "不適用", "payForBuy": 1000}, 
+				{"code": "FA20", "name": "居家無障礙設施-特殊簡易洗槽", "payForRent": "不適用", "payForBuy": 2000}, 
+				{"code": "FA21", "name": "居家無障礙設施-特殊簡易浴槽", "payForRent": "不適用", "payForBuy": 5000}
+			]}
+		]},
+		{"code":"G", "name": "喘息服務", "items": [
+			{"code":"GA", "name": "喘息服務", "items":[
+				{"code": "GA01", "name": "居家喘息服務--全日", "price": 2310, "priceRemote": 2775}, 
+				{"code": "GA02", "name": "居家喘息服務--半日", "price": 1155, "priceRemote": 1390}, 
+				{"code": "GA03", "name": "日間照顧中心喘息服務--全日", "price": 1250, "priceRemote": 1500}, 
+				{"code": "GA04", "name": "日間照顧中心喘息服務--半日", "price": 625, "priceRemote": 750}, 
+				{"code": "GA05", "name": "機構住宿式喘息服務", "price": 2310, "priceRemote": 2775}, 
+				{"code": "GA06", "name": "小規模多機能服務-夜間喘息", "price": 1300, "priceRemote": 1560}, 
+				{"code": "GA07", "name": "巷弄長照站臨托-全日", "price": 1000, "priceRemote": 1200}, 
+				{"code": "GA08", "name": "巷弄長照站臨托-半日", "price": 500, "priceRemote": 600}
+			]}
+		]}
+	],
+	"payment":[
+		{"code": ["B","C"], "pay": [0,10020,15460,18580,24100,28070,32090,36180], "rate": [0,5,16], "period": "月"},
+		{"code": ["D1"], "pay": [0,0,0,1680,1680,1680,1680,1680], "rate": [0,10,30], "period": "月"},
+		{"code": ["D2"], "pay": [0,0,0,1840,1840,1840,1840,1840], "rate": [0,9,27], "period": "月"},
+		{"code": ["D3"], "pay": [0,0,0,2000,2000,2000,2000,2000], "rate": [0,8,25], "period": "月"},
+		{"code": ["D4"], "pay": [0,0,0,2400,2400,2400,2400,2400], "rate": [0,7,21], "period": "月"},
+		{"code": ["E","F"], "pay": [0,40000,40000,40000,40000,40000,40000,40000], "rate": [0,10,30], "period": "3年"},
+		{"code": ["G"], "pay": [0,32340,32340,32340,32340,32340,48510,48510], "rate": [0,5,16], "period": "年"}
+	]
+}
