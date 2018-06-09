@@ -232,7 +232,9 @@
 		<div class="service-item cat-F half-w" v-for="(item,i) in items['F']">
 			<div class="item-title">{{item.code}} {{item.name}}</div>
 			<div class="item-attr" v-show="item.isRent == 0">購買價格: {{item.price}} 元</div>
+			<div class="item-attr" v-show="item.isRent == 0">購買給付上限: {{item.payForBuy}} 元</div>
 			<div class="item-attr" v-show="item.isRent == 1">租賃價格: {{item.price}} 元</div>
+			<div class="item-attr" v-show="item.isRent == 1">租賃給付上限: {{item.payForRent}} 元</div>
 			<div class="item-attr">數量: {{item.num}}</div>
 			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
 			<div class="item-bt-container">
@@ -461,7 +463,7 @@ export default {
 					priceBuy.own += o;
 					priceBuy.gov += g;
 				}
-				
+
 			}
 			this.price["E-Rent"] = priceRent;
 			this.price["E-Buy"] = priceBuy;
@@ -497,7 +499,6 @@ export default {
 					priceBuy.own += o;
 					priceBuy.gov += g;
 				}
-				
 			}
 			this.price["F-Rent"] = priceRent;
 			this.price["F-Buy"] = priceBuy;
@@ -576,9 +577,9 @@ export default {
 			ter.gov = this.price["E-Rent"].gov+this.price["F-Rent"].gov;
 			ter.own = this.price["E-Rent"].own+this.price["F-Rent"].own;
 
-			tr.total = this.price["G"].total+this.price["G"].total;
-			tr.gov = this.price["G"].gov+this.price["G"].gov;
-			tr.own = this.price["G"].own+this.price["G"].own;
+			tr.total = this.price["G"].total;
+			tr.gov = this.price["G"].gov;
+			tr.own = this.price["G"].own;
 
 			this.totalPrice.service = ts;
 			this.totalPrice.equipBuy = teb;
@@ -607,9 +608,20 @@ export default {
 					item.isRent = this.isRent;
 					item.price = this.customPrice;
 					item.priceRemote = this.customPrice;
+					item.payForRent = this.itemInfo.payForRent;
+					item.payForBuy = this.itemInfo.payForBuy;
 					break;
 			}
 			this.items[category].push(item);
+			this.items[category].sort(function (a, b) {
+				if (a.code < b.code) {
+					return -1;
+				}
+				else if (a.code > b.code) {
+					return 1;
+				}
+				else return 0;
+			});
 			this.UpdatePrice();
 		},
 		DeleteItem: function(code, index){
@@ -722,13 +734,12 @@ $link-hover-color: #FF3333;
 		border-radius: 3px;
 	}
 	.price-panel{
-		width: 1024px;
 		max-width: 100%;
 		margin: auto;
 		.option-container{
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: space-around;
+			justify-content: center;
 			align-items: center;
 		}
 		.price-option{
