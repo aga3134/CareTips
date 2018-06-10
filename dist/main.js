@@ -387,6 +387,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function () {
@@ -395,6 +410,10 @@ __webpack_require__.r(__webpack_exports__);
 			careLevel: 0,
 			transportLevel: 0,
 			remoteArea: false,
+			usedBC: 0,
+			usedD: 0,
+			usedEF: 0,
+			usedG: 0,
 			customPrice: 0,
 			isRent: 0,
 			mainCategory: 0,
@@ -423,7 +442,8 @@ __webpack_require__.r(__webpack_exports__);
 			header: {},
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
-			}
+			},
+			openInputPanel: true
 		};
 	},
 	created: function () {
@@ -484,7 +504,7 @@ __webpack_require__.r(__webpack_exports__);
 			this.price["C"] = price;
 
 			//check payment limit for B,C code
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0, payment.pay[this.careLevel] - this.usedBC);
 			var bcPay = this.price["B"].gov + this.price["C"].gov;
 			if (bcPay > maxPay) {
 				var exceed = bcPay - maxPay;
@@ -518,7 +538,7 @@ __webpack_require__.r(__webpack_exports__);
 				price.gov += g;
 			}
 
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0, payment.pay[this.careLevel] - this.usedD);
 			if (price.gov > maxPay) {
 				var exceed = price.gov - maxPay;
 				price.gov -= exceed;
@@ -596,7 +616,7 @@ __webpack_require__.r(__webpack_exports__);
 			this.price["F-Buy"] = priceBuy;
 
 			//check payment limit for E,F code
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0, payment.pay[this.careLevel] - this.usedEF);
 			var efBuy = this.price["E-Buy"].gov + this.price["F-Buy"].gov;
 			var efRent = this.price["E-Rent"].gov + this.price["F-Rent"].gov;
 			var exceed = efBuy - maxPay;
@@ -640,7 +660,7 @@ __webpack_require__.r(__webpack_exports__);
 				price.gov += g;
 			}
 
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0, payment.pay[this.careLevel] - this.usedG);
 			if (price.gov > maxPay) {
 				var exceed = price.gov - maxPay;
 				price.gov -= exceed;
@@ -833,7 +853,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n      font-size: 1.5em;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: center;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n      font-size: 1.5em;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: center;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -852,7 +872,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    width: 200px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      width: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 10px;\n    right: 20px;\n    height: 50px;\n    cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(50%);\n      filter: brightness(50%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  left: 0px;\n  top: 70px;\n  display: none;\n  width: 100%;\n  padding: 10px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n}\n.menu-container.open[data-v-45447dba] {\n    display: block;\n}\n.menu-container li[data-v-45447dba] {\n    padding: 10px 0px;\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    width: 200px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      width: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 10px;\n    right: 20px;\n    height: 50px;\n    cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(50%);\n      filter: brightness(50%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  left: 0px;\n  top: 70px;\n  width: 100%;\n  padding: 0px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n  overflow-y: hidden;\n  max-height: 0px;\n  -webkit-transition: max-height 0.5s, padding 0.5s ease;\n  transition: max-height 0.5s, padding 0.5s ease;\n}\n.menu-container.open[data-v-45447dba] {\n    padding: 10px 20px;\n    max-height: 300px;\n}\n.menu-container li[data-v-45447dba] {\n    padding: 10px 0px;\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n", ""]);
 
 // exports
 
@@ -1513,578 +1533,744 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "care-calculator" }, [
-    _c("div", { staticClass: "price-panel" }, [
-      _c("div", { staticClass: "comp-header" }, [_vm._v("照服計算機")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "option-container" }, [
-        _c("div", { staticClass: "price-option" }, [
-          _vm._v("\r\n\t\t\t\t補助身份\r\n\t\t\t\t"),
-          _c(
-            "select",
-            {
+    _c(
+      "div",
+      {
+        staticClass: "price-panel",
+        on: {
+          click: function($event) {
+            _vm.openInputPanel = false
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "comp-header" }, [_vm._v("照服計算機")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "option-container" }, [
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\t補助身份\r\n\t\t\t\t"),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.identity,
+                    expression: "identity"
+                  }
+                ],
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.identity = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      _vm.UpdatePrice()
+                    }
+                  ]
+                }
+              },
+              [
+                _c("option", { attrs: { value: "0" } }, [_vm._v("低收入戶")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "1" } }, [_vm._v("中低收入戶")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "2" } }, [_vm._v("一般戶")])
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\t長照需要等級\r\n\t\t\t\t"),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.careLevel,
+                    expression: "careLevel"
+                  }
+                ],
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.careLevel = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      _vm.UpdatePrice()
+                    }
+                  ]
+                }
+              },
+              [
+                _c("option", { attrs: { value: "0" } }, [_vm._v("第一級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "1" } }, [_vm._v("第二級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "2" } }, [_vm._v("第三級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "3" } }, [_vm._v("第四級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "4" } }, [_vm._v("第五級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "5" } }, [_vm._v("第六級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "6" } }, [_vm._v("第七級")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "7" } }, [_vm._v("第八級")])
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\t交通接送分類\r\n\t\t\t\t"),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.transportLevel,
+                    expression: "transportLevel"
+                  }
+                ],
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.transportLevel = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    function($event) {
+                      _vm.UpdatePrice()
+                    }
+                  ]
+                }
+              },
+              [
+                _c("option", { attrs: { value: "0" } }, [_vm._v("第一類")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "1" } }, [_vm._v("第二類")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "2" } }, [_vm._v("第三類")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "3" } }, [_vm._v("第四類")])
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\t原民區或離島\r\n\t\t\t\t"),
+            _c("input", {
               directives: [
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.identity,
-                  expression: "identity"
+                  value: _vm.remoteArea,
+                  expression: "remoteArea"
                 }
               ],
+              attrs: { type: "checkbox" },
+              domProps: {
+                checked: Array.isArray(_vm.remoteArea)
+                  ? _vm._i(_vm.remoteArea, null) > -1
+                  : _vm.remoteArea
+              },
               on: {
                 change: [
                   function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.identity = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
+                    var $$a = _vm.remoteArea,
+                      $$el = $event.target,
+                      $$c = $$el.checked ? true : false
+                    if (Array.isArray($$a)) {
+                      var $$v = null,
+                        $$i = _vm._i($$a, $$v)
+                      if ($$el.checked) {
+                        $$i < 0 && (_vm.remoteArea = $$a.concat([$$v]))
+                      } else {
+                        $$i > -1 &&
+                          (_vm.remoteArea = $$a
+                            .slice(0, $$i)
+                            .concat($$a.slice($$i + 1)))
+                      }
+                    } else {
+                      _vm.remoteArea = $$c
+                    }
                   },
                   function($event) {
                     _vm.UpdatePrice()
                   }
                 ]
               }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("低收入戶")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "1" } }, [_vm._v("中低收入戶")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "2" } }, [_vm._v("一般戶")])
-            ]
-          )
+            })
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "price-option" }, [
-          _vm._v("\r\n\t\t\t\t長照需要等級\r\n\t\t\t\t"),
-          _c(
-            "select",
-            {
+        _c("div", { staticClass: "used-title" }, [_vm._v("已使用額度")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "option-container" }, [
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\tB、C碼"),
+            _c("input", {
               directives: [
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.careLevel,
-                  expression: "careLevel"
+                  value: _vm.usedBC,
+                  expression: "usedBC"
                 }
               ],
+              attrs: { type: "number", min: "0" },
+              domProps: { value: _vm.usedBC },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.careLevel = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    _vm.UpdatePrice()
+                change: function($event) {
+                  _vm.UpdatePrice()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
                   }
-                ]
+                  _vm.usedBC = $event.target.value
+                }
               }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("第一級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "1" } }, [_vm._v("第二級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "2" } }, [_vm._v("第三級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "3" } }, [_vm._v("第四級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "4" } }, [_vm._v("第五級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "5" } }, [_vm._v("第六級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "6" } }, [_vm._v("第七級")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "7" } }, [_vm._v("第八級")])
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-option" }, [
-          _vm._v("\r\n\t\t\t\t交通接送分類\r\n\t\t\t\t"),
-          _c(
-            "select",
-            {
+            }),
+            _vm._v("元\r\n\t\t\t")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\tD碼"),
+            _c("input", {
               directives: [
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.transportLevel,
-                  expression: "transportLevel"
+                  value: _vm.usedD,
+                  expression: "usedD"
                 }
               ],
+              attrs: { type: "number", min: "0" },
+              domProps: { value: _vm.usedD },
               on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.transportLevel = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {
-                    _vm.UpdatePrice()
+                change: function($event) {
+                  _vm.UpdatePrice()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
                   }
-                ]
+                  _vm.usedD = $event.target.value
+                }
               }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("第一類")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "1" } }, [_vm._v("第二類")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "2" } }, [_vm._v("第三類")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "3" } }, [_vm._v("第四類")])
-            ]
-          )
+            }),
+            _vm._v("元\r\n\t\t\t")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\tE、F碼"),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.usedEF,
+                  expression: "usedEF"
+                }
+              ],
+              attrs: { type: "number", min: "0" },
+              domProps: { value: _vm.usedEF },
+              on: {
+                change: function($event) {
+                  _vm.UpdatePrice()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.usedEF = $event.target.value
+                }
+              }
+            }),
+            _vm._v("元\r\n\t\t\t")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-option" }, [
+            _vm._v("\r\n\t\t\t\tG碼"),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.usedG,
+                  expression: "usedG"
+                }
+              ],
+              attrs: { type: "number", min: "0" },
+              domProps: { value: _vm.usedG },
+              on: {
+                change: function($event) {
+                  _vm.UpdatePrice()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.usedG = $event.target.value
+                }
+              }
+            }),
+            _vm._v("元\r\n\t\t\t")
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "price-option" }, [
-          _vm._v("\r\n\t\t\t\t原民區或離島\r\n\t\t\t\t"),
-          _c("input", {
+        _c("div", { staticClass: "separator" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "price-final" }, [
+          _c("div", { staticClass: "price-type" }, [_vm._v("服務費用(月)")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("總額: " + _vm._s(_vm.totalPrice.service.total) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("補助: " + _vm._s(_vm.totalPrice.service.gov) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("自費: " + _vm._s(_vm.totalPrice.service.own) + " 元")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "price-final" }, [
+          _c("div", { staticClass: "price-type" }, [_vm._v("輔具/設施購買")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("總額: " + _vm._s(_vm.totalPrice.equipBuy.total) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("補助: " + _vm._s(_vm.totalPrice.equipBuy.gov) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("自費: " + _vm._s(_vm.totalPrice.equipBuy.own) + " 元")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "price-final" }, [
+          _c("div", { staticClass: "price-type" }, [
+            _vm._v("輔具/設施租賃(月)")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("總額: " + _vm._s(_vm.totalPrice.equipRent.total) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("補助: " + _vm._s(_vm.totalPrice.equipRent.gov) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("自費: " + _vm._s(_vm.totalPrice.equipRent.own) + " 元")
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
             directives: [
               {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.remoteArea,
-                expression: "remoteArea"
+                name: "show",
+                rawName: "v-show",
+                value: _vm.rentMonth < 36,
+                expression: "rentMonth < 36"
               }
             ],
-            attrs: { type: "checkbox" },
-            domProps: {
-              checked: Array.isArray(_vm.remoteArea)
-                ? _vm._i(_vm.remoteArea, null) > -1
-                : _vm.remoteArea
-            },
+            staticClass: "remark"
+          },
+          [
+            _vm._v(
+              "剩餘額度僅可支持租賃補助 " + _vm._s(_vm.rentMonth) + " 個月"
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "price-final" }, [
+          _c("div", { staticClass: "price-type" }, [_vm._v("喘息服務(年)")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("總額: " + _vm._s(_vm.totalPrice.rest.total) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("補助: " + _vm._s(_vm.totalPrice.rest.gov) + " 元")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "final-item" }, [
+            _vm._v("自費: " + _vm._s(_vm.totalPrice.rest.own) + " 元")
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "input-bt",
             on: {
-              change: [
-                function($event) {
-                  var $$a = _vm.remoteArea,
-                    $$el = $event.target,
-                    $$c = $$el.checked ? true : false
-                  if (Array.isArray($$a)) {
-                    var $$v = null,
-                      $$i = _vm._i($$a, $$v)
-                    if ($$el.checked) {
-                      $$i < 0 && (_vm.remoteArea = $$a.concat([$$v]))
-                    } else {
-                      $$i > -1 &&
-                        (_vm.remoteArea = $$a
-                          .slice(0, $$i)
-                          .concat($$a.slice($$i + 1)))
-                    }
-                  } else {
-                    _vm.remoteArea = $$c
-                  }
-                },
-                function($event) {
-                  _vm.UpdatePrice()
-                }
-              ]
+              click: function($event) {
+                _vm.ClearService()
+              }
             }
-          })
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "separator" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-final" }, [
-        _c("div", { staticClass: "price-type" }, [_vm._v("服務費用(月)")]),
+          },
+          [_vm._v("全部重設")]
+        ),
         _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("總額: " + _vm._s(_vm.totalPrice.service.total) + " 元")
+        _c("div", { staticClass: "price-summary" }, [
+          _c("div", { staticClass: "sub-header" }, [_vm._v("服務金額")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-A" }, [
+            _vm._v(
+              "\r\n\t\t\t\tA碼: " +
+                _vm._s(_vm.price["A"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-B" }, [
+            _vm._v(
+              "\r\n\t\t\t\tB碼: " +
+                _vm._s(_vm.price["B"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-C" }, [
+            _vm._v(
+              "\r\n\t\t\t\tC碼: " +
+                _vm._s(_vm.price["C"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-D" }, [
+            _vm._v(
+              "\r\n\t\t\t\tD碼: " +
+                _vm._s(_vm.price["D"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(租賃): " +
+                _vm._s(_vm.price["E-Rent"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(購買): " +
+                _vm._s(_vm.price["E-Buy"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(租賃): " +
+                _vm._s(_vm.price["F-Rent"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(購買): " +
+                _vm._s(_vm.price["F-Buy"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-G" }, [
+            _vm._v(
+              "\r\n\t\t\t\tG碼: " +
+                _vm._s(_vm.price["G"].total) +
+                " 元\r\n\t\t\t"
+            )
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("補助: " + _vm._s(_vm.totalPrice.service.gov) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("自費: " + _vm._s(_vm.totalPrice.service.own) + " 元")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-final" }, [
-        _c("div", { staticClass: "price-type" }, [_vm._v("輔具/設施購買")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("總額: " + _vm._s(_vm.totalPrice.equipBuy.total) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("補助: " + _vm._s(_vm.totalPrice.equipBuy.gov) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("自費: " + _vm._s(_vm.totalPrice.equipBuy.own) + " 元")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-final" }, [
-        _c("div", { staticClass: "price-type" }, [_vm._v("輔具/設施租賃(月)")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("總額: " + _vm._s(_vm.totalPrice.equipRent.total) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("補助: " + _vm._s(_vm.totalPrice.equipRent.gov) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("自費: " + _vm._s(_vm.totalPrice.equipRent.own) + " 元")
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.rentMonth < 36,
-              expression: "rentMonth < 36"
-            }
-          ],
-          staticClass: "remark"
-        },
-        [_vm._v("剩餘額度僅可支持租賃補助 " + _vm._s(_vm.rentMonth) + " 個月")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-final" }, [
-        _c("div", { staticClass: "price-type" }, [_vm._v("喘息服務(年)")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("總額: " + _vm._s(_vm.totalPrice.rest.total) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("補助: " + _vm._s(_vm.totalPrice.rest.gov) + " 元")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "final-item" }, [
-          _vm._v("自費: " + _vm._s(_vm.totalPrice.rest.own) + " 元")
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "input-bt",
-          on: {
-            click: function($event) {
-              _vm.ClearService()
-            }
-          }
-        },
-        [_vm._v("全部重設")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-summary" }, [
-        _c("div", { staticClass: "sub-header" }, [_vm._v("服務金額")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-A" }, [
-          _vm._v(
-            "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].total) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-B" }, [
-          _vm._v(
-            "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].total) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-C" }, [
-          _vm._v(
-            "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].total) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-D" }, [
-          _vm._v(
-            "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].total) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(租賃): " +
-              _vm._s(_vm.price["E-Rent"].total) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(購買): " +
-              _vm._s(_vm.price["E-Buy"].total) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(租賃): " +
-              _vm._s(_vm.price["F-Rent"].total) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(購買): " +
-              _vm._s(_vm.price["F-Buy"].total) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-G" }, [
-          _vm._v(
-            "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].total) + " 元\r\n\t\t\t"
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-summary" }, [
-        _c("div", { staticClass: "sub-header" }, [_vm._v("補助金額")]),
-        _vm._v(" "),
-        _vm.header.payment
-          ? _c("div", [
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "B+C碼額度: " +
-                    _vm._s(_vm.header.payment[0].pay[_vm.careLevel]) +
-                    " 元/月"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "D碼額度: " +
-                    _vm._s(
-                      _vm.header.payment[parseInt(_vm.transportLevel) + 1].pay[
-                        _vm.careLevel
-                      ]
-                    ) +
-                    " 元/月"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "E+F碼額度: " +
-                    _vm._s(_vm.header.payment[5].pay[_vm.careLevel]) +
-                    " 元/3年"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "G碼額度: " +
-                    _vm._s(_vm.header.payment[6].pay[_vm.careLevel]) +
-                    " 元/年"
-                )
+        _c("div", { staticClass: "price-summary" }, [
+          _c("div", { staticClass: "sub-header" }, [_vm._v("補助金額")]),
+          _vm._v(" "),
+          _vm.header.payment
+            ? _c("div", [
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "B+C碼可用額度: " +
+                      _vm._s(
+                        Math.max(
+                          0,
+                          _vm.header.payment[0].pay[_vm.careLevel] - _vm.usedBC
+                        )
+                      ) +
+                      " 元/月"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "D碼可用額度: " +
+                      _vm._s(
+                        Math.max(
+                          0,
+                          _vm.header.payment[parseInt(_vm.transportLevel) + 1]
+                            .pay[_vm.careLevel] - _vm.usedD
+                        )
+                      ) +
+                      " 元/月"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "E+F碼可用額度: " +
+                      _vm._s(
+                        Math.max(
+                          0,
+                          _vm.header.payment[5].pay[_vm.careLevel] - _vm.usedEF
+                        )
+                      ) +
+                      " 元/3年"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "G碼可用額度: " +
+                      _vm._s(
+                        Math.max(
+                          0,
+                          _vm.header.payment[6].pay[_vm.careLevel] - _vm.usedG
+                        )
+                      ) +
+                      " 元/年"
+                  )
+                ])
               ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-A" }, [
-          _vm._v(
-            "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].gov) + " 元\r\n\t\t\t"
-          )
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-A" }, [
+            _vm._v(
+              "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].gov) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-B" }, [
+            _vm._v(
+              "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].gov) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-C" }, [
+            _vm._v(
+              "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].gov) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-D" }, [
+            _vm._v(
+              "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].gov) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(租賃): " +
+                _vm._s(_vm.price["E-Rent"].gov) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(購買): " +
+                _vm._s(_vm.price["E-Buy"].gov) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(租賃): " +
+                _vm._s(_vm.price["F-Rent"].gov) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(購買): " +
+                _vm._s(_vm.price["F-Buy"].gov) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-G" }, [
+            _vm._v(
+              "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].gov) + " 元\r\n\t\t\t"
+            )
+          ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-B" }, [
-          _vm._v(
-            "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].gov) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-C" }, [
-          _vm._v(
-            "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].gov) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-D" }, [
-          _vm._v(
-            "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].gov) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(租賃): " +
-              _vm._s(_vm.price["E-Rent"].gov) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(購買): " +
-              _vm._s(_vm.price["E-Buy"].gov) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(租賃): " +
-              _vm._s(_vm.price["F-Rent"].gov) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(購買): " +
-              _vm._s(_vm.price["F-Buy"].gov) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-G" }, [
-          _vm._v(
-            "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].gov) + " 元\r\n\t\t\t"
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-summary" }, [
-        _c("div", { staticClass: "sub-header" }, [_vm._v("自費金額")]),
-        _vm._v(" "),
-        _vm.header.payment
-          ? _c("div", [
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "B+C碼自費比例: " +
-                    _vm._s(_vm.header.payment[0].rate[_vm.identity]) +
-                    " %"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "D碼自費比例: " +
-                    _vm._s(
-                      _vm.header.payment[parseInt(_vm.transportLevel) + 1].rate[
-                        _vm.identity
-                      ]
-                    ) +
-                    " %"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "E+F碼自費比例: " +
-                    _vm._s(_vm.header.payment[5].rate[_vm.identity]) +
-                    " %"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "price-limit" }, [
-                _vm._v(
-                  "G碼自費比例: " +
-                    _vm._s(_vm.header.payment[6].rate[_vm.identity]) +
-                    " %"
-                )
+        _c("div", { staticClass: "price-summary" }, [
+          _c("div", { staticClass: "sub-header" }, [_vm._v("自費金額")]),
+          _vm._v(" "),
+          _vm.header.payment
+            ? _c("div", [
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "B+C碼自費比例: " +
+                      _vm._s(_vm.header.payment[0].rate[_vm.identity]) +
+                      " %"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "D碼自費比例: " +
+                      _vm._s(
+                        _vm.header.payment[parseInt(_vm.transportLevel) + 1]
+                          .rate[_vm.identity]
+                      ) +
+                      " %"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "E+F碼自費比例: " +
+                      _vm._s(_vm.header.payment[5].rate[_vm.identity]) +
+                      " %"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "price-limit" }, [
+                  _vm._v(
+                    "G碼自費比例: " +
+                      _vm._s(_vm.header.payment[6].rate[_vm.identity]) +
+                      " %"
+                  )
+                ])
               ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-A" }, [
-          _vm._v(
-            "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].own) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-B" }, [
-          _vm._v(
-            "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].own) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-C" }, [
-          _vm._v(
-            "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].own) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-D" }, [
-          _vm._v(
-            "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].own) + " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(租賃): " +
-              _vm._s(_vm.price["E-Rent"].own) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-E" }, [
-          _vm._v(
-            "\r\n\t\t\t\tE碼(購買): " +
-              _vm._s(_vm.price["E-Buy"].own) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(租賃): " +
-              _vm._s(_vm.price["F-Rent"].own) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-F" }, [
-          _vm._v(
-            "\r\n\t\t\t\tF碼(購買): " +
-              _vm._s(_vm.price["F-Buy"].own) +
-              " 元\r\n\t\t\t"
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "price-category cat-G" }, [
-          _vm._v(
-            "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].own) + " 元\r\n\t\t\t"
-          )
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-A" }, [
+            _vm._v(
+              "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].own) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-B" }, [
+            _vm._v(
+              "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].own) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-C" }, [
+            _vm._v(
+              "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].own) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-D" }, [
+            _vm._v(
+              "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].own) + " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(租賃): " +
+                _vm._s(_vm.price["E-Rent"].own) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-E" }, [
+            _vm._v(
+              "\r\n\t\t\t\tE碼(購買): " +
+                _vm._s(_vm.price["E-Buy"].own) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(租賃): " +
+                _vm._s(_vm.price["F-Rent"].own) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-F" }, [
+            _vm._v(
+              "\r\n\t\t\t\tF碼(購買): " +
+                _vm._s(_vm.price["F-Buy"].own) +
+                " 元\r\n\t\t\t"
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "price-category cat-G" }, [
+            _vm._v(
+              "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].own) + " 元\r\n\t\t\t"
+            )
+          ])
         ])
-      ])
-    ]),
+      ]
+    ),
     _vm._v(" "),
     _c(
       "div",
-      { staticClass: "service-list" },
+      {
+        staticClass: "service-list",
+        on: {
+          click: function($event) {
+            _vm.openInputPanel = false
+          }
+        }
+      },
       [
         _c("div", { staticClass: "comp-header" }, [_vm._v("服務套餐")]),
         _vm._v(" "),
@@ -2570,163 +2756,35 @@ var render = function() {
       2
     ),
     _vm._v(" "),
-    _c("div", { staticClass: "input-panel" }, [
-      _c("div", { staticClass: "category-option" }, [
-        _c("div", { staticClass: "cat-title" }, [_vm._v("主類")]),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.mainCategory,
-                expression: "mainCategory"
-              }
-            ],
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.mainCategory = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                function($event) {
-                  _vm.UpdateMainCategory()
+    _c(
+      "div",
+      {
+        staticClass: "input-panel",
+        class: { open: _vm.openInputPanel },
+        on: {
+          click: function($event) {
+            _vm.openInputPanel = true
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "category-option" }, [
+          _c("div", { staticClass: "cat-title" }, [_vm._v("主類")]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.mainCategory,
+                  expression: "mainCategory"
                 }
-              ]
-            }
-          },
-          _vm._l(_vm.header.service, function(s, i) {
-            return _c("option", { domProps: { value: i } }, [
-              _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-            ])
-          })
-        )
-      ]),
-      _vm._v(" "),
-      _vm.header.service &&
-      _vm.header.service[_vm.mainCategory].items.length > 1
-        ? _c("div", { staticClass: "category-option" }, [
-            _c("div", { staticClass: "cat-title" }, [_vm._v("子類")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.subCategory,
-                    expression: "subCategory"
-                  }
-                ],
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.subCategory = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      _vm.UpdateSubCategory()
-                    }
-                  ]
-                }
-              },
-              _vm._l(_vm.header.service[_vm.mainCategory].items, function(
-                s,
-                i
-              ) {
-                return _c("option", { domProps: { value: i } }, [
-                  _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                ])
-              })
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.header.service
-        ? _c("div", { staticClass: "category-option" }, [
-            _c("div", { staticClass: "cat-title" }, [_vm._v("項目")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.selectService,
-                    expression: "selectService"
-                  }
-                ],
-                on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.selectService = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      _vm.UpdateItemInfo()
-                    }
-                  ]
-                }
-              },
-              _vm._l(
-                _vm.header.service[_vm.mainCategory].items[_vm.subCategory]
-                  .items,
-                function(s, i) {
-                  return _c("option", { domProps: { value: i } }, [
-                    _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                  ])
-                }
-              )
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.mainCategory == 4 || _vm.mainCategory == 5
-        ? _c("div", { staticClass: "category-option" }, [
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.isRent,
-                    expression: "isRent"
-                  }
-                ],
-                on: {
-                  change: function($event) {
+              ],
+              on: {
+                change: [
+                  function($event) {
                     var $$selectedVal = Array.prototype.filter
                       .call($event.target.options, function(o) {
                         return o.selected
@@ -2735,114 +2793,254 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.isRent = $event.target.multiple
+                    _vm.mainCategory = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
-                  }
-                }
-              },
-              [
-                _c(
-                  "option",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.itemInfo.payForBuy !== "不適用",
-                        expression: "itemInfo.payForBuy !== '不適用' "
-                      }
-                    ],
-                    attrs: { value: "0" }
                   },
-                  [_vm._v("購買")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "option",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.itemInfo.payForRent !== "不適用",
-                        expression: "itemInfo.payForRent !== '不適用' "
-                      }
-                    ],
-                    attrs: { value: "1" }
-                  },
-                  [_vm._v("租賃")]
-                )
-              ]
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.mainCategory == 3 || _vm.mainCategory == 4 || _vm.mainCategory == 5
-        ? _c("div", { staticClass: "category-option" }, [
-            _c("div", { staticClass: "cat-title" }, [_vm._v("價格")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.customPrice,
-                  expression: "customPrice"
-                }
-              ],
-              attrs: { type: "number", min: "1" },
-              domProps: { value: _vm.customPrice },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+                  function($event) {
+                    _vm.UpdateMainCategory()
                   }
-                  _vm.customPrice = $event.target.value
-                }
+                ]
               }
+            },
+            _vm._l(_vm.header.service, function(s, i) {
+              return _c("option", { domProps: { value: i } }, [
+                _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+              ])
             })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _c("div", { staticClass: "category-option" }, [
-        _c("div", { staticClass: "cat-title" }, [_vm._v("數量")]),
+          )
+        ]),
         _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.serviceCount,
-              expression: "serviceCount"
-            }
-          ],
-          attrs: { type: "number", min: "1", max: "100" },
-          domProps: { value: _vm.serviceCount },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+        _vm.header.service &&
+        _vm.header.service[_vm.mainCategory].items.length > 1
+          ? _c("div", { staticClass: "category-option" }, [
+              _c("div", { staticClass: "cat-title" }, [_vm._v("子類")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.subCategory,
+                      expression: "subCategory"
+                    }
+                  ],
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.subCategory = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        _vm.UpdateSubCategory()
+                      }
+                    ]
+                  }
+                },
+                _vm._l(_vm.header.service[_vm.mainCategory].items, function(
+                  s,
+                  i
+                ) {
+                  return _c("option", { domProps: { value: i } }, [
+                    _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                  ])
+                })
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.header.service
+          ? _c("div", { staticClass: "category-option" }, [
+              _c("div", { staticClass: "cat-title" }, [_vm._v("項目")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selectService,
+                      expression: "selectService"
+                    }
+                  ],
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectService = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        _vm.UpdateItemInfo()
+                      }
+                    ]
+                  }
+                },
+                _vm._l(
+                  _vm.header.service[_vm.mainCategory].items[_vm.subCategory]
+                    .items,
+                  function(s, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                    ])
+                  }
+                )
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.mainCategory == 4 || _vm.mainCategory == 5
+          ? _c("div", { staticClass: "category-option" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.isRent,
+                      expression: "isRent"
+                    }
+                  ],
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.isRent = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "option",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.itemInfo.payForBuy !== "不適用",
+                          expression: "itemInfo.payForBuy !== '不適用' "
+                        }
+                      ],
+                      attrs: { value: "0" }
+                    },
+                    [_vm._v("購買")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "option",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.itemInfo.payForRent !== "不適用",
+                          expression: "itemInfo.payForRent !== '不適用' "
+                        }
+                      ],
+                      attrs: { value: "1" }
+                    },
+                    [_vm._v("租賃")]
+                  )
+                ]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.mainCategory == 3 || _vm.mainCategory == 4 || _vm.mainCategory == 5
+          ? _c("div", { staticClass: "category-option" }, [
+              _c("div", { staticClass: "cat-title" }, [_vm._v("價格")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.customPrice,
+                    expression: "customPrice"
+                  }
+                ],
+                attrs: { type: "number", min: "1" },
+                domProps: { value: _vm.customPrice },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.customPrice = $event.target.value
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("div", { staticClass: "category-option" }, [
+          _c("div", { staticClass: "cat-title" }, [_vm._v("數量")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.serviceCount,
+                expression: "serviceCount"
               }
-              _vm.serviceCount = $event.target.value
+            ],
+            attrs: { type: "number", min: "1", max: "100" },
+            domProps: { value: _vm.serviceCount },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.serviceCount = $event.target.value
+              }
             }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "action-bt",
-          on: {
-            click: function($event) {
-              _vm.AddService()
+          })
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "action-bt",
+            on: {
+              click: function($event) {
+                _vm.AddService()
+              }
             }
-          }
-        },
-        [_vm._v("新增")]
-      )
-    ])
+          },
+          [_vm._v("新增")]
+        )
+      ]
+    )
   ])
 }
 var staticRenderFns = [

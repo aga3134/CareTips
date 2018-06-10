@@ -68,6 +68,7 @@ export default {
 
 $enhance-color: #BE9063;
 $text-color: #333333;
+$trans-time: 0.5s;
 
 .topbar{
 	position: fixed;
@@ -133,9 +134,9 @@ $text-color: #333333;
 	position: fixed;
 	left: 0px;
 	top: 70px;
-	display: none;
+	//display: none;
 	width: 100%;
-	padding: 10px 20px;
+	padding: 0px 20px;
 	margin: 0px;
 	list-style-type: none;
 	box-shadow: 0px 2px 4px 0px #888;
@@ -143,8 +144,14 @@ $text-color: #333333;
 	font-size: 1.25em;
 	color: $text-color;
 	z-index: 9;
+	overflow-y: hidden;
+	max-height: 0px;
+	-webkit-transition: max-height $trans-time,padding $trans-time ease;
+    transition: max-height $trans-time,padding $trans-time ease;
 	&.open{
-		display: block;
+		padding: 10px 20px;
+		max-height: 300px;
+		//display: block;
 	}
 	li{
 		padding: 10px 0px;

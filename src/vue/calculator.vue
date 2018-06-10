@@ -1,6 +1,6 @@
 <template lang="html">
 <div class="care-calculator">
-	<div class="price-panel">
+	<div class="price-panel" v-on:click="openInputPanel = false;">
 		<div class="comp-header">照服計算機</div>
 		<div class="option-container">
 			<div class="price-option">
@@ -36,6 +36,21 @@
 			<div class="price-option">
 				原民區或離島
 				<input type="checkbox" v-model="remoteArea" v-on:change="UpdatePrice();">
+			</div>
+		</div>
+		<div class="used-title">已使用額度</div>
+		<div class="option-container">
+			<div class="price-option">
+				B、C碼<input type="number" min="0" v-model="usedBC" v-on:change="UpdatePrice();">元
+			</div>
+			<div class="price-option">
+				D碼<input type="number" min="0" v-model="usedD" v-on:change="UpdatePrice();">元
+			</div>
+			<div class="price-option">
+				E、F碼<input type="number" min="0" v-model="usedEF" v-on:change="UpdatePrice();">元
+			</div>
+			<div class="price-option">
+				G碼<input type="number" min="0" v-model="usedG" v-on:change="UpdatePrice();">元
 			</div>
 		</div>
 		<div class="separator"></div>
@@ -101,10 +116,10 @@
 		<div class="price-summary">
 			<div class="sub-header">補助金額</div>
 			<div v-if="header.payment">
-				<div class="price-limit">B+C碼額度: {{header.payment[0].pay[careLevel]}} 元/月</div>
-				<div class="price-limit">D碼額度: {{header.payment[parseInt(transportLevel)+1].pay[careLevel]}} 元/月</div>
-				<div class="price-limit">E+F碼額度: {{header.payment[5].pay[careLevel]}} 元/3年</div>
-				<div class="price-limit">G碼額度: {{header.payment[6].pay[careLevel]}} 元/年</div>
+				<div class="price-limit">B+C碼可用額度: {{Math.max(0,header.payment[0].pay[careLevel]-usedBC)}} 元/月</div>
+				<div class="price-limit">D碼可用額度: {{Math.max(0,header.payment[parseInt(transportLevel)+1].pay[careLevel]-usedD)}} 元/月</div>
+				<div class="price-limit">E+F碼可用額度: {{Math.max(0,header.payment[5].pay[careLevel]-usedEF)}} 元/3年</div>
+				<div class="price-limit">G碼可用額度: {{Math.max(0,header.payment[6].pay[careLevel]-usedG)}} 元/年</div>
 			</div>
 			<div class="price-category cat-A">
 				A碼: {{price['A'].gov}} 元
@@ -174,7 +189,7 @@
 		</div>
 		
 	</div>
-	<div class="service-list">
+	<div class="service-list" v-on:click="openInputPanel = false;">
 		<div class="comp-header">服務套餐</div>
 		<div class="remark">*照服計算機 之計算方式依 <a href="https://www.health.ntpc.gov.tw/archive/health_ntpc/6/file/107%E5%B9%B4%E5%BA%A6%E7%B5%A6%E4%BB%98%E5%8F%8A%E6%94%AF%E4%BB%98%E5%9F%BA%E6%BA%96.pdf" target="_blank">107年度給付及支付基準</a> 設定，詳細說明請見該連結。</div>
 
@@ -252,7 +267,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="input-panel">
+	<div class="input-panel" v-bind:class="{open: openInputPanel}" v-on:click="openInputPanel = true;">
 		<div class="category-option">
 			<div class="cat-title">主類</div>
 			<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
@@ -298,6 +313,10 @@ export default {
 			careLevel: 0,
 			transportLevel: 0,
 			remoteArea: false,
+			usedBC: 0,
+			usedD: 0,
+			usedEF: 0,
+			usedG: 0,
 			customPrice: 0,
 			isRent: 0,
 			mainCategory: 0,
@@ -326,7 +345,8 @@ export default {
 			header: {},
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
-			}
+			},
+			openInputPanel: true
 		};
 	},
 	created: function(){
@@ -388,7 +408,7 @@ export default {
 			this.price["C"] = price;
 
 			//check payment limit for B,C code
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0,payment.pay[this.careLevel]-this.usedBC);
 			var bcPay = this.price["B"].gov+this.price["C"].gov;
 			if(bcPay > maxPay){
 				var exceed = bcPay-maxPay;
@@ -423,7 +443,7 @@ export default {
 				price.gov += g;
 			}
 
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0,payment.pay[this.careLevel]-this.usedD);
 			if(price.gov > maxPay){
 				var exceed = price.gov-maxPay;
 				price.gov -= exceed;
@@ -504,7 +524,7 @@ export default {
 			this.price["F-Buy"] = priceBuy;
 
 			//check payment limit for E,F code
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0,payment.pay[this.careLevel]-this.usedEF);
 			var efBuy = this.price["E-Buy"].gov+this.price["F-Buy"].gov;
 			var efRent = this.price["E-Rent"].gov+this.price["F-Rent"].gov;
 			var exceed = efBuy-maxPay;
@@ -552,7 +572,7 @@ export default {
 				price.gov += g;
 			}
 
-			maxPay = payment.pay[this.careLevel];
+			maxPay = Math.max(0,payment.pay[this.careLevel]-this.usedG);
 			if(price.gov > maxPay){
 				var exceed = price.gov-maxPay;
 				price.gov -= exceed;
@@ -676,6 +696,7 @@ $bt-fg-color: #ffffff;
 $bt-bg-color: #666666;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
+$trans-time: 0.5s;
 
 .care-calculator{
 	width: 100%;
@@ -742,6 +763,10 @@ $link-hover-color: #FF3333;
 			justify-content: center;
 			align-items: center;
 		}
+		.used-title{
+			text-align: center;
+			font-size: 1.2em;
+		}
 		.price-option{
 			display: inline-block;
 			margin: 10px;
@@ -760,6 +785,11 @@ $link-hover-color: #FF3333;
 				height: 20px;
 				position: relative;
 				top: 3px;
+			}
+			input[type="number"]{
+				max-width: 80px;
+				padding: 5px;
+				margin: 0px 10px;
 			}
 		}
 		.price-summary{
@@ -865,6 +895,13 @@ $link-hover-color: #FF3333;
 		align-items: center;
 		flex-wrap: wrap;
 		overflow-x: auto;
+		overflow-y: hidden;
+		max-height: 70px;
+		-webkit-transition: max-height $trans-time ease;
+    	transition: max-height $trans-time ease;
+		&.open{
+			max-height: 200px;
+		}
 		.category-option{
 			text-align: center;
 			.cat-title{
@@ -886,7 +923,7 @@ $link-hover-color: #FF3333;
 			display: inline-block;
 			cursor: pointer;
 			padding: 5px 10px;
-			margin: 10px;
+			margin: 5px 10px;
 			background-color: #eeeeee;
 			color: #333333;
 			border-radius: 3px;
