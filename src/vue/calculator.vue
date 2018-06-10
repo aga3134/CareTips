@@ -1,5 +1,6 @@
 <template lang="html">
 <div class="care-calculator">
+	<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
 	<div class="price-panel" v-on:click="openInputPanel = false;">
 		<div class="comp-header">照服計算機</div>
 		<div class="option-container">
@@ -316,6 +317,8 @@
 export default {
 	data: function () {
 		return {
+			message: "",
+			showMessage: false,
 			identity: 2,
 			careLevel: 0,
 			transportLevel: 0,
@@ -651,6 +654,13 @@ export default {
 				else return 0;
 			});
 			this.UpdatePrice();
+
+			this.showMessage = true;
+			this.message = "加入服務 "+item.code;
+			setTimeout(function(){
+				this.showMessage = false;
+				this.message = "";
+			}.bind(this),3000);
 		},
 		DeleteItem: function(code, index){
 			if(confirm("確定刪除?")){
@@ -745,6 +755,23 @@ $trans-time: 0.5s;
 	.separator{
 		margin: 30px;
 		border-bottom: 1px solid #999999;
+	}
+	.inform-message{
+		width: 100%;
+		background-color: #aaaaaa;
+		color: #ffffff;
+		text-align: center;
+		padding: 10px;
+		position: fixed;
+		left: 0px;
+		height: 40px;
+		top: -40px;
+		z-index: 99;
+		-webkit-transition: top $trans-time ease;
+    	transition: top $trans-time ease;
+		&.show{
+			top: 0px;
+		}
 	}
 
 	.comp-header{
