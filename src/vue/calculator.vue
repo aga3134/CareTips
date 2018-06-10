@@ -81,110 +81,113 @@
 		</div>
 
 		<div class="input-bt" v-on:click="ClearService();">全部重設</div>
-
-		<div class="price-summary">
-			<div class="sub-header">服務金額</div>
-			<div class="price-category cat-A">
-				A碼: {{price['A'].total}} 元
-			</div>
-			<div class="price-category cat-B">
-				B碼: {{price['B'].total}} 元
-			</div>
-			<div class="price-category cat-C">
-				C碼: {{price['C'].total}} 元
-			</div>
-			<div class="price-category cat-D">
-				D碼: {{price['D'].total}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(租賃): {{price['E-Rent'].total}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(購買): {{price['E-Buy'].total}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(租賃): {{price['F-Rent'].total}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(購買): {{price['F-Buy'].total}} 元
-			</div>
-			<div class="price-category cat-G">
-				G碼: {{price['G'].total}} 元
-			</div>
-		</div>
-		
-		<div class="price-summary">
-			<div class="sub-header">補助金額</div>
-			<div v-if="header.payment">
-				<div class="price-limit">B+C碼可用額度: {{Math.max(0,header.payment[0].pay[careLevel]-usedBC)}} 元/月</div>
-				<div class="price-limit">D碼可用額度: {{Math.max(0,header.payment[parseInt(transportLevel)+1].pay[careLevel]-usedD)}} 元/月</div>
-				<div class="price-limit">E+F碼可用額度: {{Math.max(0,header.payment[5].pay[careLevel]-usedEF)}} 元/3年</div>
-				<div class="price-limit">G碼可用額度: {{Math.max(0,header.payment[6].pay[careLevel]-usedG)}} 元/年</div>
-			</div>
-			<div class="price-category cat-A">
-				A碼: {{price['A'].gov}} 元
-			</div>
-			<div class="price-category cat-B">
-				B碼: {{price['B'].gov}} 元
-			</div>
-			<div class="price-category cat-C">
-				C碼: {{price['C'].gov}} 元
-			</div>
-			<div class="price-category cat-D">
-				D碼: {{price['D'].gov}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(租賃): {{price['E-Rent'].gov}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(購買): {{price['E-Buy'].gov}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(租賃): {{price['F-Rent'].gov}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(購買): {{price['F-Buy'].gov}} 元
-			</div>
-			<div class="price-category cat-G">
-				G碼: {{price['G'].gov}} 元
+		<div class="input-bt" v-if="openDetail == false" v-on:click="openDetail = true">細節展開</div>
+		<div class="input-bt" v-if="openDetail == true" v-on:click="openDetail = false">細節關閉</div>
+		<div v-show="openDetail">
+			<div class="price-summary">
+				<div class="sub-header">服務金額</div>
+				<div class="price-category cat-A">
+					A碼: {{price['A'].total}} 元
+				</div>
+				<div class="price-category cat-B">
+					B碼: {{price['B'].total}} 元
+				</div>
+				<div class="price-category cat-C">
+					C碼: {{price['C'].total}} 元
+				</div>
+				<div class="price-category cat-D">
+					D碼: {{price['D'].total}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(租賃): {{price['E-Rent'].total}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(購買): {{price['E-Buy'].total}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(租賃): {{price['F-Rent'].total}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(購買): {{price['F-Buy'].total}} 元
+				</div>
+				<div class="price-category cat-G">
+					G碼: {{price['G'].total}} 元
+				</div>
 			</div>
 			
-		</div>
+			<div class="price-summary">
+				<div class="sub-header">補助金額</div>
+				<div v-if="header.payment">
+					<div class="price-limit">B+C碼可用額度: {{Math.max(0,header.payment[0].pay[careLevel]-usedBC)}} 元/月</div>
+					<div class="price-limit">D碼可用額度: {{Math.max(0,header.payment[parseInt(transportLevel)+1].pay[careLevel]-usedD)}} 元/月</div>
+					<div class="price-limit">E+F碼可用額度: {{Math.max(0,header.payment[5].pay[careLevel]-usedEF)}} 元/3年</div>
+					<div class="price-limit">G碼可用額度: {{Math.max(0,header.payment[6].pay[careLevel]-usedG)}} 元/年</div>
+				</div>
+				<div class="price-category cat-A">
+					A碼: {{price['A'].gov}} 元
+				</div>
+				<div class="price-category cat-B">
+					B碼: {{price['B'].gov}} 元
+				</div>
+				<div class="price-category cat-C">
+					C碼: {{price['C'].gov}} 元
+				</div>
+				<div class="price-category cat-D">
+					D碼: {{price['D'].gov}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(租賃): {{price['E-Rent'].gov}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(購買): {{price['E-Buy'].gov}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(租賃): {{price['F-Rent'].gov}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(購買): {{price['F-Buy'].gov}} 元
+				</div>
+				<div class="price-category cat-G">
+					G碼: {{price['G'].gov}} 元
+				</div>
+				
+			</div>
 
-		<div class="price-summary">
-			<div class="sub-header">自費金額</div>
-			<div v-if="header.payment">
-				<div class="price-limit">B+C碼自費比例: {{header.payment[0].rate[identity]}} %</div>
-				<div class="price-limit">D碼自費比例: {{header.payment[parseInt(transportLevel)+1].rate[identity]}} %</div>
-				<div class="price-limit">E+F碼自費比例: {{header.payment[5].rate[identity]}} %</div>
-				<div class="price-limit">G碼自費比例: {{header.payment[6].rate[identity]}} %</div>
-			</div>
-			<div class="price-category cat-A">
-				A碼: {{price['A'].own}} 元
-			</div>
-			<div class="price-category cat-B">
-				B碼: {{price['B'].own}} 元
-			</div>
-			<div class="price-category cat-C">
-				C碼: {{price['C'].own}} 元
-			</div>
-			<div class="price-category cat-D">
-				D碼: {{price['D'].own}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(租賃): {{price['E-Rent'].own}} 元
-			</div>
-			<div class="price-category cat-E">
-				E碼(購買): {{price['E-Buy'].own}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(租賃): {{price['F-Rent'].own}} 元
-			</div>
-			<div class="price-category cat-F">
-				F碼(購買): {{price['F-Buy'].own}} 元
-			</div>
-			<div class="price-category cat-G">
-				G碼: {{price['G'].own}} 元
+			<div class="price-summary">
+				<div class="sub-header">自費金額</div>
+				<div v-if="header.payment">
+					<div class="price-limit">B+C碼自費比例: {{header.payment[0].rate[identity]}} %</div>
+					<div class="price-limit">D碼自費比例: {{header.payment[parseInt(transportLevel)+1].rate[identity]}} %</div>
+					<div class="price-limit">E+F碼自費比例: {{header.payment[5].rate[identity]}} %</div>
+					<div class="price-limit">G碼自費比例: {{header.payment[6].rate[identity]}} %</div>
+				</div>
+				<div class="price-category cat-A">
+					A碼: {{price['A'].own}} 元
+				</div>
+				<div class="price-category cat-B">
+					B碼: {{price['B'].own}} 元
+				</div>
+				<div class="price-category cat-C">
+					C碼: {{price['C'].own}} 元
+				</div>
+				<div class="price-category cat-D">
+					D碼: {{price['D'].own}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(租賃): {{price['E-Rent'].own}} 元
+				</div>
+				<div class="price-category cat-E">
+					E碼(購買): {{price['E-Buy'].own}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(租賃): {{price['F-Rent'].own}} 元
+				</div>
+				<div class="price-category cat-F">
+					F碼(購買): {{price['F-Buy'].own}} 元
+				</div>
+				<div class="price-category cat-G">
+					G碼: {{price['G'].own}} 元
+				</div>
 			</div>
 		</div>
 		
@@ -198,7 +201,8 @@
 			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
 			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
 			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
 			<div class="item-bt-container">
 				<div class="item-bt" v-on:click="DeleteItem('A',i);">刪除</div>
 			</div>
@@ -208,7 +212,8 @@
 			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
 			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
 			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
 			<div class="item-bt-container">
 				<div class="item-bt" v-on:click="DeleteItem('B',i);">刪除</div>
 			</div>
@@ -218,7 +223,8 @@
 			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
 			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
 			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
 			<div class="item-bt-container">
 				<div class="item-bt" v-on:click="DeleteItem('C',i);">刪除</div>
 			</div>
@@ -261,7 +267,8 @@
 			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
 			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
 			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
 			<div class="item-bt-container">
 				<div class="item-bt" v-on:click="DeleteItem('G',i);">刪除</div>
 			</div>
@@ -324,6 +331,7 @@ export default {
 			selectService: 0,
 			itemInfo: "",
 			serviceCount: 1,
+			openDetail: false,
 			price: {
 				"A": {"total": 0, "gov": 0, "own": 0},
 				"B": {"total": 0, "gov": 0, "own": 0},
@@ -653,10 +661,12 @@ export default {
 			}
 		},
 		ClearService: function(){
-			this.items = {
-				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
-			};
-			this.UpdatePrice();
+			if(confirm("確定全部重設?")){
+				this.items = {
+					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+				};
+				this.UpdatePrice();
+			}
 		},
 		UpdateMainCategory: function(){
 			this.subCategory = 0;
@@ -820,12 +830,14 @@ $trans-time: 0.5s;
 			justify-content: center;
 			align-items: center;
 			flex-wrap: wrap;
-			font-size: 1.5em;
 			.price-type{
+				font-weight: bold;
+				font-size: 1.3em;
 				padding: 10px;
 				border-bottom: 1px solid $enhance-color;
 			}
 			.final-item{
+				font-size: 1.2em;
 				color: #333333;
 				padding: 10px;
 			}

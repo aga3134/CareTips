@@ -402,6 +402,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function () {
@@ -421,6 +428,7 @@ __webpack_require__.r(__webpack_exports__);
 			selectService: 0,
 			itemInfo: "",
 			serviceCount: 1,
+			openDetail: false,
 			price: {
 				"A": { "total": 0, "gov": 0, "own": 0 },
 				"B": { "total": 0, "gov": 0, "own": 0 },
@@ -739,10 +747,12 @@ __webpack_require__.r(__webpack_exports__);
 			}
 		},
 		ClearService: function () {
-			this.items = {
-				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
-			};
-			this.UpdatePrice();
+			if (confirm("確定全部重設?")) {
+				this.items = {
+					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+				};
+				this.UpdatePrice();
+			}
 		},
 		UpdateMainCategory: function () {
 			this.subCategory = 0;
@@ -853,7 +863,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n      font-size: 1.5em;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: center;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: center;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -1955,309 +1965,378 @@ var render = function() {
           [_vm._v("全部重設")]
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "price-summary" }, [
-          _c("div", { staticClass: "sub-header" }, [_vm._v("服務金額")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-A" }, [
-            _vm._v(
-              "\r\n\t\t\t\tA碼: " +
-                _vm._s(_vm.price["A"].total) +
-                " 元\r\n\t\t\t"
+        _vm.openDetail == false
+          ? _c(
+              "div",
+              {
+                staticClass: "input-bt",
+                on: {
+                  click: function($event) {
+                    _vm.openDetail = true
+                  }
+                }
+              },
+              [_vm._v("細節展開")]
             )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-B" }, [
-            _vm._v(
-              "\r\n\t\t\t\tB碼: " +
-                _vm._s(_vm.price["B"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-C" }, [
-            _vm._v(
-              "\r\n\t\t\t\tC碼: " +
-                _vm._s(_vm.price["C"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-D" }, [
-            _vm._v(
-              "\r\n\t\t\t\tD碼: " +
-                _vm._s(_vm.price["D"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(租賃): " +
-                _vm._s(_vm.price["E-Rent"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(購買): " +
-                _vm._s(_vm.price["E-Buy"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(租賃): " +
-                _vm._s(_vm.price["F-Rent"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(購買): " +
-                _vm._s(_vm.price["F-Buy"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-G" }, [
-            _vm._v(
-              "\r\n\t\t\t\tG碼: " +
-                _vm._s(_vm.price["G"].total) +
-                " 元\r\n\t\t\t"
-            )
-          ])
-        ]),
+          : _vm._e(),
         _vm._v(" "),
-        _c("div", { staticClass: "price-summary" }, [
-          _c("div", { staticClass: "sub-header" }, [_vm._v("補助金額")]),
-          _vm._v(" "),
-          _vm.header.payment
-            ? _c("div", [
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "B+C碼可用額度: " +
-                      _vm._s(
-                        Math.max(
-                          0,
-                          _vm.header.payment[0].pay[_vm.careLevel] - _vm.usedBC
-                        )
-                      ) +
-                      " 元/月"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "D碼可用額度: " +
-                      _vm._s(
-                        Math.max(
-                          0,
-                          _vm.header.payment[parseInt(_vm.transportLevel) + 1]
-                            .pay[_vm.careLevel] - _vm.usedD
-                        )
-                      ) +
-                      " 元/月"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "E+F碼可用額度: " +
-                      _vm._s(
-                        Math.max(
-                          0,
-                          _vm.header.payment[5].pay[_vm.careLevel] - _vm.usedEF
-                        )
-                      ) +
-                      " 元/3年"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "G碼可用額度: " +
-                      _vm._s(
-                        Math.max(
-                          0,
-                          _vm.header.payment[6].pay[_vm.careLevel] - _vm.usedG
-                        )
-                      ) +
-                      " 元/年"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-A" }, [
-            _vm._v(
-              "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].gov) + " 元\r\n\t\t\t"
+        _vm.openDetail == true
+          ? _c(
+              "div",
+              {
+                staticClass: "input-bt",
+                on: {
+                  click: function($event) {
+                    _vm.openDetail = false
+                  }
+                }
+              },
+              [_vm._v("細節關閉")]
             )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-B" }, [
-            _vm._v(
-              "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].gov) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-C" }, [
-            _vm._v(
-              "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].gov) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-D" }, [
-            _vm._v(
-              "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].gov) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(租賃): " +
-                _vm._s(_vm.price["E-Rent"].gov) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(購買): " +
-                _vm._s(_vm.price["E-Buy"].gov) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(租賃): " +
-                _vm._s(_vm.price["F-Rent"].gov) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(購買): " +
-                _vm._s(_vm.price["F-Buy"].gov) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-G" }, [
-            _vm._v(
-              "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].gov) + " 元\r\n\t\t\t"
-            )
-          ])
-        ]),
+          : _vm._e(),
         _vm._v(" "),
-        _c("div", { staticClass: "price-summary" }, [
-          _c("div", { staticClass: "sub-header" }, [_vm._v("自費金額")]),
-          _vm._v(" "),
-          _vm.header.payment
-            ? _c("div", [
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "B+C碼自費比例: " +
-                      _vm._s(_vm.header.payment[0].rate[_vm.identity]) +
-                      " %"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "D碼自費比例: " +
-                      _vm._s(
-                        _vm.header.payment[parseInt(_vm.transportLevel) + 1]
-                          .rate[_vm.identity]
-                      ) +
-                      " %"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "E+F碼自費比例: " +
-                      _vm._s(_vm.header.payment[5].rate[_vm.identity]) +
-                      " %"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "price-limit" }, [
-                  _vm._v(
-                    "G碼自費比例: " +
-                      _vm._s(_vm.header.payment[6].rate[_vm.identity]) +
-                      " %"
-                  )
-                ])
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.openDetail,
+                expression: "openDetail"
+              }
+            ]
+          },
+          [
+            _c("div", { staticClass: "price-summary" }, [
+              _c("div", { staticClass: "sub-header" }, [_vm._v("服務金額")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-A" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tA碼: " +
+                    _vm._s(_vm.price["A"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-B" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tB碼: " +
+                    _vm._s(_vm.price["B"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-C" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tC碼: " +
+                    _vm._s(_vm.price["C"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-D" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tD碼: " +
+                    _vm._s(_vm.price["D"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(租賃): " +
+                    _vm._s(_vm.price["E-Rent"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(購買): " +
+                    _vm._s(_vm.price["E-Buy"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(租賃): " +
+                    _vm._s(_vm.price["F-Rent"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(購買): " +
+                    _vm._s(_vm.price["F-Buy"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-G" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tG碼: " +
+                    _vm._s(_vm.price["G"].total) +
+                    " 元\r\n\t\t\t\t"
+                )
               ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-A" }, [
-            _vm._v(
-              "\r\n\t\t\t\tA碼: " + _vm._s(_vm.price["A"].own) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-B" }, [
-            _vm._v(
-              "\r\n\t\t\t\tB碼: " + _vm._s(_vm.price["B"].own) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-C" }, [
-            _vm._v(
-              "\r\n\t\t\t\tC碼: " + _vm._s(_vm.price["C"].own) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-D" }, [
-            _vm._v(
-              "\r\n\t\t\t\tD碼: " + _vm._s(_vm.price["D"].own) + " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(租賃): " +
-                _vm._s(_vm.price["E-Rent"].own) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-E" }, [
-            _vm._v(
-              "\r\n\t\t\t\tE碼(購買): " +
-                _vm._s(_vm.price["E-Buy"].own) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(租賃): " +
-                _vm._s(_vm.price["F-Rent"].own) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-F" }, [
-            _vm._v(
-              "\r\n\t\t\t\tF碼(購買): " +
-                _vm._s(_vm.price["F-Buy"].own) +
-                " 元\r\n\t\t\t"
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "price-category cat-G" }, [
-            _vm._v(
-              "\r\n\t\t\t\tG碼: " + _vm._s(_vm.price["G"].own) + " 元\r\n\t\t\t"
-            )
-          ])
-        ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "price-summary" }, [
+              _c("div", { staticClass: "sub-header" }, [_vm._v("補助金額")]),
+              _vm._v(" "),
+              _vm.header.payment
+                ? _c("div", [
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "B+C碼可用額度: " +
+                          _vm._s(
+                            Math.max(
+                              0,
+                              _vm.header.payment[0].pay[_vm.careLevel] -
+                                _vm.usedBC
+                            )
+                          ) +
+                          " 元/月"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "D碼可用額度: " +
+                          _vm._s(
+                            Math.max(
+                              0,
+                              _vm.header.payment[
+                                parseInt(_vm.transportLevel) + 1
+                              ].pay[_vm.careLevel] - _vm.usedD
+                            )
+                          ) +
+                          " 元/月"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "E+F碼可用額度: " +
+                          _vm._s(
+                            Math.max(
+                              0,
+                              _vm.header.payment[5].pay[_vm.careLevel] -
+                                _vm.usedEF
+                            )
+                          ) +
+                          " 元/3年"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "G碼可用額度: " +
+                          _vm._s(
+                            Math.max(
+                              0,
+                              _vm.header.payment[6].pay[_vm.careLevel] -
+                                _vm.usedG
+                            )
+                          ) +
+                          " 元/年"
+                      )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-A" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tA碼: " +
+                    _vm._s(_vm.price["A"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-B" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tB碼: " +
+                    _vm._s(_vm.price["B"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-C" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tC碼: " +
+                    _vm._s(_vm.price["C"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-D" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tD碼: " +
+                    _vm._s(_vm.price["D"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(租賃): " +
+                    _vm._s(_vm.price["E-Rent"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(購買): " +
+                    _vm._s(_vm.price["E-Buy"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(租賃): " +
+                    _vm._s(_vm.price["F-Rent"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(購買): " +
+                    _vm._s(_vm.price["F-Buy"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-G" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tG碼: " +
+                    _vm._s(_vm.price["G"].gov) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "price-summary" }, [
+              _c("div", { staticClass: "sub-header" }, [_vm._v("自費金額")]),
+              _vm._v(" "),
+              _vm.header.payment
+                ? _c("div", [
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "B+C碼自費比例: " +
+                          _vm._s(_vm.header.payment[0].rate[_vm.identity]) +
+                          " %"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "D碼自費比例: " +
+                          _vm._s(
+                            _vm.header.payment[parseInt(_vm.transportLevel) + 1]
+                              .rate[_vm.identity]
+                          ) +
+                          " %"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "E+F碼自費比例: " +
+                          _vm._s(_vm.header.payment[5].rate[_vm.identity]) +
+                          " %"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "price-limit" }, [
+                      _vm._v(
+                        "G碼自費比例: " +
+                          _vm._s(_vm.header.payment[6].rate[_vm.identity]) +
+                          " %"
+                      )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-A" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tA碼: " +
+                    _vm._s(_vm.price["A"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-B" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tB碼: " +
+                    _vm._s(_vm.price["B"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-C" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tC碼: " +
+                    _vm._s(_vm.price["C"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-D" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tD碼: " +
+                    _vm._s(_vm.price["D"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(租賃): " +
+                    _vm._s(_vm.price["E-Rent"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-E" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tE碼(購買): " +
+                    _vm._s(_vm.price["E-Buy"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(租賃): " +
+                    _vm._s(_vm.price["F-Rent"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-F" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tF碼(購買): " +
+                    _vm._s(_vm.price["F-Buy"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-G" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\tG碼: " +
+                    _vm._s(_vm.price["G"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ])
+            ])
+          ]
+        )
       ]
     ),
     _vm._v(" "),
@@ -2318,9 +2397,37 @@ var render = function() {
               _vm._v("數量: " + _vm._s(item.num))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "item-attr" }, [
-              _vm._v("總價: " + _vm._s(item.price * item.num) + " 元")
-            ]),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == false,
+                    expression: "remoteArea == false"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.price * item.num) + " 元")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == true,
+                    expression: "remoteArea == true"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.priceRemote * item.num) + " 元")]
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "item-bt-container" }, [
               _c(
@@ -2381,9 +2488,37 @@ var render = function() {
               _vm._v("數量: " + _vm._s(item.num))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "item-attr" }, [
-              _vm._v("總價: " + _vm._s(item.price * item.num) + " 元")
-            ]),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == false,
+                    expression: "remoteArea == false"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.price * item.num) + " 元")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == true,
+                    expression: "remoteArea == true"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.priceRemote * item.num) + " 元")]
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "item-bt-container" }, [
               _c(
@@ -2444,9 +2579,37 @@ var render = function() {
               _vm._v("數量: " + _vm._s(item.num))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "item-attr" }, [
-              _vm._v("總價: " + _vm._s(item.price * item.num) + " 元")
-            ]),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == false,
+                    expression: "remoteArea == false"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.price * item.num) + " 元")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == true,
+                    expression: "remoteArea == true"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.priceRemote * item.num) + " 元")]
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "item-bt-container" }, [
               _c(
@@ -2732,9 +2895,37 @@ var render = function() {
               _vm._v("數量: " + _vm._s(item.num))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "item-attr" }, [
-              _vm._v("總價: " + _vm._s(item.price * item.num) + " 元")
-            ]),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == false,
+                    expression: "remoteArea == false"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.price * item.num) + " 元")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.remoteArea == true,
+                    expression: "remoteArea == true"
+                  }
+                ],
+                staticClass: "item-attr"
+              },
+              [_vm._v("總價: " + _vm._s(item.priceRemote * item.num) + " 元")]
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "item-bt-container" }, [
               _c(
