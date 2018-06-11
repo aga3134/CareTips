@@ -410,6 +410,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function () {
@@ -425,6 +441,7 @@ __webpack_require__.r(__webpack_exports__);
 			usedEF: 0,
 			usedG: 0,
 			customPrice: 0,
+			customName: "自費服務",
 			isRent: 0,
 			mainCategory: 0,
 			subCategory: 0,
@@ -441,7 +458,8 @@ __webpack_require__.r(__webpack_exports__);
 				"E-Buy": { "total": 0, "gov": 0, "own": 0 },
 				"F-Rent": { "total": 0, "gov": 0, "own": 0 },
 				"F-Buy": { "total": 0, "gov": 0, "own": 0 },
-				"G": { "total": 0, "gov": 0, "own": 0 }
+				"G": { "total": 0, "gov": 0, "own": 0 },
+				"O": { "total": 0, "gov": 0, "own": 0 }
 			},
 			rentMonth: 36,
 			totalPrice: {
@@ -452,7 +470,7 @@ __webpack_require__.r(__webpack_exports__);
 			},
 			header: {},
 			items: {
-				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
 			openInputPanel: true
 		};
@@ -679,14 +697,27 @@ __webpack_require__.r(__webpack_exports__);
 			}
 			this.price["G"] = price;
 
+			//O code (自費)
+			cat = this.items["O"];
+			price = { "total": 0, "gov": 0, "own": 0 };
+			for (var i = 0; i < cat.length; i++) {
+				var item = cat[i];
+				var p = item[priceKey];
+				var t = p * item.num;
+				price.total += t;
+				price.own += t;
+				price.gov += 0;
+			}
+			this.price["O"] = price;
+
 			//total price summary
 			var ts = { "total": 0, "gov": 0, "own": 0 };
 			var teb = { "total": 0, "gov": 0, "own": 0 };
 			var ter = { "total": 0, "gov": 0, "own": 0 };
 			var tr = { "total": 0, "gov": 0, "own": 0 };
-			ts.total = this.price["A"].total + this.price["B"].total + this.price["C"].total + this.price["D"].total;
-			ts.gov = this.price["A"].gov + this.price["B"].gov + this.price["C"].gov + this.price["D"].gov;
-			ts.own = this.price["A"].own + this.price["B"].own + this.price["C"].own + this.price["D"].own;
+			ts.total = this.price["A"].total + this.price["B"].total + this.price["C"].total + this.price["D"].total + this.price["O"].total;
+			ts.gov = this.price["A"].gov + this.price["B"].gov + this.price["C"].gov + this.price["D"].gov + this.price["O"].gov;
+			ts.own = this.price["A"].own + this.price["B"].own + this.price["C"].own + this.price["D"].own + this.price["O"].own;
 
 			teb.total = this.price["E-Buy"].total + this.price["F-Buy"].total;
 			teb.gov = this.price["E-Buy"].gov + this.price["F-Buy"].gov;
@@ -730,6 +761,12 @@ __webpack_require__.r(__webpack_exports__);
 					item.payForRent = this.itemInfo.payForRent;
 					item.payForBuy = this.itemInfo.payForBuy;
 					break;
+				case "O":
+					//自費
+					item.price = this.customPrice;
+					item.priceRemote = this.customPrice;
+					item.name = this.customName;
+					break;
 			}
 			this.items[category].push(item);
 			this.items[category].sort(function (a, b) {
@@ -759,7 +796,7 @@ __webpack_require__.r(__webpack_exports__);
 		ClearService: function () {
 			if (confirm("確定全部重設?")) {
 				this.items = {
-					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 				};
 				this.UpdatePrice();
 			}
@@ -873,7 +910,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .inform-message[data-v-34f6f61e] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.care-calculator .inform-message.show[data-v-34f6f61e] {\n      top: 0px;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: center;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .cat-O[data-v-34f6f61e] {\n    background-color: #FF8AE7;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .inform-message[data-v-34f6f61e] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.care-calculator .inform-message.show[data-v-34f6f61e] {\n      top: 0px;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.care-calculator .input-panel[data-v-34f6f61e] {\n        justify-content: center;\n}\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: left;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .category-option input[type=\"input\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 100px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -1764,7 +1801,7 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "used-title" }, [_vm._v("已使用額度")]),
+        _c("div", { staticClass: "used-title" }, [_vm._v("先前已使用額度")]),
         _vm._v(" "),
         _c("div", { staticClass: "option-container" }, [
           _c("div", { staticClass: "price-option" }, [
@@ -2347,6 +2384,14 @@ var render = function() {
                 _vm._v(
                   "\r\n\t\t\t\t\tG碼: " +
                     _vm._s(_vm.price["G"].own) +
+                    " 元\r\n\t\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-category cat-O" }, [
+                _vm._v(
+                  "\r\n\t\t\t\t\t自費服務: " +
+                    _vm._s(_vm.price["O"].own) +
                     " 元\r\n\t\t\t\t"
                 )
               ])
@@ -2958,6 +3003,41 @@ var render = function() {
               )
             ])
           ])
+        }),
+        _vm._v(" "),
+        _vm._l(_vm.items["O"], function(item, i) {
+          return _c("div", { staticClass: "service-item cat-O half-w" }, [
+            _c("div", { staticClass: "item-title" }, [
+              _vm._v(_vm._s(item.code) + " " + _vm._s(item.name))
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "item-attr" }, [
+              _vm._v("價格: " + _vm._s(item.price) + " 元")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "item-attr" }, [
+              _vm._v("數量: " + _vm._s(item.num))
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "item-attr" }, [
+              _vm._v("總價: " + _vm._s(item.price * item.num) + " 元")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "item-bt-container" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "item-bt",
+                  on: {
+                    click: function($event) {
+                      _vm.DeleteItem("O", i)
+                    }
+                  }
+                },
+                [_vm._v("刪除")]
+              )
+            ])
+          ])
         })
       ],
       2
@@ -3067,7 +3147,7 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.header.service
+        _vm.header.service && _vm.mainCategory != 7
           ? _c("div", { staticClass: "category-option" }, [
               _c("div", { staticClass: "cat-title" }, [_vm._v("項目")]),
               _vm._v(" "),
@@ -3182,7 +3262,37 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.mainCategory == 3 || _vm.mainCategory == 4 || _vm.mainCategory == 5
+        _vm.mainCategory == 7
+          ? _c("div", { staticClass: "category-option" }, [
+              _c("div", { staticClass: "cat-title" }, [_vm._v("服務名稱")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.customName,
+                    expression: "customName"
+                  }
+                ],
+                attrs: { type: "input" },
+                domProps: { value: _vm.customName },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.customName = $event.target.value
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.mainCategory == 3 ||
+        _vm.mainCategory == 4 ||
+        _vm.mainCategory == 5 ||
+        _vm.mainCategory == 7
           ? _c("div", { staticClass: "category-option" }, [
               _c("div", { staticClass: "cat-title" }, [_vm._v("價格")]),
               _vm._v(" "),

@@ -205,6 +205,11 @@
 				{"code": "GA07", "name": "巷弄長照站臨托-全日", "price": 1000, "priceRemote": 1200}, 
 				{"code": "GA08", "name": "巷弄長照站臨托-半日", "price": 500, "priceRemote": 600}
 			]}
+		]},
+		{"code":"O", "name": "自費服務", "items": [
+			{"code":"O", "name": "自費服務", "items":[
+				{"code": "自費服務", "name": "自費服務", "price": 0, "priceRemote": 0}
+			]}
 		]}
 	],
 	"payment":[

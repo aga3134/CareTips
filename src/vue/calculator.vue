@@ -39,7 +39,7 @@
 				<input type="checkbox" v-model="remoteArea" v-on:change="UpdatePrice();">
 			</div>
 		</div>
-		<div class="used-title">已使用額度</div>
+		<div class="used-title">先前已使用額度</div>
 		<div class="option-container">
 			<div class="price-option">
 				B、C碼<input type="number" min="0" v-model="usedBC" v-on:change="UpdatePrice();">元
@@ -189,6 +189,9 @@
 				<div class="price-category cat-G">
 					G碼: {{price['G'].own}} 元
 				</div>
+				<div class="price-category cat-O">
+					自費服務: {{price['O'].own}} 元
+				</div>
 			</div>
 		</div>
 		
@@ -274,6 +277,15 @@
 				<div class="item-bt" v-on:click="DeleteItem('G',i);">刪除</div>
 			</div>
 		</div>
+		<div class="service-item cat-O half-w" v-for="(item,i) in items['O']">
+			<div class="item-title">{{item.code}} {{item.name}}</div>
+			<div class="item-attr">價格: {{item.price}} 元</div>
+			<div class="item-attr">數量: {{item.num}}</div>
+			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+			<div class="item-bt-container">
+				<div class="item-bt" v-on:click="DeleteItem('O',i);">刪除</div>
+			</div>
+		</div>
 	</div>
 	<div class="input-panel" v-bind:class="{open: openInputPanel}" v-on:click="openInputPanel = true;">
 		<div class="category-option">
@@ -288,7 +300,7 @@
 				<option v-for="(s,i) in header.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
 			</select>
 		</div>
-		<div class="category-option" v-if="header.service">
+		<div class="category-option" v-if="header.service && mainCategory != 7">
 			<div class="cat-title">項目</div>
 			<select v-model="selectService" v-on:change="UpdateItemInfo();">
 				<option v-for="(s,i) in header.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
@@ -300,7 +312,11 @@
 				<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
 			</select>
 		</div>
-		<div class="category-option" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5">
+		<div class="category-option" v-if="mainCategory == 7">
+			<div class="cat-title">服務名稱</div>
+			<input type="input" v-model="customName">
+		</div>
+		<div class="category-option" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
 			<div class="cat-title">價格</div>
 			<input type="number" min="1" v-model="customPrice">
 		</div>
@@ -328,6 +344,7 @@ export default {
 			usedEF: 0,
 			usedG: 0,
 			customPrice: 0,
+			customName: "自費服務",
 			isRent: 0,
 			mainCategory: 0,
 			subCategory: 0,
@@ -344,7 +361,8 @@ export default {
 				"E-Buy": {"total": 0, "gov": 0, "own": 0},
 				"F-Rent": {"total": 0, "gov": 0, "own": 0},
 				"F-Buy": {"total": 0, "gov": 0, "own": 0},
-				"G": {"total": 0, "gov": 0, "own": 0}
+				"G": {"total": 0, "gov": 0, "own": 0},
+				"O": {"total": 0, "gov": 0, "own": 0}
 			},
 			rentMonth: 36,
 			totalPrice: {
@@ -355,7 +373,7 @@ export default {
 			},
 			header: {},
 			items: {
-				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
 			openInputPanel: true
 		};
@@ -591,14 +609,27 @@ export default {
 			}
 			this.price["G"] = price;
 
+			//O code (自費)
+			cat = this.items["O"];
+			price = {"total": 0, "gov": 0, "own": 0};
+			for(var i=0;i<cat.length;i++){
+				var item = cat[i];
+				var p = item[priceKey];
+				var t = p*item.num;
+				price.total += t;
+				price.own += t;
+				price.gov += 0;
+			}
+			this.price["O"] = price;
+
 			//total price summary
 			var ts = {"total": 0, "gov": 0, "own": 0};
 			var teb = {"total": 0, "gov": 0, "own": 0};
 			var ter = {"total": 0, "gov": 0, "own": 0};
 			var tr = {"total": 0, "gov": 0, "own": 0};
-			ts.total = this.price["A"].total+this.price["B"].total+this.price["C"].total+this.price["D"].total;
-			ts.gov = this.price["A"].gov+this.price["B"].gov+this.price["C"].gov+this.price["D"].gov;
-			ts.own = this.price["A"].own+this.price["B"].own+this.price["C"].own+this.price["D"].own;
+			ts.total = this.price["A"].total+this.price["B"].total+this.price["C"].total+this.price["D"].total+this.price["O"].total;
+			ts.gov = this.price["A"].gov+this.price["B"].gov+this.price["C"].gov+this.price["D"].gov+this.price["O"].gov;
+			ts.own = this.price["A"].own+this.price["B"].own+this.price["C"].own+this.price["D"].own+this.price["O"].own;
 
 			teb.total = this.price["E-Buy"].total+this.price["F-Buy"].total;
 			teb.gov = this.price["E-Buy"].gov+this.price["F-Buy"].gov;
@@ -642,6 +673,11 @@ export default {
 					item.payForRent = this.itemInfo.payForRent;
 					item.payForBuy = this.itemInfo.payForBuy;
 					break;
+				case "O"://自費
+					item.price = this.customPrice;
+					item.priceRemote = this.customPrice;
+					item.name = this.customName;
+					break;
 			}
 			this.items[category].push(item);
 			this.items[category].sort(function (a, b) {
@@ -673,7 +709,7 @@ export default {
 		ClearService: function(){
 			if(confirm("確定全部重設?")){
 				this.items = {
-					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": []
+					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 				};
 				this.UpdatePrice();
 			}
@@ -751,6 +787,9 @@ $trans-time: 0.5s;
 	}
 	.cat-G{
 		background-color: #C089E8;
+	}
+	.cat-O{
+		background-color: #FF8AE7;
 	}
 	.separator{
 		margin: 30px;
@@ -930,9 +969,12 @@ $trans-time: 0.5s;
 		border-top: 1px solid #cccccc;
 		background-color: rgba(150,150,180,0.9);
 		display: flex;
-		justify-content: center;
+		justify-content: flex-start;
 		align-items: center;
 		flex-wrap: wrap;
+		@include pad-width(){
+			justify-content: center;
+		}
 		overflow-x: auto;
 		overflow-y: hidden;
 		max-height: 70px;
@@ -942,20 +984,27 @@ $trans-time: 0.5s;
 			max-height: 200px;
 		}
 		.category-option{
-			text-align: center;
+			text-align: left;
 			.cat-title{
 				display: inline-block;
 				color: white;
 			}
 			select{
 				padding: 5px;
-				margin: 5px;
+				margin: 5px 0px;
 				border-radius: 3px;
 			}
 			input[type="number"]{
 				padding: 5px;
+				margin: 5px 0px;
 				border-radius: 3px;
 				max-width: 80px;
+			}
+			input[type="input"]{
+				padding: 5px;
+				margin: 5px 0px;
+				border-radius: 3px;
+				max-width: 100px;
 			}
 		}
 		.action-bt{
