@@ -1,10 +1,10 @@
 <template lang="html">
 <div>
-	<div class="topbar">
+	<div class="topbar" v-on:blur="isOpen = false;">
 		<a class="logo" href="/">
-			<img v-bind:src="logoImg+'?v='+version">
+			<img v-bind:src="logoImg">
 		</a>
-		<img class="menu-bt" v-bind:src="menuImg+'?v='+version" v-on:click="ToggleMenu();">
+		<img class="menu-bt" v-bind:src="menuImg" v-on:click="ToggleMenu();">
 		<div class="bt-container">
 			<a v-for="item in activeItem.slice(0, itemInBar)" v-bind:href="item.link">
 				<div class="bt">{{item.name}}</div>
@@ -25,23 +25,30 @@ export default {
 		return {
 			logoImg: "/static/image/logo-text.png",
 			menuImg: "/static/image/menu-button.png",
-			version: "1.0.0",
 			isOpen: false,
 			isLogin: false,
 			itemInBar: 2,
-    		itemList: [{name:"照服計算機",link:"/calculator",login: 0},
-    					{name:"關於本站",link:"/about",login: 0},
-    					{name:"新增案例",link:"/create",login: 0},
-    					{name:"專業連結",link:"/link",login: 0},
-    					{name:"帳號設定",link:"/setting",login: 1},
-    					{name:"登入帳號",link:"/login",login: -1}],
-    		activeItem: []
+			itemList: [{name:"新增案例",link:"/create-case",login: 0},
+						{name:"照服計算機",link:"/calculator",login: 0},
+						{name:"專業連結",link:"/link",login: 0},
+						{name:"我的帳號",link:"/account",login: 1},
+						{name:"關於本站",link:"/about",login: 0},
+						{name:"登入",link:"/auth/login",login: -1},
+						{name:"登出",link:"/auth/logout",login: 1}],
+			activeItem: [],
+			user: {}
 		};
 	},
 	created: function(){
 		window.addEventListener('resize', this.OnWinResize);
-		this.isLogin = false;
-		this.UpdateMenu();
+		$.get("/user/info",function(data){
+			if(data.user){
+				this.user = data.user;
+				this.isLogin = true;	
+			}
+			this.UpdateMenu();
+		}.bind(this));
+		
 	},
 	methods: {
 		ToggleMenu: function(){
@@ -59,7 +66,7 @@ export default {
 				this.activeItem.push(item);
 			}
 		}
-	},
+	}
 }
 </script>
 
@@ -84,10 +91,9 @@ $trans-time: 0.5s;
 		position: absolute;
 		top: 10px;
 		left: 20px;
-		width: 200px;
 		height: 50px;
 		img{
-			width: 100%;
+			height: 100%;
 			cursor: pointer;
 		}
 	}
@@ -132,10 +138,14 @@ $trans-time: 0.5s;
 
 .menu-container{
 	position: fixed;
-	left: 0px;
+	right: 0px;
 	top: 70px;
-	//display: none;
 	width: 100%;
+	@include pad-width(){
+		width: 300px;
+		max-width: 100%;
+		border-radius: 0px 0px 0px 10px;
+	}
 	padding: 0px 20px;
 	margin: 0px;
 	list-style-type: none;
@@ -151,7 +161,6 @@ $trans-time: 0.5s;
 	&.open{
 		padding: 10px 20px;
 		max-height: 300px;
-		//display: block;
 	}
 	li{
 		padding: 10px 0px;
@@ -163,6 +172,9 @@ $trans-time: 0.5s;
 		}
 		&:last-of-type{
 			border: none;
+		}
+		&:hover{
+			background-color: #eeeeee;
 		}
 	}
 }

@@ -6,6 +6,19 @@
     	"username": "YourUserName",
     	"password": "YourPassword"
 	},
+	"facebookAuth": {
+		"clientID": "YourClientID",
+		"clientSecret" : "YourClientSecret",
+		"callbackURL" : "YourCallbackURL"
+	},
+	"googleAuth": {
+		"clientID": "YourClientID",
+		"clientSecret": "YourClientSecret",
+		"callbackURL": "YourCallbackURL"
+	},
+	"session":{
+		"secret": "YourSessionSecret"
+	},
 	"hostname": "YourHostName",
 	"serverPort": 8001,
 	"version": "1.0.0"
