@@ -18,7 +18,6 @@ function CreateUser(provider, profile, done){
 	if(profile.emails){
 		var email = profile.emails[0].value;
 		newUser.signupEmail = email;
-		newUser.contactEmail = email;
 	}
 	if(profile.password) newUser.password = profile.password;
 	if(profile.name){

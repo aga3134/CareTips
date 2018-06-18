@@ -1,6 +1,6 @@
 <template lang="html">
 <div>
-	<div class="topbar" v-on:blur="isOpen = false;">
+	<div class="topbar">
 		<a class="logo" href="/">
 			<img v-bind:src="logoImg">
 		</a>
@@ -28,7 +28,7 @@ export default {
 			isOpen: false,
 			isLogin: false,
 			itemInBar: 2,
-			itemList: [{name:"新增案例",link:"/create-case",login: 0},
+			itemList: [{name:"新增案例",link:"/case/create",login: 0},
 						{name:"照服計算機",link:"/calculator",login: 0},
 						{name:"專業連結",link:"/link",login: 0},
 						{name:"我的帳號",link:"/account",login: 1},
@@ -41,9 +41,10 @@ export default {
 	},
 	created: function(){
 		window.addEventListener('resize', this.OnWinResize);
-		$.get("/user/info",function(data){
+		$.get("/user/me",function(data){
 			if(data.user){
 				this.user = data.user;
+				this.menuImg = data.user.icon;
 				this.isLogin = true;	
 			}
 			this.UpdateMenu();
@@ -95,14 +96,19 @@ $trans-time: 0.5s;
 		img{
 			height: 100%;
 			cursor: pointer;
+
 		}
 	}
 	.menu-bt{
 		display: block;
 		position: absolute;
-		top: 10px;
-		right: 20px;
-		height: 50px;
+		top: 15px;
+		right: 10px;
+		@include pad-width(){
+			right: 20px;
+		}
+		height: 40px;
+		border-radius: 50px;
 		cursor: pointer;
 		&:hover{
 			-webkit-filter: brightness(50%);
@@ -163,9 +169,9 @@ $trans-time: 0.5s;
 		max-height: 300px;
 	}
 	li{
-		padding: 10px 0px;
 		border-bottom: 1px solid $enhance-color;
 		a{
+			padding: 10px 0px;
 			display: block;
 			color: $text-color;
 			text-decoration: none;

@@ -6,7 +6,7 @@
 		<div class="facebook-bt" v-on:click="LoginByFacebook();">Facebook 登入</div>
 		<div class="seperator"></div>
 		<div class="method-title">信箱登入</div>
-		<form ref="loginForm" method="post" action="/auth/login-by-password">
+		<form ref="loginForm" method="post" v-bind:action="pwLoginAction">
 			<div class="relative-box">
 				<div class="item-label">帳號</div>
 				<div class="forget-password" v-on:click="ForgetPassword();">忘記密碼</div>
@@ -24,7 +24,7 @@
 		<div class="google-bt" v-on:click="LoginByGoogle();">Google 註冊</div>
 		<div class="facebook-bt" v-on:click="LoginByFacebook();">Facebook 註冊</div>
 		<div class="seperator"></div>
-		<form ref="signupForm" method="post" action="/auth/signup-by-password">
+		<form ref="signupForm" method="post" v-bind:action="pwSignupAction">
 			<div class="method-title">信箱註冊</div>
 			<div class="item-label">帳號</div>
 			<input type="email" name="email" v-model="email" placeholder="請輸入電子信箱">
@@ -64,6 +64,8 @@ export default {
 			passwordConfirm: "",
 			token: "",
 			mode: "login",
+			pwLoginAction: "/auth/login-by/password",
+			pwSignupAction: "/auth/signup-by/password"
 		};
 	},
 	created: function(){
@@ -80,15 +82,20 @@ export default {
 			return pattern.test(email);
 		},
 		LoginByGoogle: function(){
-			window.location.href = "/auth/login-by-google";
+			var str = "/auth/login-by-google";
+			if(this.intentUrl) str += "?intentUrl="+this.intentUrl;
+			window.location.href = str;
 		},
 		LoginByFacebook: function(){
-			window.location.href = "/auth/login-by-facebook";
+			var str = "/auth/login-by-facebook";
+			if(this.intentUrl) str += "?intentUrl="+this.intentUrl;
+			window.location.href = str;
 		},
 		LoginByPassword: function(){
 			if(this.email == "") return alert("請輸入電子信箱");
 			else if(!this.ValidateEmail(this.email))  return alert("請輸入正確的電子信箱");
 			else if(this.password == "") return alert("請輸入密碼");
+			if(this.intentUrl) this.pwLoginAction = "/auth/login-by-password?intentUrl="+this.intentUrl;
 			this.$refs.loginForm.submit();
 		},
 		SignupByPassword: function(){
@@ -97,6 +104,7 @@ export default {
 			else if(this.password == "") return alert("請輸入密碼");
 			else if(this.name == "") return alert("請輸入姓名");
 			else if(this.password != this.passwordConfirm) return alert("請確認密碼一致");
+			if(this.intentUrl) this.pwSignupAction = "/auth/signup-by-password?intentUrl="+this.intentUrl;
 			this.$refs.signupForm.submit();
 		},
 		ForgetPassword: function(){

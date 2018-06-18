@@ -1,11 +1,23 @@
 var Config = require('../../config');
+var URL = require('url');
 
 var util = {};
 
-util.GetIntentUrl = function(req){
+util.StoreIntentUrl = function(req, res, next){
 	if(req.query.intentUrl){
-		if(req.query.intetUrl[0] == "/") return req.query.intentUrl;
-		else return "/";	//avoid other hostname
+		req.session.intentUrl = req.query.intentUrl;
+	}
+	next();
+}
+
+util.RetrieveIntentUrl = function(req){
+	if(req.session.intentUrl){
+		var url = req.session.intentUrl;
+		var urlParse = URL.parse(url);
+		delete req.session.intentUrl;
+		//avoid explicit specify hostname
+		if(!urlParse.hostname) return url;
+		else return "/";
 	}
 	else return "/";
 }

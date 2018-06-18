@@ -27,6 +27,14 @@ router.get('/calculator', function(req, res) {
 	res.render("calculator.ejs",{meta: meta, version: Config.version});
 });
 
+router.get('/account', util.CheckLogin, function(req, res) {
+	var meta = {};
+	meta.title = "照服秘笈 - 我的帳號";
+	meta.hostname = Config.hostname;
+	meta.desc = "";
+	res.render("account.ejs",{meta: meta, version: Config.version});
+});
+
 router.get('/profession', util.CheckLogin, function(req, res) {
 	var meta = {};
 	meta.title = "照服秘笈 - 專業連結";

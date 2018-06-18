@@ -28,6 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 		//public contact fields
 		name: DataTypes.STRING,
 		profession: DataTypes.STRING,
+		county: DataTypes.STRING,
 		company: DataTypes.STRING,
 		contactEmail: DataTypes.STRING,
 		tel: DataTypes.STRING,

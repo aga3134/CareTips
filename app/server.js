@@ -8,6 +8,7 @@ var bodyParser = require("body-parser");
 var viewRoute = require('./route/viewRoute');
 var authRoute = require('./route/authRoute');
 var userRoute = require('./route/userRoute');
+var caseRoute = require('./route/caseRoute');
 var Config = require("../config.json");
 var DB = require("./db/db");
 
@@ -52,6 +53,7 @@ app.use(passport.session());
 app.use('/', viewRoute);
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
+app.use('/case', caseRoute);
 
 app.listen(app.port, app.host);
 console.log("Server started");

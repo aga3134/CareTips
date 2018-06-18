@@ -15,32 +15,32 @@ router.get('/login', function(req, res) {
 	res.render("login.ejs",{meta: meta, version: Config.version, intentUrl: req.query.intentUrl});
 });
 
-router.get('/login-by-facebook', passport.authenticate("facebook",{scope : 'email'}));
+router.get('/login-by-facebook', util.StoreIntentUrl, passport.authenticate("facebook",{scope : 'email'}));
 
 router.get('/facebook/callback', function(req, res, next) {
 	passport.authenticate("facebook", {
-		successRedirect : util.GetIntentUrl(req),
+		successRedirect : util.RetrieveIntentUrl(req),
 		failureRedirect : '/auth/login?message='+encodeURIComponent('登入失敗')
 	})(req, res, next);
 });
 
-router.get('/login-by-google', passport.authenticate("google",{scope : ['profile', 'email'], "prompt": "select_account" }));
+router.get('/login-by-google', util.StoreIntentUrl, passport.authenticate("google",{scope : ['profile', 'email'], "prompt": "select_account" }));
 
 router.get('/google/callback', function(req, res, next) {
 	passport.authenticate("google", {
-		successRedirect : util.GetIntentUrl(req),
+		successRedirect : util.RetrieveIntentUrl(req),
 		failureRedirect : '/auth/login?message='+encodeURIComponent('登入失敗')
 	})(req, res, next);
 });
 
-router.post('/login-by-password', function(req, res, next){
+router.post('/login-by-password', util.StoreIntentUrl, function(req, res, next){
 	passport.authenticate("local", {
-		successRedirect : util.GetIntentUrl(req),
+		successRedirect : util.RetrieveIntentUrl(req),
 		failureRedirect : '/auth/login?message='+encodeURIComponent('登入失敗')
 	})(req, res, next);
 });
 
-router.post('/signup-by-password', auth.Signup);
+router.post('/signup-by-password', util.StoreIntentUrl, auth.Signup);
 
 router.post('/forget-password', auth.ForgetPassword);
 
