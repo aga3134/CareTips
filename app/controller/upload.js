@@ -42,13 +42,14 @@ upload.GetImageType = function(file){
 
 //param: buffer, newPath, newName, thumb {name, w, h}, succFunc, failFunc
 upload.SaveImage = function(param){
-	if (!fs.existsSync(param.newPath)){
-		fs.mkdirpSync(param.newPath);
+	var dir = __dirname+"/../..";
+	if (!fs.existsSync(dir+param.newPath)){
+		fs.mkdirpSync(dir+param.newPath);
 	}
 	var image = sharp(param.buffer);
 	var newName = param.newPath+param.newName;
 	var thumbName = param.newPath+param.thumb.name;
-	var dir = __dirname+"/../.."
+	
 	image.toFile(dir+newName)
 	.then(function(info){
 		//console.log(info);
