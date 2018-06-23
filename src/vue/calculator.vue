@@ -750,6 +750,7 @@ $head-bg-color: #6A8A82;
 $head-fg-color: #ffffff;
 $bt-fg-color: #ffffff;
 $bt-bg-color: #666666;
+$bt-hover-color: #888888;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
 $trans-time: 0.5s;
@@ -829,6 +830,9 @@ $trans-time: 0.5s;
 		background-color: $bt-bg-color;
 		cursor: pointer;
 		border-radius: 3px;
+		&:hover{
+			background-color: $bt-hover-color;
+		}
 	}
 	.price-panel{
 		max-width: 100%;

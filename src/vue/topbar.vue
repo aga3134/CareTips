@@ -40,22 +40,19 @@ export default {
 		};
 	},
 	created: function(){
-		window.addEventListener('resize', this.OnWinResize);
-		$.get("/user/me",function(data){
-			if(data.user){
-				this.user = data.user;
-				this.menuImg = data.user.icon;
-				this.isLogin = true;	
-			}
-			this.UpdateMenu();
-		}.bind(this));
-		
+		this.UpdateMenu();
 	},
 	methods: {
+		SetUser: function(user){
+			this.user = user;
+			this.menuImg = user.icon;
+			this.isLogin = true;
+			this.UpdateMenu();
+		},
 		ToggleMenu: function(){
 			this.isOpen = !this.isOpen;
 		},
-		OnWinResize: function(){
+		CloseMenu: function(){
 			this.isOpen = false;
 		},
 		UpdateMenu: function(){
@@ -111,8 +108,8 @@ $trans-time: 0.5s;
 		border-radius: 50px;
 		cursor: pointer;
 		&:hover{
-			-webkit-filter: brightness(50%);
-			filter: brightness(50%);
+			-webkit-filter: brightness(80%);
+			filter: brightness(80%);
 		}
 	}
 	.bt-container{

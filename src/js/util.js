@@ -5,11 +5,21 @@ util.NumberWithCommas = function(x){
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-util.ColorCategory = function(size){
+util.StrCodeToInt = function(str){
+	var sum = 0;
+	for(var i=0;i<str.length;i++){
+		sum += str.charCodeAt(i);
+	}
+	return sum;
+};
+
+util.ColorCategory = function(size, light, saturate){
+	if(!light) light = 0.7;
+	if(!saturate) saturate = 0.6;
 	var step = 360.0/size;
 	var arr = [];
 	for(var i=0;i<size;i++){
-		arr.push(d3.hsl(i*step,0.6,0.7));
+		arr.push(d3.hsl(i*step,saturate,light));
 	}
 	return function(i){return arr[i].toString();};
 };

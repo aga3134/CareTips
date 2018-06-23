@@ -1,15 +1,15 @@
 <template lang="html">
 <div>
-	<div class="user-info">
+	<div class="user-info-editor">
 		<div class="info-container">
 			<div class="info-box">
-				<img class="user-photo" v-bind:src="target.photo">
+				<img class="user-photo" v-bind:src="user.photo">
 				<div class="photo-bt" v-on:click="ChangePhoto();">變更圖片</div>
 				<input type="file" ref="uploadBt" v-on:change="UploadPhoto" hidden>
 			</div>
 			<div class="info-box">
 				<div class="info-label canNotEmpty">姓名</div>
-				<input type="text" v-model="target.name">
+				<input type="text" v-model="user.name">
 				<div class="info-label canNotEmpty">服務專業</div>
 				<select v-model="selectService">
 					<option v-for="service in services" v-bind:value="service">{{service}}</option>
@@ -19,20 +19,25 @@
 					<input type="text" v-model="otherService">
 				</div>
 				<div class="info-label">服務縣市</div>
-				<select v-model="target.county">
+				<select v-model="user.county">
 					<option v-for="county in counties" v-bind:value="county">{{county}}</option>
 				</select>
 				<div class="info-label">公司或組織名稱</div>
-				<input type="text" v-model="target.company">
+				<input type="text" v-model="user.company">
 				<div class="info-label">服務聯絡信箱</div>
-				<input type="text" v-model="target.contactEmail">
+				<input type="text" v-model="user.contactEmail">
 				<div class="info-label">服務聯絡電話</div>
-				<input type="text" v-model="target.tel">
+				<input type="text" v-model="user.tel">
 			</div>
 		</div>
 		<div class="info-label">自我介紹</div>
-		<textarea v-model="target.desc"></textarea>
-		<div class="remark">*為協助跨專業交流與連結，您所填寫的資訊皆可被其他人搜尋到。如有隱私疑慮，請將該欄位留白。</div>
+		<textarea v-model="user.desc"></textarea>
+		<div class="remark">
+			*為協助跨專業交流與連結，您所填寫的資訊皆可被其他人搜尋到。如有隱私疑慮，請將該欄位留白。
+			<div class="remark-check">
+				<input type="checkbox" v-model="finalCheck"> 我了解了
+			</div>
+		</div>
 		<div class="photo-bt" v-on:click="SubmitUserInfo();">儲存</div>
 	</div>
 </div>
@@ -45,26 +50,22 @@ export default {
 	data: function () {
 		return {
 			user: {},
-			target: {},
 			selectService:"",
 			otherService:"",
 			services: ["照專/個管","照顧服務","物理治療","職能治療","居家護理","居家醫療","居家藥師","家事服務","藝術治療","園藝治療","語言治療","輔具評估與器材","交通服務","其他"],
 			counties: ["臺北市","新北市","基隆市","桃園市","新竹縣","新竹市","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義縣","嘉義市","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"],
-			submitCallback: null
+			submitCallback: null,
+			finalCheck: false
 		};
 	},
 	created: function(){
-		var urlParam = g_Util.GetUrlParameter();
-		$.get("/user/me",function(data){
-			if(data.user){
-				this.user = data.user;
-				this.target = data.user;
-				this.InitSelectService();
-			}
-		}.bind(this));
-		
+
 	},
 	methods: {
+		SetUser: function(user){
+			this.user = user;
+			this.InitSelectService();
+		},
 		ChangePhoto: function(){
 			var elem = this.$refs.uploadBt;
 			elem.click();
@@ -85,30 +86,33 @@ export default {
 					window.location.reload();
 				}.bind(this),
 				error: function(jqXHR, textStatus, errorMessage) {
-					console.log(errorMessage); // Optional
+					console.log(errorMessage);
 				}
 			});
 		},
 		InitSelectService: function(){
-			if(this.target.profession){
-				if(this.services.includes(this.target.profession)){
-					this.selectService = this.target.profession;
+			if(this.user.profession){
+				if(this.services.includes(this.user.profession)){
+					this.selectService = this.user.profession;
 				}
 				else{
 					this.selectService = "其他";
-					this.otherService = this.target.profession;
+					this.otherService = this.user.profession;
 				}
 			}
 		},
 		SubmitUserInfo: function(){
 			if(this.selectService == "其他"){
-				this.target.profession = this.otherService;
+				this.user.profession = this.otherService;
 			}
 			else{
-				this.target.profession = this.selectService;
+				this.user.profession = this.selectService;
 			}
-			console.log(this.target.profession);
-			$.post("/user/edit", {data: this.target}, function(data){
+			if(!this.finalCheck){
+				return alert("請閱讀紅色警示文字並勾選「我了解了」");
+			}
+			//console.log(this.user.profession);
+			$.post("/user/edit", {data: this.user}, function(data){
 				if(this.submitCallback) this.submitCallback(data);
 				else{
 					alert(data.status == "ok"?"修改成功":"修改失敗");
@@ -122,7 +126,7 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/main.scss";
 
-.user-info{
+.user-info-editor{
 	width: 600px;
 	max-width: 100%;
 	margin: auto;
@@ -165,6 +169,17 @@ export default {
 	.remark{
 		font-size: 1em;
 		color: red;
+		padding: 20px 10px;
+		.remark-check{
+			color: black;
+			display: inline-block;
+		}
+		input[type="checkbox"]{
+			position: relative;
+			top: 4px;
+			width: 20px;
+			height: 20px;
+		}
 	}
 	.canNotEmpty:before{
 		color: red;

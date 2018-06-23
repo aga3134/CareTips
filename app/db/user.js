@@ -34,6 +34,27 @@ module.exports = function(sequelize, DataTypes) {
 		tel: DataTypes.STRING,
 		desc: DataTypes.TEXT,
 		photo: DataTypes.STRING,
-		icon: DataTypes.STRING
+		icon: DataTypes.STRING,
+		//statistic
+		caseNum: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
+		solNum: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
+		msgNum: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
+		likeNum: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
+		dislikeNum: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		}
 	});
 };
