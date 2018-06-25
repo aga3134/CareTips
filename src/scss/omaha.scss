@@ -1,0 +1,65 @@
+.cat-D1{
+	background-color: #FFA5A4;
+}
+.cat-D2{
+	background-color: #DEE885;
+}
+.cat-D3{
+	background-color: #85CAE8;
+}
+.cat-D4{
+	background-color: #C089E8;
+}
+
+.problem-cat{
+	background-color: #eeeeee;
+	padding: 0px 0px 10px 0px;
+	border-radius: 5px;
+	.problem-header{
+		margin: 10px auto;
+		font-size: 1.2em;
+		text-align: left;
+		padding: 10px;
+		background-color: #dddddd;
+		border-radius: 5px 5px 0px 0px;
+	}
+	.problem-container{
+		padding: 10px;
+	}
+	.problem-item{
+		border-radius: 5px;
+		&.select{
+			border: 1px solid red;
+		}
+		.problem-title{
+			padding: 10px;
+			border-bottom: 1px solid #eeeeee;
+		}
+		.problem-desc{
+			white-space: pre-wrap;
+			padding: 10px;
+		}
+		.problem-body{
+			color: black;
+		}
+		.item-bt-container{
+			padding: 10px;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+		.item-bt{
+			display: inline-block;
+			margin: 0px 0px 0px 10px;
+			padding: 5px 10px;
+			cursor: pointer;
+			background-color: #eeeeee;
+			color: #333333;
+			border-radius: 3px;
+			&:hover{
+				background-color: #ffffff;
+			}
+		}
+	}
+}

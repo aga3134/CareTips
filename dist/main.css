@@ -14,6 +14,60 @@
   margin: 10px 0px;
   width: 100%; }
 
+.cat-D1 {
+  background-color: #FFA5A4; }
+
+.cat-D2 {
+  background-color: #DEE885; }
+
+.cat-D3 {
+  background-color: #85CAE8; }
+
+.cat-D4 {
+  background-color: #C089E8; }
+
+.problem-cat {
+  background-color: #eeeeee;
+  padding: 0px 0px 10px 0px;
+  border-radius: 5px; }
+  .problem-cat .problem-header {
+    margin: 10px auto;
+    font-size: 1.2em;
+    text-align: left;
+    padding: 10px;
+    background-color: #dddddd;
+    border-radius: 5px 5px 0px 0px; }
+  .problem-cat .problem-container {
+    padding: 10px; }
+  .problem-cat .problem-item {
+    border-radius: 5px; }
+    .problem-cat .problem-item.select {
+      border: 1px solid red; }
+    .problem-cat .problem-item .problem-title {
+      padding: 10px;
+      border-bottom: 1px solid #eeeeee; }
+    .problem-cat .problem-item .problem-desc {
+      white-space: pre-wrap;
+      padding: 10px; }
+    .problem-cat .problem-item .problem-body {
+      color: black; }
+    .problem-cat .problem-item .item-bt-container {
+      padding: 10px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap; }
+    .problem-cat .problem-item .item-bt {
+      display: inline-block;
+      margin: 0px 0px 0px 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+      background-color: #eeeeee;
+      color: #333333;
+      border-radius: 3px; }
+      .problem-cat .problem-item .item-bt:hover {
+        background-color: #ffffff; }
+
 html, body {
   height: 100%;
   margin: 0;
@@ -48,6 +102,98 @@ html, body {
     font-size: 1.5em;
     text-align: center;
     color: red; }
+
+.care-tips .owner-info {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 1px solid #ffffff;
+  border-radius: 5px 5px 0px 0px;
+  padding: 10px; }
+  .care-tips .owner-info .owner-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 0px 5px 0px 0px; }
+
+.care-tips .owner-desc {
+  white-space: pre-wrap;
+  padding: 10px; }
+
+.care-tips .input-bt {
+  display: inline-block;
+  color: #ffffff;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #666666;
+  cursor: pointer;
+  border-radius: 3px; }
+  .care-tips .input-bt:hover {
+    background-color: #888888; }
+
+.care-tips .feedback-statistic {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 5px 10px;
+  color: #888888; }
+  .care-tips .feedback-statistic .container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 5px; }
+  .care-tips .feedback-statistic .clickable {
+    cursor: pointer; }
+    .care-tips .feedback-statistic .clickable:hover {
+      border-bottom: 2px solid #ff8888;
+      -webkit-filter: brightness(80%);
+      filter: brightness(80%); }
+  .care-tips .feedback-statistic .feedback-icon {
+    width: 25px;
+    height: 25px; }
+  .care-tips .feedback-statistic .feedback-num {
+    padding: 0px 10px; }
+  .care-tips .feedback-statistic .action-bt {
+    color: #ff8888;
+    border: 1px solid #ff8888;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer; }
+    .care-tips .feedback-statistic .action-bt:hover {
+      color: #ff3333;
+      border: 1px solid #ff3333; }
+
+.care-tips .message-box {
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 10px; }
+  .care-tips .message-box textarea {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 60px;
+    resize: none;
+    font-size: 1.1em; }
+  .care-tips .message-box .bt-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center; }
+    .care-tips .message-box .bt-container .bt {
+      display: inline-block;
+      float: right;
+      color: #ffffff;
+      padding: 5px 10px;
+      margin: 0px;
+      background-color: #666666;
+      cursor: pointer;
+      border-radius: 3px; }
+      .care-tips .message-box .bt-container .bt:hover {
+        background-color: #888888; }
 
 
 /*# sourceMappingURL=main.css.map*/

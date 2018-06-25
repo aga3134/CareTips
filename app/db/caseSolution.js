@@ -5,9 +5,15 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-		caseID: DataTypes.UUID,
+		caseID: {
+			type: DataTypes.UUID,
+			references: { model: "careCases", key: "id" },
+		},
 		caseVersion: type: DataTypes.INTEGER,
-		userID: DataTypes.UUID,
+		userID: {
+			type: DataTypes.UUID,
+			references: { model: "users", key: "id" },
+		},
 		info: DataTypes.TEXT,	//json with solution list
 		//statistic
 		msgNum: {
@@ -18,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		},
-		dislikeNum: {
+		viewNum: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		}

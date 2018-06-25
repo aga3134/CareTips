@@ -9,9 +9,13 @@ db.Init = function(){
 	
 	db.User = db.sequelize.import("./user.js");
 	db.CareCase = db.sequelize.import("./careCase.js");
+	db.CaseMessage = db.sequelize.import("./caseMessage.js");
 
 	db.User.hasMany(db.CareCase, {foreignKey: "ownerID"});
 	db.CareCase.belongsTo(db.User, {foreignKey: "ownerID"});
+	db.CareCase.hasMany(db.CaseMessage, {foreignKey: "caseID"});
+	db.CaseMessage.belongsTo(db.CareCase, {foreignKey: "caseID"});
+	db.CaseMessage.belongsTo(db.User, {foreignKey: "userID"});
 	
 	var syncOp = {};
 	syncOp.force = false;

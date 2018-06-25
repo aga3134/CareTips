@@ -6,6 +6,7 @@ util.NumberWithCommas = function(x){
 };
 
 util.StrCodeToInt = function(str){
+	if(!str) return 0;
 	var sum = 0;
 	for(var i=0;i<str.length;i++){
 		sum += str.charCodeAt(i);

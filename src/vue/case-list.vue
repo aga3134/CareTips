@@ -32,8 +32,7 @@
 			<div class="feedback-statistic">
 				<img class="feedback-icon" src="/static/image/like.png">
 				<div class="feedback-num">{{c.likeNum}}</div>
-				<img class="feedback-icon" src="/static/image/dislike.png">
-				<div class="feedback-num">{{c.dislikeNum}}</div>
+				觀看次數<div class="feedback-num">{{c.viewNum}}</div>
 			</div>
 		</a>
 	</div>
@@ -89,24 +88,14 @@ $trans-time: 0.5s;
 	justify-content: center;
 	align-items: center;
 
-	.cat-D1{
-		background-color: #FFA5A4;
-	}
-	.cat-D2{
-		background-color: #DEE885;
-	}
-	.cat-D3{
-		background-color: #85CAE8;
-	}
-	.cat-D4{
-		background-color: #C089E8;
-	}
-
 	.list-item{
 		background-color: #eeeeee;
 		border-radius: 5px;
 		max-width: 100%;
-		margin: 10px;
+		margin: 10px 0px;
+		@include pad-width(){
+			margin: 10px;
+		}
 		cursor: pointer;
 		box-shadow: 5px 5px 5px #888888;
 		-webkit-transition: box-shadow $trans-time ease;
@@ -118,21 +107,7 @@ $trans-time: 0.5s;
 			text-decoration: none;
 			color: black;
 		}
-		.owner-info{
-			display: flex;
-			justify-content: flex-start;
-			flex-wrap: wrap;
-			align-items: center;
-			border-bottom: 1px solid #ffffff;
-			border-radius: 5px 5px 0px 0px;
-			padding: 10px;
-			.owner-icon{
-				width: 30px;
-				height: 30px;
-				border-radius: 50%;
-				margin: 0px 5px 0px 0px;
-			}
-		}
+		
 		.domain-statistic{
 			display: flex;
 			justify-content: flex-start;
@@ -157,7 +132,7 @@ $trans-time: 0.5s;
 				}
 				.tip{
 					padding: 5px;
-					box-shadow: 5px 5px 5px #aaaaaa;
+					box-shadow: 5px 5px 5px rgba(50,50,50,0.8);
 					border-radius: 3px;
 					position: absolute;
 					top: 30px;
@@ -177,27 +152,14 @@ $trans-time: 0.5s;
 		}
 		.desc{
 			white-space: pre-wrap;
-			padding: 0px 10px;
+			color: #333333;
+			padding: 0px 20px 0px 10px;
 			width: 100%;
 			height: 4.5em;
 			line-height: 1.5em;
 			overflow: hidden;
 		}
-		.feedback-statistic{
-			display: flex;
-			justify-content: flex-end;
-			flex-wrap: wrap;
-			align-items: center;
-			padding: 5px 10px;
-			.feedback-icon{
-				width: 30px;
-				height: 30px;
-			}
-			.feedback-num{
-				color: #888888;
-				padding: 10px;
-			}
-		}
+		
 	}
 }
 </style>

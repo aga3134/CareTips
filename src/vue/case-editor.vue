@@ -10,69 +10,22 @@
 			<div class="cat-header">問題列表</div>
 			<div class="input-bt" v-on:click="openInput = true;">新增問題</div>
 			<div class="problem-list">
-				<div class="problem-cat">
-					<div class="problem-header" v-if="omaha!=null">{{omaha.D1.name}} ({{caseInfo.problem.D1.length}}項)</div>
+				<div class="problem-cat" v-for="cat in ['D1','D2','D3','D4']">
+					<div class="problem-header" v-if="omaha!=null">{{omaha[cat].name}} ({{caseInfo.problem[cat].length}}項)</div>
 					<div class="problem-container">
-						<div class="problem-item half-w cat-D1" v-for="(p,i) in caseInfo.problem.D1">
+						<div class="problem-item half-w" v-bind:class="'cat-'+cat" v-for="(p,i) in caseInfo.problem[cat]">
 							<div class="problem-title">{{p.name}}</div>
 							<div class="problem-body">
 								<div class="problem-desc" v-html="p.desc"></div>
 								<div class="item-bt-container">
-									<div class="item-bt" v-on:click="ModifyItem('D1',i);">修改</div>
-									<div class="item-bt" v-on:click="DeleteItem('D1',i);">刪除</div>
+									<div class="item-bt" v-on:click="ModifyItem(cat,i);">修改</div>
+									<div class="item-bt" v-on:click="DeleteItem(cat,i);">刪除</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="problem-cat">
-					<div class="problem-header" v-if="omaha!=null">{{omaha.D2.name}} ({{caseInfo.problem.D2.length}}項)</div>
-					<div class="problem-container">
-						<div class="problem-item half-w cat-D2" v-for="(p,i) in caseInfo.problem.D2">
-							<div class="problem-title">{{p.name}}</div>
-							<div class="problem-body">
-								<div class="problem-desc" v-html="p.desc"></div>
-								<div class="item-bt-container">
-									<div class="item-bt" v-on:click="ModifyItem('D2',i);">修改</div>
-									<div class="item-bt" v-on:click="DeleteItem('D2',i);">刪除</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="problem-cat">
-					<div class="problem-header" v-if="omaha!=null">{{omaha.D3.name}} ({{caseInfo.problem.D3.length}}項)</div>
-					<div class="problem-container">
-						<div class="problem-item half-w cat-D3" v-for="(p,i) in caseInfo.problem.D3">
-							<div class="problem-title">{{p.name}}</div>
-							<div class="problem-body">
-								<div class="problem-desc" v-html="p.desc"></div>
-								<div class="item-bt-container">
-									<div class="item-bt" v-on:click="ModifyItem('D3',i);">修改</div>
-									<div class="item-bt" v-on:click="DeleteItem('D3',i);">刪除</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="problem-cat">
-					<div class="problem-header" v-if="omaha!=null">{{omaha.D4.name}} ({{caseInfo.problem.D4.length}}項)</div>
-					<div class="problem-container">
-						<div class="problem-item half-w cat-D4" v-for="(p,i) in caseInfo.problem.D4">
-							<div class="problem-title">{{p.name}}</div>
-							<div class="problem-body">
-								<div class="problem-desc" v-html="p.desc"></div>
-								<div class="item-bt-container">
-									<div class="item-bt" v-on:click="ModifyItem('D4',i);">修改</div>
-									<div class="item-bt" v-on:click="DeleteItem('D4',i);">刪除</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 		<div class="case-info">
@@ -83,7 +36,10 @@
 					<input type="checkbox" v-model="finalCheck"> 我了解了
 				</div>
 			</div>
-			<div class="input-bt" v-on:click="SubmitCase();">送出案例</div>
+			<div class="input-bt" v-on:click="SubmitCase();">
+				<div v-show="action == 'create'">送出案例</div>
+				<div v-show="action == 'edit'">完成案例修改</div>
+			</div>
 		</div>
 		
 		<div class="input-panel" v-show="openInput">
@@ -129,7 +85,7 @@
 var g_Util = require('../js/util');
 
 export default {
-	props: ["createNew"],
+	props: ["action"],
 	data: function () {
 		return {
 			message: "",
@@ -142,6 +98,7 @@ export default {
 			openInput: false,
 			finalCheck: false,
 			caseInfo: {desc:"",problem:{"D1":[],"D2":[],"D3":[],"D4":[]}},
+			caseID: null,
 			modify: false,
 			modifyCategory: "",
 			modifyIndex: -1
@@ -151,6 +108,22 @@ export default {
 		var urlParam = g_Util.GetUrlParameter();
 		$.get("/static/omaha.json",function(data){
 			this.omaha = data;
+
+			if(this.action == "edit"){
+				var caseID = urlParam.case;
+				$.get("/case/view?case="+caseID, function(result){
+					if(result.status != "ok") return window.location.href="/?message=存取案例失敗";
+					this.caseID = caseID;
+					var caseInfo = result.data;
+					var info = JSON.parse(caseInfo.info);
+					var problem = info[info.length-1].problem;
+					this.caseInfo.desc = caseInfo.desc;
+					if(problem.D1) this.caseInfo.problem.D1 = problem.D1;
+					if(problem.D2) this.caseInfo.problem.D2 = problem.D2;
+					if(problem.D3) this.caseInfo.problem.D3 = problem.D3;
+					if(problem.D4) this.caseInfo.problem.D4 = problem.D4;
+				}.bind(this));
+			}
 		}.bind(this));
 		
 	},
@@ -232,12 +205,21 @@ export default {
 				return alert("請閱讀紅色警示文字並勾選「我了解了」");
 			}
 			//console.log(this.target.profession);
-			$.post("/case/create", {data: this.caseInfo}, function(data){
-				if(this.submitCallback) this.submitCallback(data);
-				else{
-					window.location.href = "/case?case="+data.data;
-				}
-			});
+			switch(this.action){
+				case "create":
+					$.post("/case/create", {data: this.caseInfo}, function(data){
+						if(data.status != "ok") return window.location.href="/?message=新增案例失敗";
+						window.location.href = "/case?case="+data.data;
+					});
+					break;
+				case "edit":
+					$.post("/case/edit?case="+this.caseID, {data: this.caseInfo}, function(data){
+						if(data.status != "ok") return window.location.href="/?message=修改案例失敗";
+						window.location.href = "/case?case="+data.data;
+					});
+					break;
+			}
+			
 		}
 	}
 }
@@ -248,9 +230,6 @@ export default {
 
 $head-bg-color: #36688D;
 $head-fg-color: #ffffff;
-$bt-fg-color: #ffffff;
-$bt-bg-color: #666666;
-$bt-hover-color: #888888;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
 $action-color: #ff8888;
@@ -262,19 +241,6 @@ $trans-time: 0.5s;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
-
-	.cat-D1{
-		background-color: #FFA5A4;
-	}
-	.cat-D2{
-		background-color: #DEE885;
-	}
-	.cat-D3{
-		background-color: #85CAE8;
-	}
-	.cat-D4{
-		background-color: #C089E8;
-	}
 
 	a{
 		text-decoration: none;
@@ -324,6 +290,7 @@ $trans-time: 0.5s;
 		padding: 10px;
 		color: $head-fg-color;
 		background-color: $head-bg-color;
+		border-radius: 3px;
 	}
 	.box-title{
 		font-size: 1.8em;
@@ -348,70 +315,7 @@ $trans-time: 0.5s;
 			height: 20px;
 		}
 	}
-	.problem-list{
-		.problem-cat{
-			background-color: #eeeeee;
-			padding: 0px 0px 10px 0px;
-			.problem-header{
-				margin: 10px auto;
-				font-size: 1.2em;
-				text-align: left;
-				padding: 10px;
-				background-color: #dddddd;
-			}
-			.problem-container{
-				padding: 10px;
-			}
-			.problem-item{
-				border-radius: 5px;
-				&.select{
-					border: 1px solid red;
-				}
-				.problem-title{
-					padding: 10px;
-					border-bottom: 1px solid #eeeeee;
-				}
-				.problem-desc{
-					white-space: pre-wrap;
-					padding: 10px;
-				}
-				.problem-body{
-					color: black;
-				}
-				.item-bt-container{
-					padding: 10px;
-					display: flex;
-					justify-content: flex-end;
-					align-items: center;
-					flex-wrap: wrap;
-				}
-				.item-bt{
-					display: inline-block;
-					margin: 0px 0px 0px 10px;
-					padding: 5px 10px;
-					cursor: pointer;
-					background-color: #eeeeee;
-					color: #333333;
-					border-radius: 3px;
-					&:hover{
-						background-color: #ffffff;
-					}
-				}
-			}
-		}
-	}
-	.input-bt{
-		display: inline-block;
-		color: $bt-fg-color;
-		padding: 10px 20px;
-		margin: 10px;
-		background-color: $bt-bg-color;
-		cursor: pointer;
-		border-radius: 3px;
-		&:hover{
-			background-color: $bt-hover-color;
-		}
-	}
+	
 	.input-panel{
 		position: fixed;
 		top: 0px;

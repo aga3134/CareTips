@@ -5,8 +5,14 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-		solutionID: DataTypes.UUID,
-		userID: DataTypes.UUID,
+		solutionID: {
+			type: DataTypes.UUID,
+			references: { model: "careSolutions", key: "id" },
+		},
+		userID: {
+			type: DataTypes.UUID,
+			references: { model: "users", key: "id" },
+		},
 		message: DataTypes.TEXT
 	});
 };

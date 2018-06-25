@@ -52,7 +52,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		},
-		dislikeNum: {
+		viewNum: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		}

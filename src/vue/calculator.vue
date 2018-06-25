@@ -748,9 +748,6 @@ $enhance-color: #BE9063;
 $text-color: #333333;
 $head-bg-color: #6A8A82;
 $head-fg-color: #ffffff;
-$bt-fg-color: #ffffff;
-$bt-bg-color: #666666;
-$bt-hover-color: #888888;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
 $trans-time: 0.5s;
@@ -821,19 +818,9 @@ $trans-time: 0.5s;
 		padding: 10px;
 		color: $head-fg-color;
 		background-color: $head-bg-color;
+		border-radius: 3px 3px 0px 0px;
 	}
-	.input-bt{
-		display: inline-block;
-		color: $bt-fg-color;
-		padding: 10px 20px;
-		margin: 10px;
-		background-color: $bt-bg-color;
-		cursor: pointer;
-		border-radius: 3px;
-		&:hover{
-			background-color: $bt-hover-color;
-		}
-	}
+
 	.price-panel{
 		max-width: 100%;
 		margin: auto;

@@ -920,55 +920,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-	props: ["createNew"],
+	props: ["action"],
 	data: function () {
 		return {
 			message: "",
@@ -981,6 +937,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			openInput: false,
 			finalCheck: false,
 			caseInfo: { desc: "", problem: { "D1": [], "D2": [], "D3": [], "D4": [] } },
+			caseID: null,
 			modify: false,
 			modifyCategory: "",
 			modifyIndex: -1
@@ -990,6 +947,22 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		var urlParam = g_Util.GetUrlParameter();
 		$.get("/static/omaha.json", function (data) {
 			this.omaha = data;
+
+			if (this.action == "edit") {
+				var caseID = urlParam.case;
+				$.get("/case/view?case=" + caseID, function (result) {
+					if (result.status != "ok") return window.location.href = "/?message=存取案例失敗";
+					this.caseID = caseID;
+					var caseInfo = result.data;
+					var info = JSON.parse(caseInfo.info);
+					var problem = info[info.length - 1].problem;
+					this.caseInfo.desc = caseInfo.desc;
+					if (problem.D1) this.caseInfo.problem.D1 = problem.D1;
+					if (problem.D2) this.caseInfo.problem.D2 = problem.D2;
+					if (problem.D3) this.caseInfo.problem.D3 = problem.D3;
+					if (problem.D4) this.caseInfo.problem.D4 = problem.D4;
+				}.bind(this));
+			}
 		}.bind(this));
 	},
 	methods: {
@@ -1067,11 +1040,20 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				return alert("請閱讀紅色警示文字並勾選「我了解了」");
 			}
 			//console.log(this.target.profession);
-			$.post("/case/create", { data: this.caseInfo }, function (data) {
-				if (this.submitCallback) this.submitCallback(data);else {
-					window.location.href = "/case?case=" + data.data;
-				}
-			});
+			switch (this.action) {
+				case "create":
+					$.post("/case/create", { data: this.caseInfo }, function (data) {
+						if (data.status != "ok") return window.location.href = "/?message=新增案例失敗";
+						window.location.href = "/case?case=" + data.data;
+					});
+					break;
+				case "edit":
+					$.post("/case/edit?case=" + this.caseID, { data: this.caseInfo }, function (data) {
+						if (data.status != "ok") return window.location.href = "/?message=修改案例失敗";
+						window.location.href = "/case?case=" + data.data;
+					});
+					break;
+			}
 		}
 	}
 });
@@ -1193,7 +1175,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
@@ -1224,6 +1205,167 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				var index = g_Util.StrCodeToInt(profession) % colorNum;
 				$(this.$refs["userInfo" + i]).css("background-color", colorArr(index));
 			}
+		}
+	}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js":
+/*!*****************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js ***!
+  \*****************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function () {
+		return {
+			user: null,
+			isMyCase: false,
+			omaha: null,
+			caseInfo: null,
+			vIndex: 0,
+			problem: { "D1": [], "D2": [], "D3": [], "D4": [] },
+			sendMessage: "",
+			messageList: []
+		};
+	},
+	created: function () {
+		var urlParam = g_Util.GetUrlParameter();
+		var caseID = urlParam.case;
+		if (!caseID) window.location.href = "/?message=無此案例";
+
+		$.get("/case/view?case=" + caseID, function (result) {
+			if (result.status != "ok") return window.location.href = "/?message=無法讀取案例";
+			this.caseInfo = result.data;
+			this.caseInfo.info = JSON.parse(this.caseInfo.info);
+			this.vIndex = this.caseInfo.info.length - 1;
+			this.isMyCase = false;
+			if (this.user) {
+				this.isMyCase = this.user.id == this.caseInfo.ownerID;
+			}
+			this.UpdateVersion();
+
+			$.get("/static/omaha.json", function (data) {
+				this.omaha = data;
+			}.bind(this));
+		}.bind(this));
+
+		$.get("/case/list-message?case=" + caseID, function (result) {
+			if (result.status != "ok") return alert("無法讀取留言");
+
+			for (var i = 0; i < result.data.length; i++) {
+				var t = moment(result.data[i].createdAt).tz("Asia/Taipei");
+				result.data[i].time = t.format("YYYY-MM-DD HH:mm:ss");
+			}
+			this.messageList = result.data;
+		}.bind(this));
+	},
+	methods: {
+		SetUser: function (user) {
+			this.user = user;
+			if (this.caseInfo) {
+				this.isMyCase = user.id == this.caseInfo.ownerID;
+			}
+		},
+		UpdateVersion: function () {
+			this.problem = { "D1": [], "D2": [], "D3": [], "D4": [] };
+			var problem = this.caseInfo.info[this.vIndex].problem;
+			if (problem.D1) this.problem.D1 = problem.D1;
+			if (problem.D2) this.problem.D2 = problem.D2;
+			if (problem.D3) this.problem.D3 = problem.D3;
+			if (problem.D4) this.problem.D4 = problem.D4;
+		},
+		ModifyCase: function () {
+			window.location.href = "/case/edit?case=" + this.caseInfo.id;
+		},
+		DeleteCase: function () {
+			if (confirm("確定刪除案例?")) {
+				window.location.href = "/case/delete?case=" + this.caseInfo.id;
+			}
+		},
+		SendMessage: function () {
+			var body = {};
+			body.caseID = this.caseInfo.id;
+			body.caseVersion = this.caseInfo.info[this.vIndex].version;
+			body.message = this.sendMessage;
+
+			$.post("/case/create-message", body, function (data) {
+				if (data.status != "ok") return window.location.href = "/?message=新增留言失敗";
+				window.location.reload();
+			});
 		}
 	}
 });
@@ -1586,7 +1728,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .cat-O[data-v-34f6f61e] {\n    background-color: #FF8AE7;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .inform-message[data-v-34f6f61e] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.care-calculator .inform-message.show[data-v-34f6f61e] {\n      top: 0px;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n}\n.care-calculator .input-bt[data-v-34f6f61e] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.care-calculator .input-bt[data-v-34f6f61e]:hover {\n      background-color: #888888;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.care-calculator .input-panel[data-v-34f6f61e] {\n        justify-content: center;\n}\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: left;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .category-option input[type=\"input\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 100px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-34f6f61e] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-34f6f61e] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-34f6f61e] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-34f6f61e] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-34f6f61e] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-34f6f61e] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-34f6f61e] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-34f6f61e] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-34f6f61e] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-34f6f61e] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-34f6f61e] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-34f6f61e] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-34f6f61e] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-34f6f61e] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-34f6f61e] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-34f6f61e]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-34f6f61e] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-34f6f61e] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-34f6f61e] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-34f6f61e]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-34f6f61e] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-34f6f61e] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e]:hover {\n        background-color: #888888;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .cat-O[data-v-34f6f61e] {\n    background-color: #FF8AE7;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .inform-message[data-v-34f6f61e] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.care-calculator .inform-message.show[data-v-34f6f61e] {\n      top: 0px;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n    border-radius: 3px 3px 0px 0px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-panel[data-v-34f6f61e] {\n    position: fixed;\n    bottom: 0px;\n    left: 0px;\n    width: 100%;\n    padding: 10px;\n    border-radius: 3px 3px 0px 0px;\n    border-top: 1px solid #cccccc;\n    background-color: rgba(150, 150, 180, 0.9);\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n    overflow-x: auto;\n    overflow-y: hidden;\n    max-height: 70px;\n    -webkit-transition: max-height 0.5s ease;\n    transition: max-height 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.care-calculator .input-panel[data-v-34f6f61e] {\n        justify-content: center;\n}\n}\n.care-calculator .input-panel.open[data-v-34f6f61e] {\n      max-height: 200px;\n}\n.care-calculator .input-panel .category-option[data-v-34f6f61e] {\n      text-align: left;\n}\n.care-calculator .input-panel .category-option .cat-title[data-v-34f6f61e] {\n        display: inline-block;\n        color: white;\n}\n.care-calculator .input-panel .category-option select[data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n}\n.care-calculator .input-panel .category-option input[type=\"number\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 80px;\n}\n.care-calculator .input-panel .category-option input[type=\"input\"][data-v-34f6f61e] {\n        padding: 5px;\n        margin: 5px 0px;\n        border-radius: 3px;\n        max-width: 100px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e] {\n      display: inline-block;\n      cursor: pointer;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.care-calculator .input-panel .action-bt[data-v-34f6f61e]:hover {\n        background-color: #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -1605,7 +1747,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-84ab2184] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-84ab2184] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-84ab2184] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-84ab2184], body[data-v-84ab2184] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-84ab2184] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-84ab2184] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-84ab2184] {\n  display: none;\n}\n.warning[data-v-84ab2184] {\n  color: red;\n}\n.bold[data-v-84ab2184] {\n  font-weight: bold;\n}\n.main-container[data-v-84ab2184] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-84ab2184] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.case-editor[data-v-84ab2184] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.case-editor .cat-D1[data-v-84ab2184] {\n    background-color: #FFA5A4;\n}\n.case-editor .cat-D2[data-v-84ab2184] {\n    background-color: #DEE885;\n}\n.case-editor .cat-D3[data-v-84ab2184] {\n    background-color: #85CAE8;\n}\n.case-editor .cat-D4[data-v-84ab2184] {\n    background-color: #C089E8;\n}\n.case-editor a[data-v-84ab2184] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.case-editor a[data-v-84ab2184]:hover {\n      color: #FF3333;\n}\n.case-editor textarea[data-v-84ab2184] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.case-editor .case-info[data-v-84ab2184] {\n    width: 1024px;\n    margin: auto;\n    max-width: 100%;\n}\n.case-editor .separator[data-v-84ab2184] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.case-editor .inform-message[data-v-84ab2184] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.case-editor .inform-message.show[data-v-84ab2184] {\n      top: 0px;\n}\n.case-editor .cat-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #36688D;\n}\n.case-editor .box-title[data-v-84ab2184] {\n    font-size: 1.8em;\n    text-align: center;\n    margin: 10px auto;\n}\n.case-editor .remark[data-v-84ab2184] {\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.case-editor .remark .remark-check[data-v-84ab2184] {\n      display: inline-block;\n      color: black;\n}\n.case-editor .remark input[type=\"checkbox\"][data-v-84ab2184] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.case-editor .problem-list .problem-cat[data-v-84ab2184] {\n    background-color: #eeeeee;\n    padding: 0px 0px 10px 0px;\n}\n.case-editor .problem-list .problem-cat .problem-header[data-v-84ab2184] {\n      margin: 10px auto;\n      font-size: 1.2em;\n      text-align: left;\n      padding: 10px;\n      background-color: #dddddd;\n}\n.case-editor .problem-list .problem-cat .problem-container[data-v-84ab2184] {\n      padding: 10px;\n}\n.case-editor .problem-list .problem-cat .problem-item[data-v-84ab2184] {\n      border-radius: 5px;\n}\n.case-editor .problem-list .problem-cat .problem-item.select[data-v-84ab2184] {\n        border: 1px solid red;\n}\n.case-editor .problem-list .problem-cat .problem-item .problem-title[data-v-84ab2184] {\n        padding: 10px;\n        border-bottom: 1px solid #eeeeee;\n}\n.case-editor .problem-list .problem-cat .problem-item .problem-desc[data-v-84ab2184] {\n        white-space: pre-wrap;\n        padding: 10px;\n}\n.case-editor .problem-list .problem-cat .problem-item .problem-body[data-v-84ab2184] {\n        color: black;\n}\n.case-editor .problem-list .problem-cat .problem-item .item-bt-container[data-v-84ab2184] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.case-editor .problem-list .problem-cat .problem-item .item-bt[data-v-84ab2184] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.case-editor .problem-list .problem-cat .problem-item .item-bt[data-v-84ab2184]:hover {\n          background-color: #ffffff;\n}\n.case-editor .input-bt[data-v-84ab2184] {\n    display: inline-block;\n    color: #ffffff;\n    padding: 10px 20px;\n    margin: 10px;\n    background-color: #666666;\n    cursor: pointer;\n    border-radius: 3px;\n}\n.case-editor .input-bt[data-v-84ab2184]:hover {\n      background-color: #888888;\n}\n.case-editor .input-panel[data-v-84ab2184] {\n    position: fixed;\n    top: 0px;\n    left: 0px;\n    width: 100%;\n    height: 100%;\n    padding: 10px;\n    background-color: rgba(50, 50, 50, 0.8);\n    z-index: 10;\n    overflow-y: auto;\n}\n.case-editor .input-panel .input-area[data-v-84ab2184] {\n      position: relative;\n      background-color: #eeeeee;\n      border-radius: 5px;\n      width: 800px;\n      max-width: 100%;\n      margin: auto;\n      padding: 10px;\n      top: 50%;\n      -webkit-transform: translateY(-50%);\n      -ms-transform: translateY(-50%);\n      transform: translateY(-50%);\n}\n.case-editor .input-panel .input-area .input-item[data-v-84ab2184] {\n        margin: 10px;\n}\n.case-editor .input-panel .input-area .input-label[data-v-84ab2184] {\n        font-size: 1.2em;\n        display: inline-block;\n}\n.case-editor .input-panel .input-area select[data-v-84ab2184] {\n        padding: 5px;\n}\n.case-editor .input-panel .input-area .close-bt[data-v-84ab2184] {\n        position: absolute;\n        top: 10px;\n        right: 10px;\n        font-size: 1.2em;\n        cursor: pointer;\n        padding: 5px 10px;\n        color: #ff8888;\n        border: 1px solid #ff8888;\n        border-radius: 5px;\n}\n.case-editor .input-panel .input-area .close-bt[data-v-84ab2184]:hover {\n          color: #ff6666;\n          border: 1px solid #ff6666;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-84ab2184] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-84ab2184] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-84ab2184] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-84ab2184] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-84ab2184] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-84ab2184] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-84ab2184] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-84ab2184] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-84ab2184] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-84ab2184] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-84ab2184] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-84ab2184] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-84ab2184] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-84ab2184] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-84ab2184] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-84ab2184], body[data-v-84ab2184] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-84ab2184] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-84ab2184] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-84ab2184] {\n  display: none;\n}\n.warning[data-v-84ab2184] {\n  color: red;\n}\n.bold[data-v-84ab2184] {\n  font-weight: bold;\n}\n.main-container[data-v-84ab2184] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-84ab2184] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-84ab2184] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-84ab2184] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-84ab2184] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-84ab2184]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-84ab2184] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-84ab2184] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-84ab2184] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-84ab2184] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-84ab2184]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-84ab2184] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-84ab2184] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-84ab2184] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184]:hover {\n        background-color: #888888;\n}\n.case-editor[data-v-84ab2184] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.case-editor a[data-v-84ab2184] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.case-editor a[data-v-84ab2184]:hover {\n      color: #FF3333;\n}\n.case-editor textarea[data-v-84ab2184] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.case-editor .case-info[data-v-84ab2184] {\n    width: 1024px;\n    margin: auto;\n    max-width: 100%;\n}\n.case-editor .separator[data-v-84ab2184] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.case-editor .inform-message[data-v-84ab2184] {\n    width: 100%;\n    background-color: #aaaaaa;\n    color: #ffffff;\n    text-align: center;\n    padding: 10px;\n    position: fixed;\n    left: 0px;\n    height: 40px;\n    top: -40px;\n    z-index: 99;\n    -webkit-transition: top 0.5s ease;\n    transition: top 0.5s ease;\n}\n.case-editor .inform-message.show[data-v-84ab2184] {\n      top: 0px;\n}\n.case-editor .cat-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #36688D;\n    border-radius: 3px;\n}\n.case-editor .box-title[data-v-84ab2184] {\n    font-size: 1.8em;\n    text-align: center;\n    margin: 10px auto;\n}\n.case-editor .remark[data-v-84ab2184] {\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.case-editor .remark .remark-check[data-v-84ab2184] {\n      display: inline-block;\n      color: black;\n}\n.case-editor .remark input[type=\"checkbox\"][data-v-84ab2184] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.case-editor .input-panel[data-v-84ab2184] {\n    position: fixed;\n    top: 0px;\n    left: 0px;\n    width: 100%;\n    height: 100%;\n    padding: 10px;\n    background-color: rgba(50, 50, 50, 0.8);\n    z-index: 10;\n    overflow-y: auto;\n}\n.case-editor .input-panel .input-area[data-v-84ab2184] {\n      position: relative;\n      background-color: #eeeeee;\n      border-radius: 5px;\n      width: 800px;\n      max-width: 100%;\n      margin: auto;\n      padding: 10px;\n      top: 50%;\n      -webkit-transform: translateY(-50%);\n      -ms-transform: translateY(-50%);\n      transform: translateY(-50%);\n}\n.case-editor .input-panel .input-area .input-item[data-v-84ab2184] {\n        margin: 10px;\n}\n.case-editor .input-panel .input-area .input-label[data-v-84ab2184] {\n        font-size: 1.2em;\n        display: inline-block;\n}\n.case-editor .input-panel .input-area select[data-v-84ab2184] {\n        padding: 5px;\n}\n.case-editor .input-panel .input-area .close-bt[data-v-84ab2184] {\n        position: absolute;\n        top: 10px;\n        right: 10px;\n        font-size: 1.2em;\n        cursor: pointer;\n        padding: 5px 10px;\n        color: #ff8888;\n        border: 1px solid #ff8888;\n        border-radius: 5px;\n}\n.case-editor .input-panel .input-area .close-bt[data-v-84ab2184]:hover {\n          color: #ff6666;\n          border: 1px solid #ff6666;\n}\n", ""]);
 
 // exports
 
@@ -1624,7 +1766,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-e25bf790] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-e25bf790] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-e25bf790] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-e25bf790], body[data-v-e25bf790] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-e25bf790] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-e25bf790] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-e25bf790] {\n  display: none;\n}\n.warning[data-v-e25bf790] {\n  color: red;\n}\n.bold[data-v-e25bf790] {\n  font-weight: bold;\n}\n.main-container[data-v-e25bf790] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-e25bf790] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.case-list-thumb[data-v-e25bf790] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.case-list-thumb svg[data-v-e25bf790] {\n    width: 100%;\n    height: 100%;\n}\n.case-list-thumb .info-text[data-v-e25bf790] {\n    position: absolute;\n    text-align: center;\n    bottom: 0px;\n    width: 100%;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-e25bf790] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-e25bf790] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-e25bf790] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-e25bf790] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-e25bf790] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-e25bf790] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-e25bf790] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-e25bf790] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-e25bf790] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-e25bf790] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-e25bf790] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-e25bf790] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-e25bf790] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-e25bf790] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-e25bf790] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-e25bf790] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-e25bf790], body[data-v-e25bf790] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-e25bf790] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-e25bf790] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-e25bf790] {\n  display: none;\n}\n.warning[data-v-e25bf790] {\n  color: red;\n}\n.bold[data-v-e25bf790] {\n  font-weight: bold;\n}\n.main-container[data-v-e25bf790] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-e25bf790] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-e25bf790] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-e25bf790] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-e25bf790] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-e25bf790]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-e25bf790] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-e25bf790] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-e25bf790] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-e25bf790] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-e25bf790]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-e25bf790] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-e25bf790] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-e25bf790] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790]:hover {\n        background-color: #888888;\n}\n.case-list-thumb[data-v-e25bf790] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.case-list-thumb svg[data-v-e25bf790] {\n    width: 100%;\n    height: 100%;\n}\n.case-list-thumb .info-text[data-v-e25bf790] {\n    position: absolute;\n    text-align: center;\n    bottom: 0px;\n    width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -1643,7 +1785,26 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-95bdcfa2] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-95bdcfa2] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-95bdcfa2] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-95bdcfa2], body[data-v-95bdcfa2] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-95bdcfa2] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-95bdcfa2] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-95bdcfa2] {\n  display: none;\n}\n.warning[data-v-95bdcfa2] {\n  color: red;\n}\n.bold[data-v-95bdcfa2] {\n  font-weight: bold;\n}\n.main-container[data-v-95bdcfa2] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-95bdcfa2] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.case-list[data-v-95bdcfa2] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.case-list .cat-D1[data-v-95bdcfa2] {\n    background-color: #FFA5A4;\n}\n.case-list .cat-D2[data-v-95bdcfa2] {\n    background-color: #DEE885;\n}\n.case-list .cat-D3[data-v-95bdcfa2] {\n    background-color: #85CAE8;\n}\n.case-list .cat-D4[data-v-95bdcfa2] {\n    background-color: #C089E8;\n}\n.case-list .list-item[data-v-95bdcfa2] {\n    background-color: #eeeeee;\n    border-radius: 5px;\n    max-width: 100%;\n    margin: 10px;\n    cursor: pointer;\n    box-shadow: 5px 5px 5px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.case-list .list-item[data-v-95bdcfa2]:hover {\n      box-shadow: 10px 10px 10px #888888;\n}\n.case-list .list-item a[data-v-95bdcfa2] {\n      text-decoration: none;\n      color: black;\n}\n.case-list .list-item .owner-info[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n      border-bottom: 1px solid #ffffff;\n      border-radius: 5px 5px 0px 0px;\n      padding: 10px;\n}\n.case-list .list-item .owner-info .owner-icon[data-v-95bdcfa2] {\n        width: 30px;\n        height: 30px;\n        border-radius: 50%;\n        margin: 0px 5px 0px 0px;\n}\n.case-list .list-item .domain-statistic[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info[data-v-95bdcfa2] {\n        position: relative;\n        display: flex;\n        justify-content: flex-start;\n        flex-wrap: wrap;\n        align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-icon[data-v-95bdcfa2] {\n          display: inline-block;\n          padding: 7px;\n          margin: 10px 5px 10px 10px;\n          border-radius: 3px;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-num[data-v-95bdcfa2] {\n          display: inline-block;\n          font-size: 0.8em;\n          vertical-align: middle;\n}\n.case-list .list-item .domain-statistic .domain-info .tip[data-v-95bdcfa2] {\n          padding: 5px;\n          box-shadow: 5px 5px 5px #aaaaaa;\n          border-radius: 3px;\n          position: absolute;\n          top: 30px;\n          left: 10px;\n          width: 120px;\n          text-align: center;\n          visibility: hidden;\n          z-index: 1;\n}\n.case-list .list-item .domain-statistic .domain-info:hover .tip[data-v-95bdcfa2] {\n          visibility: visible;\n}\n.case-list .list-item .desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      padding: 0px 10px;\n      width: 100%;\n      height: 4.5em;\n      line-height: 1.5em;\n      overflow: hidden;\n}\n.case-list .list-item .feedback-statistic[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-end;\n      flex-wrap: wrap;\n      align-items: center;\n      padding: 5px 10px;\n}\n.case-list .list-item .feedback-statistic .feedback-icon[data-v-95bdcfa2] {\n        width: 30px;\n        height: 30px;\n}\n.case-list .list-item .feedback-statistic .feedback-num[data-v-95bdcfa2] {\n        color: #888888;\n        padding: 10px;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-95bdcfa2] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-95bdcfa2] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-95bdcfa2] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-95bdcfa2] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-95bdcfa2] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-95bdcfa2] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-95bdcfa2] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-95bdcfa2] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-95bdcfa2] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-95bdcfa2] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-95bdcfa2] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-95bdcfa2] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-95bdcfa2] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-95bdcfa2] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-95bdcfa2] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-95bdcfa2], body[data-v-95bdcfa2] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-95bdcfa2] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-95bdcfa2] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-95bdcfa2] {\n  display: none;\n}\n.warning[data-v-95bdcfa2] {\n  color: red;\n}\n.bold[data-v-95bdcfa2] {\n  font-weight: bold;\n}\n.main-container[data-v-95bdcfa2] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-95bdcfa2] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-95bdcfa2] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-95bdcfa2] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-95bdcfa2] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-95bdcfa2]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-95bdcfa2] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-95bdcfa2] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-95bdcfa2] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-95bdcfa2]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-95bdcfa2] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-95bdcfa2] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2]:hover {\n        background-color: #888888;\n}\n.case-list[data-v-95bdcfa2] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.case-list .list-item[data-v-95bdcfa2] {\n    background-color: #eeeeee;\n    border-radius: 5px;\n    max-width: 100%;\n    margin: 10px 0px;\n    cursor: pointer;\n    box-shadow: 5px 5px 5px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.case-list .list-item[data-v-95bdcfa2] {\n        margin: 10px;\n}\n}\n.case-list .list-item[data-v-95bdcfa2]:hover {\n      box-shadow: 10px 10px 10px #888888;\n}\n.case-list .list-item a[data-v-95bdcfa2] {\n      text-decoration: none;\n      color: black;\n}\n.case-list .list-item .domain-statistic[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info[data-v-95bdcfa2] {\n        position: relative;\n        display: flex;\n        justify-content: flex-start;\n        flex-wrap: wrap;\n        align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-icon[data-v-95bdcfa2] {\n          display: inline-block;\n          padding: 7px;\n          margin: 10px 5px 10px 10px;\n          border-radius: 3px;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-num[data-v-95bdcfa2] {\n          display: inline-block;\n          font-size: 0.8em;\n          vertical-align: middle;\n}\n.case-list .list-item .domain-statistic .domain-info .tip[data-v-95bdcfa2] {\n          padding: 5px;\n          box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n          border-radius: 3px;\n          position: absolute;\n          top: 30px;\n          left: 10px;\n          width: 120px;\n          text-align: center;\n          visibility: hidden;\n          z-index: 1;\n}\n.case-list .list-item .domain-statistic .domain-info:hover .tip[data-v-95bdcfa2] {\n          visibility: visible;\n}\n.case-list .list-item .desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      color: #333333;\n      padding: 0px 20px 0px 10px;\n      width: 100%;\n      height: 4.5em;\n      line-height: 1.5em;\n      overflow: hidden;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true":
+/*!**********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-a7997294] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-a7997294] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-a7997294] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-a7997294] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-a7997294] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-a7997294] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-a7997294] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-a7997294] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-a7997294] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-a7997294] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-a7997294] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-a7997294] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-a7997294] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-a7997294] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-a7997294] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-a7997294] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-a7997294], body[data-v-a7997294] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-a7997294] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-a7997294] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-a7997294] {\n  display: none;\n}\n.warning[data-v-a7997294] {\n  color: red;\n}\n.bold[data-v-a7997294] {\n  font-weight: bold;\n}\n.main-container[data-v-a7997294] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-a7997294] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-a7997294] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-a7997294] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-a7997294] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-a7997294]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-a7997294] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-a7997294] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-a7997294] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-a7997294] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-a7997294]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-a7997294] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-a7997294] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-a7997294] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294]:hover {\n        background-color: #888888;\n}\n.case-view[data-v-a7997294] {\n  width: 800px;\n  max-width: 100%;\n  margin: auto;\n}\n.case-view .case-title[data-v-a7997294] {\n    font-size: 2em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n    border-bottom: 1px solid #ffaa00;\n}\n.case-view .case-desc[data-v-a7997294] {\n    font-size: 1.2em;\n    line-height: 1.5em;\n    white-space: pre-wrap;\n}\n.case-view .owner[data-v-a7997294] {\n    font-size: 1.2em;\n}\n.case-view .message-list .message[data-v-a7997294] {\n    margin: 10px;\n    border-bottom: 1px solid #dddddd;\n    padding: 10px;\n}\n.case-view .message-list .sub-info[data-v-a7997294] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n    font-size: 0.8em;\n    color: #888888;\n}\n", ""]);
 
 // exports
 
@@ -1662,7 +1823,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-16f2f798] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-16f2f798] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-16f2f798] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-16f2f798], body[data-v-16f2f798] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-16f2f798] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-16f2f798] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-16f2f798] {\n  display: none;\n}\n.warning[data-v-16f2f798] {\n  color: red;\n}\n.bold[data-v-16f2f798] {\n  font-weight: bold;\n}\n.main-container[data-v-16f2f798] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-16f2f798] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.loginPanel[data-v-16f2f798] {\n  width: 300px;\n  max-width: 100%;\n  margin: auto;\n}\n.loginPanel .google-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #dc4e41;\n}\n.loginPanel .facebook-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #3b579d;\n}\n.loginPanel .seperator[data-v-16f2f798] {\n    padding: 10px;\n    margin-bottom: 10px;\n    border-bottom: 1px solid #dddddd;\n}\n.loginPanel .method-title[data-v-16f2f798] {\n    text-align: center;\n    font-size: 1.2em;\n}\n.loginPanel .relative-box[data-v-16f2f798] {\n    position: relative;\n}\n.loginPanel .forget-password[data-v-16f2f798] {\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    font-size: 0.8em;\n    color: #666666;\n    cursor: pointer;\n}\n.loginPanel input[data-v-16f2f798] {\n    padding: 5px;\n    width: 100%;\n}\n.loginPanel .login-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #646464;\n}\n.loginPanel .text-link[data-v-16f2f798] {\n    text-align: center;\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-16f2f798] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-16f2f798] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-16f2f798] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-16f2f798] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-16f2f798] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-16f2f798] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-16f2f798] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-16f2f798] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-16f2f798] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-16f2f798] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-16f2f798] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-16f2f798] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-16f2f798] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-16f2f798] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-16f2f798] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-16f2f798] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-16f2f798], body[data-v-16f2f798] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-16f2f798] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-16f2f798] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-16f2f798] {\n  display: none;\n}\n.warning[data-v-16f2f798] {\n  color: red;\n}\n.bold[data-v-16f2f798] {\n  font-weight: bold;\n}\n.main-container[data-v-16f2f798] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-16f2f798] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-16f2f798] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-16f2f798] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-16f2f798] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-16f2f798]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-16f2f798] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-16f2f798] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-16f2f798] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-16f2f798] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-16f2f798]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-16f2f798] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-16f2f798] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-16f2f798] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798]:hover {\n        background-color: #888888;\n}\n.loginPanel[data-v-16f2f798] {\n  width: 300px;\n  max-width: 100%;\n  margin: auto;\n}\n.loginPanel .google-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #dc4e41;\n}\n.loginPanel .facebook-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #3b579d;\n}\n.loginPanel .seperator[data-v-16f2f798] {\n    padding: 10px;\n    margin-bottom: 10px;\n    border-bottom: 1px solid #dddddd;\n}\n.loginPanel .method-title[data-v-16f2f798] {\n    text-align: center;\n    font-size: 1.2em;\n}\n.loginPanel .relative-box[data-v-16f2f798] {\n    position: relative;\n}\n.loginPanel .forget-password[data-v-16f2f798] {\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    font-size: 0.8em;\n    color: #666666;\n    cursor: pointer;\n}\n.loginPanel input[data-v-16f2f798] {\n    padding: 5px;\n    width: 100%;\n}\n.loginPanel .login-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #646464;\n}\n.loginPanel .text-link[data-v-16f2f798] {\n    text-align: center;\n    cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -1681,7 +1842,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      height: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 15px;\n    right: 10px;\n    height: 40px;\n    border-radius: 50px;\n    cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.topbar .menu-bt[data-v-45447dba] {\n        right: 20px;\n}\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  right: 0px;\n  top: 70px;\n  width: 100%;\n  padding: 0px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n  overflow-y: hidden;\n  max-height: 0px;\n  -webkit-transition: max-height 0.5s, padding 0.5s ease;\n  transition: max-height 0.5s, padding 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.menu-container[data-v-45447dba] {\n      width: 300px;\n      max-width: 100%;\n      border-radius: 0px 0px 0px 10px;\n}\n}\n.menu-container.open[data-v-45447dba] {\n    padding: 10px 20px;\n    max-height: 300px;\n}\n.menu-container li[data-v-45447dba] {\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      padding: 10px 0px;\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n.menu-container li[data-v-45447dba]:hover {\n      background-color: #eeeeee;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-45447dba] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-45447dba] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-45447dba] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-45447dba] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-45447dba] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-45447dba] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-45447dba] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-45447dba] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-45447dba] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-45447dba] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-45447dba] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-45447dba] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-45447dba] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-45447dba] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-45447dba] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-45447dba] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-45447dba]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-45447dba] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-45447dba] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-45447dba] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-45447dba] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-45447dba]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-45447dba] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-45447dba] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-45447dba] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba]:hover {\n        background-color: #888888;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      height: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 15px;\n    right: 10px;\n    height: 40px;\n    border-radius: 50px;\n    cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.topbar .menu-bt[data-v-45447dba] {\n        right: 20px;\n}\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  right: 0px;\n  top: 70px;\n  width: 100%;\n  padding: 0px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n  overflow-y: hidden;\n  max-height: 0px;\n  -webkit-transition: max-height 0.5s, padding 0.5s ease;\n  transition: max-height 0.5s, padding 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.menu-container[data-v-45447dba] {\n      width: 300px;\n      max-width: 100%;\n      border-radius: 0px 0px 0px 10px;\n}\n}\n.menu-container.open[data-v-45447dba] {\n    padding: 10px 20px;\n    max-height: 300px;\n}\n.menu-container li[data-v-45447dba] {\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      padding: 10px 0px;\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n.menu-container li[data-v-45447dba]:hover {\n      background-color: #eeeeee;\n}\n", ""]);
 
 // exports
 
@@ -1700,7 +1861,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-ef839ef4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-ef839ef4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-ef839ef4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\nhtml[data-v-ef839ef4], body[data-v-ef839ef4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-ef839ef4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-ef839ef4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-ef839ef4] {\n  display: none;\n}\n.warning[data-v-ef839ef4] {\n  color: red;\n}\n.bold[data-v-ef839ef4] {\n  font-weight: bold;\n}\n.main-container[data-v-ef839ef4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-ef839ef4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.user-info-editor[data-v-ef839ef4] {\n  width: 600px;\n  max-width: 100%;\n  margin: auto;\n}\n.user-info-editor .info-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n      padding: 10px;\n      margin: 10px;\n      width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n          width: auto;\n}\n}\n.user-info-editor .info-label[data-v-ef839ef4] {\n    color: #888888;\n    margin: 5px 0px 0px 0px;\n}\n.user-info-editor .user-photo[data-v-ef839ef4] {\n    display: block;\n    width: 250px;\n    height: 250px;\n    max-width: 100%;\n    margin: 20px auto;\n    object-fit: cover;\n    border-radius: 50%;\n}\n.user-info-editor .photo-bt[data-v-ef839ef4] {\n    width: 100%;\n    border: 1px solid #888888;\n    border-radius: 5px;\n    padding: 10px;\n    margin: 5px 0px;\n    text-align: center;\n    cursor: pointer;\n}\n.user-info-editor .remark[data-v-ef839ef4] {\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.user-info-editor .remark .remark-check[data-v-ef839ef4] {\n      color: black;\n      display: inline-block;\n}\n.user-info-editor .remark input[type=\"checkbox\"][data-v-ef839ef4] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.user-info-editor .canNotEmpty[data-v-ef839ef4]:before {\n    color: red;\n    content: \"*\";\n}\n.user-info-editor input[data-v-ef839ef4] {\n    padding: 5px;\n    width: 100%;\n    border: 1px solid #dddddd;\n    font-size: 1.1em;\n}\n.user-info-editor select[data-v-ef839ef4] {\n    border: 1px solid #dddddd;\n    padding: 5px;\n    width: 100%;\n    font-size: 1.1em;\n}\n.user-info-editor textarea[data-v-ef839ef4] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-ef839ef4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-ef839ef4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-ef839ef4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-ef839ef4] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-ef839ef4] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-ef839ef4] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-ef839ef4] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-ef839ef4] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-ef839ef4] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-ef839ef4] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-ef839ef4] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-ef839ef4] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-ef839ef4] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-ef839ef4] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-ef839ef4] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-ef839ef4] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-ef839ef4], body[data-v-ef839ef4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-ef839ef4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-ef839ef4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-ef839ef4] {\n  display: none;\n}\n.warning[data-v-ef839ef4] {\n  color: red;\n}\n.bold[data-v-ef839ef4] {\n  font-weight: bold;\n}\n.main-container[data-v-ef839ef4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-ef839ef4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-ef839ef4] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-ef839ef4] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-ef839ef4] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 10px;\n  background-color: #666666;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-ef839ef4]:hover {\n    background-color: #888888;\n}\n.care-tips .feedback-statistic[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-ef839ef4] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-ef839ef4] {\n    padding: 0px 10px;\n}\n.care-tips .feedback-statistic .action-bt[data-v-ef839ef4] {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n    border-radius: 5px;\n    padding: 5px 10px;\n    margin: 5px;\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .action-bt[data-v-ef839ef4]:hover {\n      color: #ff3333;\n      border: 1px solid #ff3333;\n}\n.care-tips .message-box[data-v-ef839ef4] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-ef839ef4] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #666666;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4]:hover {\n        background-color: #888888;\n}\n.user-info-editor[data-v-ef839ef4] {\n  width: 600px;\n  max-width: 100%;\n  margin: auto;\n}\n.user-info-editor .info-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n      padding: 10px;\n      margin: 10px;\n      width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n          width: auto;\n}\n}\n.user-info-editor .info-label[data-v-ef839ef4] {\n    color: #888888;\n    margin: 5px 0px 0px 0px;\n}\n.user-info-editor .user-photo[data-v-ef839ef4] {\n    display: block;\n    width: 250px;\n    height: 250px;\n    max-width: 100%;\n    margin: 20px auto;\n    object-fit: cover;\n    border-radius: 50%;\n}\n.user-info-editor .photo-bt[data-v-ef839ef4] {\n    width: 100%;\n    border: 1px solid #888888;\n    border-radius: 5px;\n    padding: 10px;\n    margin: 5px 0px;\n    text-align: center;\n    cursor: pointer;\n}\n.user-info-editor .remark[data-v-ef839ef4] {\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.user-info-editor .remark .remark-check[data-v-ef839ef4] {\n      color: black;\n      display: inline-block;\n}\n.user-info-editor .remark input[type=\"checkbox\"][data-v-ef839ef4] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.user-info-editor .canNotEmpty[data-v-ef839ef4]:before {\n    color: red;\n    content: \"*\";\n}\n.user-info-editor input[data-v-ef839ef4] {\n    padding: 5px;\n    width: 100%;\n    border: 1px solid #dddddd;\n    font-size: 1.1em;\n}\n.user-info-editor select[data-v-ef839ef4] {\n    border: 1px solid #dddddd;\n    padding: 5px;\n    width: 100%;\n    font-size: 1.1em;\n}\n.user-info-editor textarea[data-v-ef839ef4] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n", ""]);
 
 // exports
 
@@ -1893,6 +2054,36 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-list.vue?vue&type=style&index=0&id=95bdcfa2&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-list.vue?vue&type=style&index=0&id=95bdcfa2&lang=scss&scoped=true");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -4373,263 +4564,75 @@ var render = function() {
           [_vm._v("新增問題")]
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "problem-list" }, [
-          _c("div", { staticClass: "problem-cat" }, [
-            _vm.omaha != null
-              ? _c("div", { staticClass: "problem-header" }, [
-                  _vm._v(
-                    _vm._s(_vm.omaha.D1.name) +
-                      " (" +
-                      _vm._s(_vm.caseInfo.problem.D1.length) +
-                      "項)"
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "problem-container" },
-              _vm._l(_vm.caseInfo.problem.D1, function(p, i) {
-                return _c(
-                  "div",
-                  { staticClass: "problem-item half-w cat-D1" },
-                  [
-                    _c("div", { staticClass: "problem-title" }, [
-                      _vm._v(_vm._s(p.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "problem-body" }, [
-                      _c("div", {
-                        staticClass: "problem-desc",
-                        domProps: { innerHTML: _vm._s(p.desc) }
-                      }),
+        _c(
+          "div",
+          { staticClass: "problem-list" },
+          _vm._l(["D1", "D2", "D3", "D4"], function(cat) {
+            return _c("div", { staticClass: "problem-cat" }, [
+              _vm.omaha != null
+                ? _c("div", { staticClass: "problem-header" }, [
+                    _vm._v(
+                      _vm._s(_vm.omaha[cat].name) +
+                        " (" +
+                        _vm._s(_vm.caseInfo.problem[cat].length) +
+                        "項)"
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "problem-container" },
+                _vm._l(_vm.caseInfo.problem[cat], function(p, i) {
+                  return _c(
+                    "div",
+                    { staticClass: "problem-item half-w", class: "cat-" + cat },
+                    [
+                      _c("div", { staticClass: "problem-title" }, [
+                        _vm._v(_vm._s(p.name))
+                      ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "item-bt-container" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.ModifyItem("D1", i)
-                              }
-                            }
-                          },
-                          [_vm._v("修改")]
-                        ),
+                      _c("div", { staticClass: "problem-body" }, [
+                        _c("div", {
+                          staticClass: "problem-desc",
+                          domProps: { innerHTML: _vm._s(p.desc) }
+                        }),
                         _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.DeleteItem("D1", i)
+                        _c("div", { staticClass: "item-bt-container" }, [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "item-bt",
+                              on: {
+                                click: function($event) {
+                                  _vm.ModifyItem(cat, i)
+                                }
                               }
-                            }
-                          },
-                          [_vm._v("刪除")]
-                        )
+                            },
+                            [_vm._v("修改")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "item-bt",
+                              on: {
+                                click: function($event) {
+                                  _vm.DeleteItem(cat, i)
+                                }
+                              }
+                            },
+                            [_vm._v("刪除")]
+                          )
+                        ])
                       ])
-                    ])
-                  ]
-                )
-              })
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "problem-cat" }, [
-            _vm.omaha != null
-              ? _c("div", { staticClass: "problem-header" }, [
-                  _vm._v(
-                    _vm._s(_vm.omaha.D2.name) +
-                      " (" +
-                      _vm._s(_vm.caseInfo.problem.D2.length) +
-                      "項)"
+                    ]
                   )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "problem-container" },
-              _vm._l(_vm.caseInfo.problem.D2, function(p, i) {
-                return _c(
-                  "div",
-                  { staticClass: "problem-item half-w cat-D2" },
-                  [
-                    _c("div", { staticClass: "problem-title" }, [
-                      _vm._v(_vm._s(p.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "problem-body" }, [
-                      _c("div", {
-                        staticClass: "problem-desc",
-                        domProps: { innerHTML: _vm._s(p.desc) }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "item-bt-container" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.ModifyItem("D2", i)
-                              }
-                            }
-                          },
-                          [_vm._v("修改")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.DeleteItem("D2", i)
-                              }
-                            }
-                          },
-                          [_vm._v("刪除")]
-                        )
-                      ])
-                    ])
-                  ]
-                )
-              })
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "problem-cat" }, [
-            _vm.omaha != null
-              ? _c("div", { staticClass: "problem-header" }, [
-                  _vm._v(
-                    _vm._s(_vm.omaha.D3.name) +
-                      " (" +
-                      _vm._s(_vm.caseInfo.problem.D3.length) +
-                      "項)"
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "problem-container" },
-              _vm._l(_vm.caseInfo.problem.D3, function(p, i) {
-                return _c(
-                  "div",
-                  { staticClass: "problem-item half-w cat-D3" },
-                  [
-                    _c("div", { staticClass: "problem-title" }, [
-                      _vm._v(_vm._s(p.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "problem-body" }, [
-                      _c("div", {
-                        staticClass: "problem-desc",
-                        domProps: { innerHTML: _vm._s(p.desc) }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "item-bt-container" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.ModifyItem("D3", i)
-                              }
-                            }
-                          },
-                          [_vm._v("修改")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.DeleteItem("D3", i)
-                              }
-                            }
-                          },
-                          [_vm._v("刪除")]
-                        )
-                      ])
-                    ])
-                  ]
-                )
-              })
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "problem-cat" }, [
-            _vm.omaha != null
-              ? _c("div", { staticClass: "problem-header" }, [
-                  _vm._v(
-                    _vm._s(_vm.omaha.D4.name) +
-                      " (" +
-                      _vm._s(_vm.caseInfo.problem.D4.length) +
-                      "項)"
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "problem-container" },
-              _vm._l(_vm.caseInfo.problem.D4, function(p, i) {
-                return _c(
-                  "div",
-                  { staticClass: "problem-item half-w cat-D4" },
-                  [
-                    _c("div", { staticClass: "problem-title" }, [
-                      _vm._v(_vm._s(p.name))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "problem-body" }, [
-                      _c("div", {
-                        staticClass: "problem-desc",
-                        domProps: { innerHTML: _vm._s(p.desc) }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "item-bt-container" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.ModifyItem("D4", i)
-                              }
-                            }
-                          },
-                          [_vm._v("修改")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "item-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.DeleteItem("D4", i)
-                              }
-                            }
-                          },
-                          [_vm._v("刪除")]
-                        )
-                      ])
-                    ])
-                  ]
-                )
-              })
-            )
-          ])
-        ])
+                })
+              )
+            ])
+          })
+        )
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "case-info" }, [
@@ -4691,7 +4694,37 @@ var render = function() {
               }
             }
           },
-          [_vm._v("送出案例")]
+          [
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.action == "create",
+                    expression: "action == 'create'"
+                  }
+                ]
+              },
+              [_vm._v("送出案例")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.action == "edit",
+                    expression: "action == 'edit'"
+                  }
+                ]
+              },
+              [_vm._v("完成案例修改")]
+            )
+          ]
         )
       ]),
       _vm._v(" "),
@@ -5118,19 +5151,307 @@ var render = function() {
             _c("div", { staticClass: "feedback-num" }, [
               _vm._v(_vm._s(c.likeNum))
             ]),
-            _vm._v(" "),
-            _c("img", {
-              staticClass: "feedback-icon",
-              attrs: { src: "/static/image/dislike.png" }
-            }),
-            _vm._v(" "),
+            _vm._v("\r\n\t\t\t\t觀看次數"),
             _c("div", { staticClass: "feedback-num" }, [
-              _vm._v(_vm._s(c.dislikeNum))
+              _vm._v(_vm._s(c.viewNum))
             ])
           ])
         ])
       ])
     })
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "case-view" },
+    [
+      _vm.caseInfo
+        ? _c("div", { staticClass: "feedback-statistic" }, [
+            _c("div", { staticClass: "container" }, [
+              _vm._v("\r\n\t\t\t版本號: "),
+              _c("div", { staticClass: "feedback-num" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.vIndex,
+                        expression: "vIndex"
+                      }
+                    ],
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.vIndex = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        function($event) {
+                          _vm.UpdateVersion()
+                        }
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.caseInfo.info, function(c, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(c.version))
+                    ])
+                  })
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "container clickable" }, [
+              _c("img", {
+                staticClass: "feedback-icon",
+                attrs: { src: "/static/image/like.png" }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "feedback-num" }, [
+                _vm._v(_vm._s(_vm.caseInfo.likeNum))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "container" }, [
+              _vm._v("\r\n\t\t\t觀看次數"),
+              _c("div", { staticClass: "feedback-num" }, [
+                _vm._v(_vm._s(_vm.caseInfo.viewNum))
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.isMyCase,
+                    expression: "isMyCase"
+                  }
+                ],
+                staticClass: "container"
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "action-bt",
+                    on: {
+                      click: function($event) {
+                        _vm.ModifyCase()
+                      }
+                    }
+                  },
+                  [_vm._v("修改案例")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "action-bt",
+                    on: {
+                      click: function($event) {
+                        _vm.DeleteCase()
+                      }
+                    }
+                  },
+                  [_vm._v("刪除案例")]
+                )
+              ]
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "case-title" }, [_vm._v("案例簡述")]),
+      _vm._v(" "),
+      _vm.caseInfo
+        ? _c("div", { staticClass: "case-desc" }, [
+            _vm._v(_vm._s(_vm.caseInfo.info[_vm.vIndex].desc))
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "case-title" }, [_vm._v("問題列表")]),
+      _vm._v(" "),
+      _vm._l(["D1", "D2", "D3", "D4"], function(cat) {
+        return _c("div", { staticClass: "problem-cat" }, [
+          _vm.omaha != null
+            ? _c("div", { staticClass: "problem-header" }, [
+                _vm._v(
+                  _vm._s(_vm.omaha[cat].name) +
+                    " (" +
+                    _vm._s(_vm.problem[cat].length) +
+                    "項)"
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "problem-container" },
+            _vm._l(_vm.problem[cat], function(p, i) {
+              return _c(
+                "div",
+                { staticClass: "problem-item half-w", class: "cat-" + cat },
+                [
+                  _c("div", { staticClass: "problem-title" }, [
+                    _vm._v(_vm._s(p.name))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "problem-body" }, [
+                    _c("div", {
+                      staticClass: "problem-desc",
+                      domProps: { innerHTML: _vm._s(p.desc) }
+                    })
+                  ])
+                ]
+              )
+            })
+          )
+        ])
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "case-title" }, [_vm._v("分享者簡介")]),
+      _vm._v(" "),
+      _vm.caseInfo
+        ? _c("div", { staticClass: "owner" }, [
+            _c("div", { staticClass: "owner-info" }, [
+              _c("img", {
+                staticClass: "owner-icon",
+                attrs: { src: _vm.caseInfo.user.icon }
+              }),
+              _vm._v(
+                "\r\n\t\t\t" +
+                  _vm._s(_vm.caseInfo.user.profession) +
+                  " - " +
+                  _vm._s(_vm.caseInfo.user.name) +
+                  "\r\n\t\t"
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "owner-desc" }, [
+              _vm._v(_vm._s(_vm.caseInfo.user.desc))
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "case-title" }, [_vm._v("留言回饋")]),
+      _vm._v(" "),
+      _vm.caseInfo
+        ? _c(
+            "div",
+            { staticClass: "message-list" },
+            _vm._l(_vm.messageList, function(m) {
+              return _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value:
+                        m.caseVersion == _vm.caseInfo.info[_vm.vIndex].version,
+                      expression:
+                        "m.caseVersion == caseInfo.info[vIndex].version"
+                    }
+                  ],
+                  staticClass: "message"
+                },
+                [
+                  _c("div", { staticClass: "owner-info" }, [
+                    _c("img", {
+                      staticClass: "owner-icon",
+                      attrs: { src: m.user.icon }
+                    }),
+                    _vm._v(
+                      "\r\n\t\t\t\t" +
+                        _vm._s(m.user.profession) +
+                        " - " +
+                        _vm._s(m.user.name) +
+                        "\r\n\t\t\t"
+                    )
+                  ]),
+                  _vm._v("\r\n\t\t\t" + _vm._s(m.message) + "\r\n\t\t\t"),
+                  _c("div", { staticClass: "sub-info" }, [
+                    _c("div", [_vm._v(_vm._s(m.time))])
+                  ])
+                ]
+              )
+            })
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "message-box" }, [
+        _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.sendMessage,
+              expression: "sendMessage"
+            }
+          ],
+          attrs: { placeholder: "留言給分享者..." },
+          domProps: { value: _vm.sendMessage },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.sendMessage = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "bt-container" }, [
+          _c(
+            "div",
+            {
+              staticClass: "bt",
+              on: {
+                click: function($event) {
+                  _vm.SendMessage()
+                }
+              }
+            },
+            [_vm._v("送出")]
+          )
+        ])
+      ])
+    ],
+    2
   )
 }
 var staticRenderFns = []
@@ -6135,6 +6456,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../vue/case-editor.vue */ "./src/vue/case-editor.vue");
 /* harmony import */ var _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../vue/case-list-thumb.vue */ "./src/vue/case-list-thumb.vue");
 /* harmony import */ var _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vue/case-list.vue */ "./src/vue/case-list.vue");
+/* harmony import */ var _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vue/case-view.vue */ "./src/vue/case-view.vue");
+
 
 
 
@@ -6148,7 +6471,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 new Vue({
 	el: '#careTips',
-	components: { topbar: _vue_topbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"], calculator: _vue_calculator_vue__WEBPACK_IMPORTED_MODULE_1__["default"], loginPanel: _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__["default"], userInfoEditor: _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__["default"], caseEditor: _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__["default"], caseListThumb: _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__["default"], caseList: _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__["default"] },
+	components: { topbar: _vue_topbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"], calculator: _vue_calculator_vue__WEBPACK_IMPORTED_MODULE_1__["default"], loginPanel: _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__["default"], userInfoEditor: _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__["default"], caseEditor: _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__["default"], caseListThumb: _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__["default"], caseList: _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__["default"], caseView: _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_7__["default"] },
 	data: {
 		user: null
 	},
@@ -6159,6 +6482,7 @@ new Vue({
 				this.user = data.user;
 				if (this.$refs.topbar) this.$refs.topbar.SetUser(data.user);
 				if (this.$refs.userInfoEditor) this.$refs.userInfoEditor.SetUser(data.user);
+				if (this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
 			}
 			var urlParam = g_Util.GetUrlParameter();
 			if (urlParam.message) {
@@ -6768,6 +7092,7 @@ util.NumberWithCommas = function (x) {
 };
 
 util.StrCodeToInt = function (str) {
+	if (!str) return 0;
 	var sum = 0;
 	for (var i = 0; i < str.length; i++) {
 		sum += str.charCodeAt(i);
@@ -7158,6 +7483,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_list_vue_vue_type_template_id_95bdcfa2_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_list_vue_vue_type_template_id_95bdcfa2_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/vue/case-view.vue":
+/*!*******************************!*\
+  !*** ./src/vue/case-view.vue ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html */ "./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html");
+/* harmony import */ var _case_view_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./case-view.vue?vue&type=script&lang=js */ "./src/vue/case-view.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true */ "./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _case_view_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "a7997294",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src\\vue\\case-view.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/vue/case-view.vue?vue&type=script&lang=js":
+/*!*******************************************************!*\
+  !*** ./src/vue/case-view.vue?vue&type=script&lang=js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./case-view.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true":
+/*!****************************************************************************************!*\
+  !*** ./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/style-loader!../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_style_index_0_id_a7997294_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html":
+/*!***********************************************************************************!*\
+  !*** ./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_vue_vue_type_template_id_a7997294_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -5,17 +5,12 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-		version: {
-			type: DataTypes.INTEGER,
-			defaultValue: 1,
-			primaryKey: true
-		},
 		ownerID: {
 			type: DataTypes.UUID,
 			references: { model: "users", key: "id" },
 		},
-		desc: DataTypes.TEXT,
-		problem: DataTypes.TEXT,	//json problem list
+		desc: DataTypes.TEXT,	//desc for newest version
+		info: DataTypes.TEXT,	//json problem,desc list for different version
 		//statistic
 		D1Num: DataTypes.INTEGER,
 		D2Num: DataTypes.INTEGER,
@@ -33,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		},
-		dislikeNum: {
+		viewNum: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		}
