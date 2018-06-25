@@ -73,7 +73,6 @@ export default {
 
 $enhance-color: #BE9063;
 $text-color: #333333;
-$trans-time: 0.5s;
 
 .topbar{
 	position: fixed;

@@ -26,7 +26,7 @@ util.ColorCategory = function(size, light, saturate){
 };
 
 util.GetUrlParameter = function(){
-	var queryStr = decodeURIComponent(window.location.search.substring(1));
+	var queryStr = window.location.search.substring(1);
 	var paramArr = queryStr.split('&');
 
 	var result = {};

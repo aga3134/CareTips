@@ -6,7 +6,7 @@ var util = {};
 
 util.StoreIntentUrl = function(req, res, next){
 	if(req.query.intentUrl){
-		req.session.intentUrl = req.query.intentUrl;
+		req.session.intentUrl = decodeURIComponent(req.query.intentUrl);
 	}
 	next();
 }
@@ -30,24 +30,38 @@ util.CheckLogin = function (req, res, next) {
 	else res.redirect("/auth/login?intentUrl="+req.originalUrl);
 };
 
-util.CheckMyCase = function (req, res, next) {
+util.FailRedirect = function(req, res, redirect, message){
 	var isAjax = req.xhr;
-	if(!req.user){
-		if(isAjax) return res.send({"status":"fail","message":"unauthorized"});
-		else return res.redirect("/?message="+encodeURIComponent('權限不足'));
-	}
-	DB.CareCase.findOne({where: {id: req.query.case}}).then(function(result){
-		if(!result){
-			if(isAjax) return res.send({"status":"fail","message":"case not found"});
-			else return res.redirect("/?message="+encodeURIComponent('無此案例'));
-		}
+	if(isAjax) return res.send({"status":"fail","message":message});
+	else return res.redirect(redirect+"?message="+encodeURIComponent(message));
+};
+
+util.CheckMyCase = function (req, res, next) {
+	if(!req.user) return util.FailRedirect(req,res,"/","權限不足");
+	var caseID = req.query.case || req.body.case;
+
+	DB.CareCase.findOne({where: {id: caseID}}).then(function(result){
+		if(!result) return util.FailRedirect(req,res,"/","無此案例");
+
 		if(result.ownerID == req.user.id){
 			return next();
 		}
-		else{
-			if(isAjax) return res.send({"status":"fail","message":"unauthorized"});
-			else return res.redirect("/?message="+encodeURIComponent('權限不足'));
+		else return util.FailRedirect(req,res,"/","權限不足");
+	});
+};
+
+util.CheckMyCaseMessage = function (req, res, next) {
+	if(!req.user) return util.FailRedirect(req,res,"/","權限不足");
+
+	var messageID = req.query.message || req.body.message;
+
+	DB.CaseMessage.findOne({where: {id: messageID}}).then(function(result){
+		if(!result) return util.FailRedirect(req,res,"/","無此留言");
+
+		if(result.ownerID == req.user.id){
+			return next();
 		}
+		else return util.FailRedirect(req,res,"/","權限不足");
 	});
 };
 

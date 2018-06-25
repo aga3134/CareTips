@@ -750,7 +750,6 @@ $head-bg-color: #6A8A82;
 $head-fg-color: #ffffff;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
-$trans-time: 0.5s;
 
 .care-calculator{
 	width: 100%;
@@ -792,23 +791,6 @@ $trans-time: 0.5s;
 	.separator{
 		margin: 30px;
 		border-bottom: 1px solid #999999;
-	}
-	.inform-message{
-		width: 100%;
-		background-color: #aaaaaa;
-		color: #ffffff;
-		text-align: center;
-		padding: 10px;
-		position: fixed;
-		left: 0px;
-		height: 40px;
-		top: -40px;
-		z-index: 99;
-		-webkit-transition: top $trans-time ease;
-    	transition: top $trans-time ease;
-		&.show{
-			top: 0px;
-		}
 	}
 
 	.comp-header{

@@ -47,14 +47,6 @@ module.exports = function(sequelize, DataTypes) {
 		msgNum: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
-		},
-		likeNum: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0,
-		},
-		viewNum: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0,
 		}
 	});
 };

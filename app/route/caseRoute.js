@@ -77,6 +77,7 @@ router.get('/view', function(req, res) {
 	if(!req.query.case) return res.status(200).json({"status":"fail","message": "case not found"});
 	var param = {};
 	param.caseID = req.query.case;
+	param.user = req.user;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result});
 	};
@@ -114,16 +115,42 @@ router.post('/edit', util.CheckMyCase, function(req, res) {
 	};
 	careCase.EditCase(param);
 });
+//============================like==============================
+router.post('/like/create', util.CheckLogin, function(req, res) {
+	var param = {};
+	param.caseID = req.body.caseID;
+	param.ownerID = req.body.ownerID;
+	param.succFunc = function(result){
+		res.status(200).json({"status":"ok","data": result.id});
+	};
+	param.failFunc = function(result){
+		res.status(200).json({"status": "fail","message": result.err});
+	};
+	careCase.CreateLike(param);
+});
+
+router.post('/like/delete', util.CheckLogin, function(req, res) {
+	var param = {};
+	param.caseID = req.body.caseID;
+	param.ownerID = req.body.ownerID;
+	param.succFunc = function(result){
+		res.status(200).json({"status":"ok","data": result.id});
+	};
+	param.failFunc = function(result){
+		res.status(200).json({"status": "fail","message": result.err});
+	};
+	careCase.DeleteLike(param);
+});
 
 //============================message==============================
-router.post('/create-message', util.CheckLogin, function(req, res) {
+router.post('/message/create', util.CheckLogin, function(req, res) {
 	var param = {};
-	param.userID = req.user.id;
+	param.ownerID = req.user.id;
 	param.message = req.body.message;
 	param.caseID = req.body.caseID;
 	param.caseVersion = req.body.caseVersion;
 	param.succFunc = function(result){
-		res.status(200).json({"status":"ok","data": result.id});
+		res.status(200).json({"status":"ok","data": result});
 	};
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
@@ -131,7 +158,7 @@ router.post('/create-message', util.CheckLogin, function(req, res) {
 	careCase.CreateMessage(param);
 });
 
-router.get('/list-message', function(req, res) {
+router.get('/message/list', function(req, res) {
 	var param = {};
 	param.caseID = req.query.case;
 	param.succFunc = function(result){
@@ -141,6 +168,20 @@ router.get('/list-message', function(req, res) {
 		res.status(200).json({"status": "fail","message": result.err});
 	};
 	careCase.ListMessage(param);
+});
+
+router.post('/message/delete', util.CheckMyCaseMessage, function(req, res) {
+	var param = {};
+	param.ownerID = req.user.id;
+	param.messageID = req.body.message;
+
+	param.succFunc = function(result){
+		res.status(200).json({"status":"ok","data": result});
+	};
+	param.failFunc = function(result){
+		res.status(200).json({"status": "fail","message": result.err});
+	};
+	careCase.DeleteMessage(param);
 });
 
 module.exports = router;

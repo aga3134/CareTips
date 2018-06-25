@@ -70,7 +70,10 @@ export default {
 	},
 	created: function(){
 		var urlParam = g_Util.GetUrlParameter();
-		this.intentUrl = urlParam.intentUrl;
+		if(urlParam.intentUrl){
+			this.intentUrl = encodeURIComponent(urlParam.intentUrl);
+		}
+
 		if(urlParam.reset == 1){
 			this.mode = "resetPassword";
 			this.token = urlParam.token;

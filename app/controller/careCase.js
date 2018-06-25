@@ -36,7 +36,15 @@ careCase.ViewCase = function(param){
 	DB.CareCase.findOne({where: {id: param.caseID},include: includeArr})
 	.then(function(result) {
 		if(!result) return param.failFunc({"err":"case not found"});
-		param.succFunc(result);
+		result.increment("viewNum");
+		if(param.user){
+			DB.CaseLike.findOne({where: {caseID: param.caseID, ownerID: param.user.id}})
+			.then(function(like){
+				if(like) result.dataValues.liked = true;
+				param.succFunc(result);
+			});
+		}
+		else param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
 		param.failFunc({"err":"find case fail"});
@@ -55,7 +63,7 @@ careCase.ListCase = function(param){
 	includeArr.push({model: DB.User, attributes: ["id","name","icon","profession"]});
 
 	var sort = [];
-	sort.push(['updatedAt', 'DESC']);
+	sort.push(['createdAt', 'DESC']);
 
 	var offset = numPerPage*param.fetchPage;
 
@@ -118,12 +126,34 @@ careCase.DeleteCase = function(param){
 	});
 };
 
+careCase.CreateLike = function(param){
+	DB.CaseLike.create({caseID: param.caseID, ownerID: param.ownerID})
+	.then(function(result) {
+		DB.CareCase.increment('likeNum', {where: {id: param.caseID}});
+		param.succFunc(result);
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"create case like fail"});
+	});
+};
+
+careCase.DeleteLike = function(param){
+	DB.CaseLike.destroy({where: {caseID: param.caseID, ownerID: param.ownerID}})
+	.then(function(result) {
+		DB.CareCase.decrement('likeNum', {where: {id: param.caseID}});
+		param.succFunc(result);
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"delete case like fail"});
+	});
+};
+
 //============================message==============================
 careCase.CreateMessage = function(param){
 	var newMsg = {};
 	newMsg.caseID = param.caseID;
 	newMsg.caseVersion = param.caseVersion;
-	newMsg.userID = param.userID;
+	newMsg.ownerID = param.ownerID;
 	newMsg.message = param.message;
 
 	DB.CaseMessage.create(newMsg).then(function(result) {
@@ -137,7 +167,6 @@ careCase.CreateMessage = function(param){
 careCase.ListMessage = function(param){
 	var query = {};
 	query.caseID = param.caseID;
-	console.log(query);
 
 	var includeArr = [];
 	includeArr.push({model: DB.User, attributes: ["id","name","icon","profession"]});
@@ -150,7 +179,17 @@ careCase.ListMessage = function(param){
 		param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
-		param.failFunc({"err":"list message fail"});
+		param.failFunc({"err":"list case message fail"});
+	});
+};
+
+careCase.DeleteMessage = function(param){
+	DB.CaseMessage.destroy({where: {id: param.messageID, ownerID: param.ownerID}})
+	.then(function(result) {
+		param.succFunc(result);
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"delete case message fail"});
 	});
 };
 

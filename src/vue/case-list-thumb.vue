@@ -57,7 +57,6 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/main.scss";
 
-$trans-time: 0.5s;
 
 .case-list-thumb{
 	position: relative;

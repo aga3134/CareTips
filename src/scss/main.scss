@@ -7,6 +7,7 @@ $bt-hover-color: #888888;
 $action-fg-color: #ff8888;
 $action-bg-color: #ffffff;
 $action-hover-color: #ff3333;
+$trans-time: 0.5s;
 
 //===================General======================
 html, body {
@@ -84,6 +85,18 @@ html, body {
 			background-color: $bt-hover-color;
 		}
 	}
+	.action-bt{
+		color: $action-fg-color;
+		border: 1px solid $action-fg-color;
+		border-radius: 5px;
+		padding: 5px 10px;
+		margin: 5px;
+		cursor: pointer;
+		&:hover{
+			color: $action-hover-color;
+			border: 1px solid $action-hover-color;
+		}
+	}
 
 	.feedback-statistic{
 		display: flex;
@@ -114,17 +127,24 @@ html, body {
 		.feedback-num{
 			padding: 0px 10px;
 		}
-		.action-bt{
-			color: $action-fg-color;
-			border: 1px solid $action-fg-color;
-			border-radius: 5px;
-			padding: 5px 10px;
-			margin: 5px;
-			cursor: pointer;
-			&:hover{
-				color: $action-hover-color;
-				border: 1px solid $action-hover-color;
-			}
+		
+	}
+
+	.inform-message{
+		width: 100%;
+		background-color: #aaaaaa;
+		color: #ffffff;
+		text-align: center;
+		padding: 10px;
+		position: fixed;
+		left: 0px;
+		height: 40px;
+		top: -40px;
+		z-index: 99;
+		-webkit-transition: top $trans-time ease;
+    	transition: top $trans-time ease;
+		&.show{
+			top: 0px;
 		}
 	}
 

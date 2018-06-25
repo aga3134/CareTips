@@ -132,6 +132,17 @@ html, body {
   .care-tips .input-bt:hover {
     background-color: #888888; }
 
+.care-tips .action-bt {
+  color: #ff8888;
+  border: 1px solid #ff8888;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer; }
+  .care-tips .action-bt:hover {
+    color: #ff3333;
+    border: 1px solid #ff3333; }
+
 .care-tips .feedback-statistic {
   display: flex;
   justify-content: flex-end;
@@ -156,16 +167,22 @@ html, body {
     height: 25px; }
   .care-tips .feedback-statistic .feedback-num {
     padding: 0px 10px; }
-  .care-tips .feedback-statistic .action-bt {
-    color: #ff8888;
-    border: 1px solid #ff8888;
-    border-radius: 5px;
-    padding: 5px 10px;
-    margin: 5px;
-    cursor: pointer; }
-    .care-tips .feedback-statistic .action-bt:hover {
-      color: #ff3333;
-      border: 1px solid #ff3333; }
+
+.care-tips .inform-message {
+  width: 100%;
+  background-color: #aaaaaa;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  left: 0px;
+  height: 40px;
+  top: -40px;
+  z-index: 99;
+  -webkit-transition: top 0.5s ease;
+  transition: top 0.5s ease; }
+  .care-tips .inform-message.show {
+    top: 0px; }
 
 .care-tips .message-box {
   border: 1px solid #cccccc;

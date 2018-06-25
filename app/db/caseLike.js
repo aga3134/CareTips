@@ -1,19 +1,14 @@
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define("caseMessage", {
-		id: {
-			type: DataTypes.UUID,
-			defaultValue: DataTypes.UUIDV4,
-			primaryKey: true
-		},
+	return sequelize.define("caseLike", {
 		caseID: {
 			type: DataTypes.UUID,
 			references: { model: "careCases", key: "id" },
+			primaryKey: true
 		},
-		caseVersion: DataTypes.INTEGER,
 		ownerID: {
 			type: DataTypes.UUID,
 			references: { model: "users", key: "id" },
-		},
-		message: DataTypes.TEXT
+			primaryKey: true
+		}
 	});
 };

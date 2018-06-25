@@ -8,7 +8,7 @@
 				</select>
 			</div>
 		</div>
-		<div class="container clickable">
+		<div class="container clickable" v-on:click="ToggleLike();">
 			<img class="feedback-icon" src="/static/image/like.png">
 			<div class="feedback-num">{{caseInfo.likeNum}}</div>
 		</div>
@@ -43,24 +43,26 @@
 		<div class="owner-desc">{{caseInfo.user.desc}}</div>
 	</div>
 	<div class="case-title">留言回饋</div>
-	<div class="message-list" v-if="caseInfo">
-		<div class="message" v-for="m in messageList" v-show="m.caseVersion == caseInfo.info[vIndex].version">
-			<div class="owner-info">
-				<img class="owner-icon" v-bind:src="m.user.icon">
-				{{m.user.profession}} - {{m.user.name}}
-			</div>
-			{{m.message}}
-			<div class="sub-info">
-				<div>{{m.time}}</div>
-			</div>
-		</div>
-	</div>
 	<div class="message-box">
 		<textarea placeholder="留言給分享者..." v-model="sendMessage"></textarea>
 		<div class="bt-container">
 			<div class="bt" v-on:click="SendMessage();">送出</div>
 		</div>
 	</div>
+	<div class="message-list" v-if="caseInfo">
+		<div class="message" v-for="(m,i) in messageList" v-show="m.caseVersion == caseInfo.info[vIndex].version">
+			<div class="owner-info">
+				<img class="owner-icon" v-bind:src="m.user.icon">
+				{{m.user.profession}} - {{m.user.name}}
+			</div>
+			<div class="message-content">{{m.message}}</div>
+			<div class="sub-info">
+				<div class="info-item">{{m.time}}</div>
+				<div v-show="user && m.user.id == user.id" class="action-bt" v-on:click="DeleteMessage(i);">刪除</div>
+			</div>
+		</div>
+	</div>
+	
 </div>
 </template>
 
@@ -72,6 +74,7 @@ export default {
 		return {
 			user: null,
 			isMyCase: false,
+			isLike: false,
 			omaha: null,
 			caseInfo: null,
 			vIndex: 0,
@@ -91,6 +94,7 @@ export default {
 			this.caseInfo.info = JSON.parse(this.caseInfo.info);
 			this.vIndex = this.caseInfo.info.length-1;
 			this.isMyCase = false;
+			if(result.data.liked) this.isLike = true;
 			if(this.user){
 				this.isMyCase = (this.user.id == this.caseInfo.ownerID);
 			}
@@ -101,12 +105,12 @@ export default {
 			}.bind(this));
 		}.bind(this));
 
-		$.get("/case/list-message?case="+caseID, function(result){
+		$.get("/case/message/list?case="+caseID, function(result){
 			if(result.status != "ok") return alert("無法讀取留言");
 
 			for(var i=0;i<result.data.length;i++){
 				var t = moment(result.data[i].createdAt).tz("Asia/Taipei");
-				result.data[i].time = t.format("YYYY-MM-DD HH:mm:ss");
+				result.data[i].time = t.format("YYYY-MM-DD HH:mm");
 			}
 			this.messageList = result.data;
 			
@@ -141,10 +145,53 @@ export default {
 			body.caseVersion = this.caseInfo.info[this.vIndex].version;
 			body.message = this.sendMessage;
 
-			$.post("/case/create-message", body, function(data){
-				if(data.status != "ok") return window.location.href="/?message=新增留言失敗";
-				window.location.reload();
-			});
+			$.post("/case/message/create", body, function(result){
+				if(result.status != "ok") return alert("新增留言失敗");
+
+				var t = moment(result.data.createdAt).tz("Asia/Taipei");
+				result.data.time = t.format("YYYY-MM-DD HH:mm");
+				result.data.user = this.user;
+				this.messageList.splice(0,0,result.data);
+				this.sendMessage = "";
+			}.bind(this));
+		},
+		DeleteMessage: function(index){
+			if(confirm("確定刪除留言?")){
+				var body = {};
+				body.message = this.messageList[index].id;
+
+				$.post("/case/message/delete", body, function(result){
+					console.log(result);
+					if(result.status != "ok") return alert("刪除留言失敗");
+					this.messageList.splice(index,1);
+				}.bind(this));
+			}
+		},
+		ToggleLike: function(){
+			if(!this.user){
+				var intentUrl = encodeURIComponent("/case?case="+this.caseInfo.id);
+				return window.location.href="/auth/login?intentUrl="+intentUrl;
+			}
+			var body = {};
+			body.caseID = this.caseInfo.id;
+			body.ownerID = this.user.id;
+
+			if(this.isLike){
+				if(confirm("您已按過讚，要將按讚取消?")){
+					$.post("/case/like/delete",body, function(data){
+						if(data.status != "ok") return alert("按讚失敗");
+						this.isLike = false;
+						this.caseInfo.likeNum--;
+					}.bind(this));
+				}
+			}
+			else{
+				$.post("/case/like/create",body, function(data){
+					if(data.status != "ok") return alert("按讚失敗");
+					this.isLike = true;
+					this.caseInfo.likeNum++;
+				}.bind(this));
+			}
 		}
 	}
 }
@@ -152,8 +199,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "../scss/main.scss";
-
-$trans-time: 0.5s;
 
 .case-view{
 	width: 800px;
@@ -181,7 +226,11 @@ $trans-time: 0.5s;
 		.message{
 			margin: 10px;
 			border-bottom: 1px solid #dddddd;
-			padding: 10px;
+			padding: 0px;
+			.message-content{
+				padding-left: 10px;
+				white-space: pre-wrap;
+			}
 		}
 		.sub-info{
 			display: flex;
@@ -190,6 +239,9 @@ $trans-time: 0.5s;
 			align-items: center;
 			font-size: 0.8em;
 			color: #888888;
+			.info-item{
+				margin: 10px 5px;
+			}
 		}
 	}
 }

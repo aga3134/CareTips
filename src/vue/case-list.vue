@@ -77,8 +77,6 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/main.scss";
 
-$trans-time: 0.5s;
-
 .case-list{
 	width: 1024px;
 	max-width: 100%;
