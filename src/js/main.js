@@ -24,16 +24,21 @@ new Vue({
 				if(this.$refs.topbar) this.$refs.topbar.SetUser(data.user);
 				if(this.$refs.userInfoEditor) this.$refs.userInfoEditor.SetUser(data.user);
 				if(this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
+				if(this.$refs.caseEditor) this.$refs.caseEditor.SetUser(data.user);
 			}
 			var urlParam = g_Util.GetUrlParameter();
 			if(urlParam.message){
-				alert(urlParam.message);
+				alert(decodeURIComponent(urlParam.message));
 			}
+			g_Util.SetupAnchorScroll(-80);
 		}.bind(this));
-    },
-    methods: {
-    	CloseMenu: function(){
-    		if(this.$refs.topbar) this.$refs.topbar.CloseMenu();
-    	}
-    }
+	},
+	methods: {
+		CloseMenu: function(){
+			if(this.$refs.topbar) this.$refs.topbar.CloseMenu();
+		},
+		ChangeUserPhoto: function(response){
+			if(this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(response);
+		}
+	}
 })

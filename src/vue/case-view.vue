@@ -159,9 +159,9 @@ export default {
 			if(confirm("確定刪除留言?")){
 				var body = {};
 				body.message = this.messageList[index].id;
+				body.case = this.caseInfo.id;
 
 				$.post("/case/message/delete", body, function(result){
-					console.log(result);
 					if(result.status != "ok") return alert("刪除留言失敗");
 					this.messageList.splice(index,1);
 				}.bind(this));

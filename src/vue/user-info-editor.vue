@@ -15,7 +15,7 @@
 					<option v-for="service in services" v-bind:value="service">{{service}}</option>
 				</select>
 				<div v-show="selectService == '其他' ">
-					<div class="info-label">請填寫服務專業</div>
+					<div class="info-label canNotEmpty">請填寫服務專業</div>
 					<input type="text" v-model="otherService">
 				</div>
 				<div class="info-label">服務縣市</div>
@@ -83,7 +83,9 @@ export default {
 				processData: false,
 				contentType: false,
 				success: function(response) {
-					window.location.reload();
+					this.user.photo = response.photo;
+					this.user.icon = response.icon;
+					this.$root.ChangeUserPhoto(response);
 				}.bind(this),
 				error: function(jqXHR, textStatus, errorMessage) {
 					console.log(errorMessage);
@@ -108,16 +110,22 @@ export default {
 			else{
 				this.user.profession = this.selectService;
 			}
+			if(!this.user.name){
+				return alert("請輸入您的姓名");
+			}
+			if(!this.user.profession){
+				return alert("請輸入您的服務專業");
+			}
 			if(!this.finalCheck){
 				return alert("請閱讀紅色警示文字並勾選「我了解了」");
 			}
 			//console.log(this.user.profession);
-			$.post("/user/edit", {data: this.user}, function(data){
-				if(this.submitCallback) this.submitCallback(data);
+			$.post("/user/edit", {data: this.user}, function(result){
+				if(this.submitCallback) this.submitCallback(result);
 				else{
 					alert(data.status == "ok"?"修改成功":"修改失敗");
 				}
-			});
+			}.bind(this));
 		}
 	}
 }

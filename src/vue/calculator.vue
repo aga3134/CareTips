@@ -1,7 +1,7 @@
 <template lang="html">
 <div class="care-calculator">
 	<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
-	<div class="price-panel" v-on:click="openInputPanel = false;">
+	<div class="price-panel">
 		<div class="comp-header">照服計算機</div>
 		<div class="option-container">
 			<div class="price-option">
@@ -81,10 +81,14 @@
 			<div class="final-item">自費: {{totalPrice.rest.own}} 元</div>
 		</div>
 
-		<div class="input-bt" v-on:click="ClearService();">全部重設</div>
-		<div class="input-bt" v-if="openDetail == false" v-on:click="openDetail = true">細節展開</div>
-		<div class="input-bt" v-if="openDetail == true" v-on:click="openDetail = false">細節關閉</div>
+		<div class="input-bt-container">
+			<div class="input-bt" v-on:click="openInputPanel = true;">新增服務</div>
+			<div class="input-bt" v-if="openDetail == false" v-on:click="ToggleDetail();">細節展開</div>
+			<div class="input-bt" v-if="openDetail == true" v-on:click="ToggleDetail();">細節關閉</div>
+			<div class="input-bt" v-on:click="ClearService();">全部重設</div>
+		</div>
 		<div v-show="openDetail">
+			<a name="openDetail"></a>
 			<div class="price-summary">
 				<div class="sub-header">服務金額</div>
 				<div class="price-category cat-A">
@@ -196,7 +200,7 @@
 		</div>
 		
 	</div>
-	<div class="service-list" v-on:click="openInputPanel = false;">
+	<div class="service-list">
 		<div class="comp-header">服務套餐</div>
 		<div class="remark">*照服計算機 之計算方式依 <a href="https://www.health.ntpc.gov.tw/archive/health_ntpc/6/file/107%E5%B9%B4%E5%BA%A6%E7%B5%A6%E4%BB%98%E5%8F%8A%E6%94%AF%E4%BB%98%E5%9F%BA%E6%BA%96.pdf" target="_blank">107年度給付及支付基準</a> 設定，詳細說明請見該連結。</div>
 
@@ -287,49 +291,68 @@
 			</div>
 		</div>
 	</div>
-	<div class="input-panel" v-bind:class="{open: openInputPanel}" v-on:click="openInputPanel = true;">
-		<div class="category-option">
-			<div class="cat-title">主類</div>
-			<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
-				<option v-for="(s,i) in header.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
-			</select>
+
+	<div class="tab-bar">
+		<div class="tab-bt-container">
+			<div class="tab-bt" v-on:click="openInputPanel = true;">新增服務</div>
+			<div class="tab-bt" v-bind:class="{on: openDetail}" v-on:click="ToggleDetail();">細節展開</div>
+			<div class="tab-bt" v-on:click="ClearService();">全部重設</div>
 		</div>
-		<div class="category-option" v-if="header.service && header.service[mainCategory].items.length > 1">
-			<div class="cat-title">子類</div>
-			<select v-model="subCategory" v-on:change="UpdateSubCategory();">
-				<option v-for="(s,i) in header.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-			</select>
-		</div>
-		<div class="category-option" v-if="header.service && mainCategory != 7">
-			<div class="cat-title">項目</div>
-			<select v-model="selectService" v-on:change="UpdateItemInfo();">
-				<option v-for="(s,i) in header.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-			</select>
-		</div>
-		<div class="category-option" v-if="mainCategory == 4 || mainCategory == 5">
-			<select v-model="isRent">
-				<option value="0" v-show="itemInfo.payForBuy !== '不適用' ">購買</option>
-				<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
-			</select>
-		</div>
-		<div class="category-option" v-if="mainCategory == 7">
-			<div class="cat-title">服務名稱</div>
-			<input type="input" v-model="customName">
-		</div>
-		<div class="category-option" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
-			<div class="cat-title">價格</div>
-			<input type="number" min="1" v-model="customPrice">
-		</div>
-		<div class="category-option">
-			<div class="cat-title">數量</div>
-			<input type="number" min="1" max="100" v-model="serviceCount">
-		</div>
-		<div class="action-bt" v-on:click="AddService();">新增</div>
 	</div>
+
+	<div class="input-panel" v-show="openInputPanel">
+		<div class="input-area">
+			<!--<div class="close-bt" v-on:click="openInputPanel = false;">X</div>-->
+			<div class="category-option">
+				<div class="input-label">主類</div>
+				<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
+					<option v-for="(s,i) in header.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
+				</select>
+			</div>
+			<div class="category-option" v-if="header.service && header.service[mainCategory].items.length > 1">
+				<div class="input-label">子類</div>
+				<select v-model="subCategory" v-on:change="UpdateSubCategory();">
+					<option v-for="(s,i) in header.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
+				</select>
+			</div>
+			<div class="category-option" v-if="header.service && mainCategory != 7">
+				<div class="input-label">項目</div>
+				<select v-model="selectService" v-on:change="UpdateItemInfo();">
+					<option v-for="(s,i) in header.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
+				</select>
+			</div>
+			<div>
+				<span class="category-option" v-if="mainCategory == 4 || mainCategory == 5">
+					<div class="input-label">方式</div>
+					<select v-model="isRent">
+						<option value="0" v-show="itemInfo.payForBuy !== '不適用' ">購買</option>
+						<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
+					</select>
+				</span>
+				<span class="category-option" v-if="mainCategory == 7">
+					<div class="input-label">服務名稱</div>
+					<input type="input" v-model="customName">
+				</span>
+				<span class="category-option" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
+					<div class="input-label">價格</div>
+					<input type="number" min="1" v-model="customPrice">
+				</span>
+				<span class="category-option">
+					<div class="input-label">數量</div>
+					<input type="number" min="1" max="100" v-model="serviceCount">
+				</span>
+			</div>
+			<div class="input-bt" v-on:click="AddService();">新增</div>
+			<div class="input-bt" v-on:click="openInputPanel = false;">取消</div>
+		</div>
+	</div>
+
 </div>
 </template>
 
 <script>
+var g_Util = require('../js/util');
+
 export default {
 	data: function () {
 		return {
@@ -375,7 +398,7 @@ export default {
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
-			openInputPanel: true
+			openInputPanel: false
 		};
 	},
 	created: function(){
@@ -690,6 +713,7 @@ export default {
 				else return 0;
 			});
 			this.UpdatePrice();
+			this.openInputPanel = false;
 
 			this.showMessage = true;
 			this.message = "加入服務 "+item.code;
@@ -735,6 +759,15 @@ export default {
 				else if(this.itemInfo.payForBuy == "不適用" && this.isRent == 0){
 					this.isRent = 1;
 				}
+			}
+		},
+		ToggleDetail: function(){
+			this.openDetail = !this.openDetail;
+			if(this.openDetail){
+				//需等vue展開完後再scroll
+				setTimeout(function(){
+					g_Util.GoToAnchor("openDetail",-80);
+				},10);
 			}
 		}
 	},
@@ -932,65 +965,29 @@ $link-hover-color: #FF3333;
 			}
 		}
 	}
-	.input-panel{
-		position: fixed;
-		bottom: 0px;
-		left: 0px;
-		width: 100%;
-		padding: 10px;
-		border-radius: 3px 3px 0px 0px;
-		border-top: 1px solid #cccccc;
-		background-color: rgba(150,150,180,0.9);
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		flex-wrap: wrap;
-		@include pad-width(){
-			justify-content: center;
-		}
-		overflow-x: auto;
-		overflow-y: hidden;
-		max-height: 70px;
-		-webkit-transition: max-height $trans-time ease;
-    	transition: max-height $trans-time ease;
-		&.open{
-			max-height: 200px;
-		}
-		.category-option{
-			text-align: left;
-			.cat-title{
-				display: inline-block;
-				color: white;
-			}
-			select{
-				padding: 5px;
-				margin: 5px 0px;
-				border-radius: 3px;
-			}
-			input[type="number"]{
-				padding: 5px;
-				margin: 5px 0px;
-				border-radius: 3px;
-				max-width: 80px;
-			}
-			input[type="input"]{
-				padding: 5px;
-				margin: 5px 0px;
-				border-radius: 3px;
-				max-width: 100px;
-			}
-		}
-		.action-bt{
-			display: inline-block;
-			cursor: pointer;
-			padding: 5px 10px;
-			margin: 5px 10px;
-			background-color: #eeeeee;
-			color: #333333;
+	.input-bt-container{
+		margin: 20px auto 10px auto;
+	}
+	.category-option{
+		text-align: left;
+		padding: 0px 5px;
+		select{
+			font-size: 1.1em;
+			padding: 5px;
+			margin: 5px 0px;
 			border-radius: 3px;
-			&:hover{
-				background-color: #dddddd;
-			}
+		}
+		input[type="number"]{
+			padding: 5px;
+			margin: 5px 0px;
+			border-radius: 3px;
+			max-width: 80px;
+		}
+		input[type="input"]{
+			padding: 5px;
+			margin: 5px 0px;
+			border-radius: 3px;
+			max-width: 100px;
 		}
 	}
 }

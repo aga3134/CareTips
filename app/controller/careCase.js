@@ -22,6 +22,7 @@ careCase.CreateCase = function(param){
 	newCase.D4Num = problem.D4?problem.D4.length:0;
 
 	DB.CareCase.create(newCase).then(function(result) {
+		DB.User.increment('caseNum', {where: {id: newCase.ownerID}});
 		param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
@@ -117,34 +118,19 @@ careCase.EditCase = function(param){
 };
 
 careCase.DeleteCase = function(param){
-	DB.CareCase.destroy({where: {id: param.caseID, ownerID: param.ownerID}})
-	.then(function(result) {
-		param.succFunc(result);
-	}).catch(function(err){
-		console.log(err);
-		param.failFunc({"err":"delete case fail"});
-	});
-};
-
-careCase.CreateLike = function(param){
-	DB.CaseLike.create({caseID: param.caseID, ownerID: param.ownerID})
-	.then(function(result) {
-		DB.CareCase.increment('likeNum', {where: {id: param.caseID}});
-		param.succFunc(result);
-	}).catch(function(err){
-		console.log(err);
-		param.failFunc({"err":"create case like fail"});
-	});
-};
-
-careCase.DeleteLike = function(param){
-	DB.CaseLike.destroy({where: {caseID: param.caseID, ownerID: param.ownerID}})
-	.then(function(result) {
-		DB.CareCase.decrement('likeNum', {where: {id: param.caseID}});
-		param.succFunc(result);
-	}).catch(function(err){
-		console.log(err);
-		param.failFunc({"err":"delete case like fail"});
+	DB.CareCase.findOne({where: {id: param.caseID}, ownerID: param.ownerID})
+	.then(function(careCase) {
+		if(careCase.solNum > 0) return param.failFunc({"err":"solNum not zero"});
+		if(careCase.msgNum > 0) return param.failFunc({"err":"msgNum not zero"});
+		if(careCase.likeNum > 0) return param.failFunc({"err":"likeNum not zero"});
+		DB.CareCase.destroy({where: {id: param.caseID, ownerID: param.ownerID}})
+		.then(function(result) {
+			DB.User.decrement('caseNum', {where: {id: param.ownerID}});
+			param.succFunc(result);
+		}).catch(function(err){
+			console.log(err);
+			param.failFunc({"err":"delete case fail"});
+		});
 	});
 };
 
@@ -157,6 +143,8 @@ careCase.CreateMessage = function(param){
 	newMsg.message = param.message;
 
 	DB.CaseMessage.create(newMsg).then(function(result) {
+		DB.CareCase.increment('msgNum', {where: {id: param.caseID}});
+		DB.User.increment('msgNum', {where: {id: param.ownerID}});
 		param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
@@ -186,10 +174,35 @@ careCase.ListMessage = function(param){
 careCase.DeleteMessage = function(param){
 	DB.CaseMessage.destroy({where: {id: param.messageID, ownerID: param.ownerID}})
 	.then(function(result) {
+		DB.CareCase.decrement('msgNum', {where: {id: param.caseID}});
+		DB.User.decrement('msgNum', {where: {id: param.ownerID}});
 		param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
 		param.failFunc({"err":"delete case message fail"});
+	});
+};
+
+//============================like==============================
+careCase.CreateLike = function(param){
+	DB.CaseLike.create({caseID: param.caseID, ownerID: param.ownerID})
+	.then(function(result) {
+		DB.CareCase.increment('likeNum', {where: {id: param.caseID}});
+		param.succFunc(result);
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"create case like fail"});
+	});
+};
+
+careCase.DeleteLike = function(param){
+	DB.CaseLike.destroy({where: {caseID: param.caseID, ownerID: param.ownerID}})
+	.then(function(result) {
+		DB.CareCase.decrement('likeNum', {where: {id: param.caseID}});
+		param.succFunc(result);
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"delete case like fail"});
 	});
 };
 

@@ -63,6 +63,11 @@ export default {
 				if(item.login == -1 && this.isLogin) continue;
 				this.activeItem.push(item);
 			}
+		},
+		ChangeUserPhoto: function(response){
+			this.user.photo = response.photo;
+			this.user.icon = response.icon;
+			this.menuImg = response.icon;
 		}
 	}
 }

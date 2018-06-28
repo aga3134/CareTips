@@ -3,10 +3,12 @@
 	<div class="case-editor">
 		<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
 		<div class="case-info">
+			<a name="caseDesc"></a>
 			<div class="cat-header">案例簡述</div>
 			<textarea v-model="caseInfo.desc" placeholder="請簡單描述案例之生活背景與問題摘要"></textarea>
 		</div>
 		<div class="case-info">
+			<a name="caseProblem"></a>
 			<div class="cat-header">問題列表</div>
 			<div class="input-bt" v-on:click="openInput = true;">新增問題</div>
 			<div class="problem-list">
@@ -31,6 +33,7 @@
 		<div class="case-info">
 			<div class="separator">&nbsp;</div>
 			<div class="remark">
+				<a name="caseRemark"></a>
 				*為協助照護經驗傳承與跨專業交流，您所分享的案例皆為公開可搜尋的資訊。請勿將實際個案的隱私資訊寫入案例中，以免侵犯個案隱私權。
 				<div class="remark-check">
 					<input type="checkbox" v-model="finalCheck"> 我了解了
@@ -39,6 +42,13 @@
 			<div class="input-bt" v-on:click="SubmitCase();">
 				<div v-show="action == 'create'">送出案例</div>
 				<div v-show="action == 'edit'">完成案例修改</div>
+			</div>
+		</div>
+		<div class="tab-bar">
+			<div class="tab-bt-container">
+				<div class="tab-bt" v-on:click="openInput = true;">新增問題</div>
+				<div v-show="action == 'create'" class="tab-bt" v-on:click="SubmitCase();">送出案例</div>
+				<div v-show="action == 'edit'" class="tab-bt" v-on:click="SubmitCase();">完成案例修改</div>
 			</div>
 		</div>
 		
@@ -73,8 +83,16 @@
 					<textarea v-model="problemDesc" placeholder="請簡單描述問題狀況"></textarea>
 				</div>
 				<div class="input-bt" v-show="!modify" v-on:click="AddProblem();">新增</div>
+				<div class="input-bt" v-show="!modify" v-on:click="openInput = false;">取消</div>
 				<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
 				<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消</div>
+			</div>
+		</div>
+
+		<div class="input-panel" v-show="setupUserInfo">
+			<div class="input-area">
+				<div class="panel-title">請先輸入您的個人資訊</div>
+				<user-info-editor ref="userInfoEditor"></user-info-editor>
 			</div>
 		</div>
 	</div>
@@ -82,10 +100,14 @@
 </template>
 
 <script>
+import userInfoEditor from "../vue/user-info-editor.vue"
 var g_Util = require('../js/util');
 
 export default {
 	props: ["action"],
+	components: {
+    	'user-info-editor': userInfoEditor
+	},
 	data: function () {
 		return {
 			message: "",
@@ -101,7 +123,9 @@ export default {
 			caseID: null,
 			modify: false,
 			modifyCategory: "",
-			modifyIndex: -1
+			modifyIndex: -1,
+			setupUserInfo: false,
+			user: null
 		};
 	},
 	created: function(){
@@ -128,6 +152,16 @@ export default {
 		
 	},
 	methods: {
+		SetUser: function(user){
+			this.user = user;
+			if(!user.profession){
+				this.setupUserInfo = true;
+				this.$refs.userInfoEditor.submitCallback = function(result){
+					this.setupUserInfo = false;
+				}.bind(this);
+				this.$refs.userInfoEditor.SetUser(user);
+			}
+		},
 		AddProblem: function(){
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
@@ -192,17 +226,27 @@ export default {
 			this.openInput = false;
 		},
 		SubmitCase: function(){
+			var scrollOffset = -80;
 			if(this.caseInfo.desc == ""){
-				return alert("案例簡述不能空白");
+				g_Util.GoToAnchor("caseDesc",scrollOffset,
+					function(){alert("案例簡述不能空白");}
+				);
+				return;
 			}
 			if(this.caseInfo.problem["D1"].length == 0 && 
 				this.caseInfo.problem["D2"].length == 0 && 
 				this.caseInfo.problem["D3"].length == 0 && 
 				this.caseInfo.problem["D4"].length == 0){
-				return alert("問題列表不能空白");
+				g_Util.GoToAnchor("caseProblem",scrollOffset,
+					function(){alert("問題列表不能空白");}
+				);
+				return;
 			}
 			if(!this.finalCheck){
-				return alert("請閱讀紅色警示文字並勾選「我了解了」");
+				g_Util.GoToAnchor("caseRemark",scrollOffset,
+					function(){alert("請閱讀紅色警示文字並勾選「我了解了」");}
+				);
+				return;
 			}
 			//console.log(this.target.profession);
 			switch(this.action){
@@ -232,9 +276,6 @@ $head-bg-color: #36688D;
 $head-fg-color: #ffffff;
 $link-color: #FF6666;
 $link-hover-color: #FF3333;
-$action-color: #ff8888;
-$action-hover-color: #ff6666;
-
 
 .case-editor{
 	width: 100%;
@@ -300,55 +341,6 @@ $action-hover-color: #ff6666;
 		}
 	}
 	
-	.input-panel{
-		position: fixed;
-		top: 0px;
-		left: 0px;
-		width: 100%;
-		height: 100%;
-		padding: 10px;
-		background-color: rgba(50,50,50,0.8);
-		z-index: 10;
-		overflow-y: auto;
-		.input-area{
-			position: relative;
-			background-color: #eeeeee;
-			border-radius: 5px;
-			width: 800px;
-			max-width: 100%;
-			margin: auto;
-			padding: 10px;
-			top: 50%;
-			-webkit-transform: translateY(-50%);
-			-ms-transform: translateY(-50%);
-			transform: translateY(-50%);
-			.input-item{
-				margin: 10px;
-			}
-			.input-label{
-				font-size: 1.2em;
-				display: inline-block;
-			}
-			select{
-				padding: 5px;
-			}
-			.close-bt{
-				position: absolute;
-				top: 10px;
-				right: 10px;
-				font-size: 1.2em;
-				cursor: pointer;
-				padding: 5px 10px;
-				color: $action-color;
-				border: 1px solid $action-color;
-				border-radius: 5px;
-				&:hover{
-					color: $action-hover-color;
-					border: 1px solid $action-hover-color;
-				}
-			}
-		}
-	}
 }
 
 </style>

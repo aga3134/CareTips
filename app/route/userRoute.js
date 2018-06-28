@@ -53,7 +53,7 @@ router.post('/edit', util.CheckLogin, function(req, res) {
 	modify.desc = req.body.data.desc;
 
 	DB.User.update(modify, {where: {"id": req.user.id}}).then(function() {
-	    res.status(200).json({"status": "ok"});
+	    res.status(200).json({"status": "ok", "data": modify});
 	});
 });
 

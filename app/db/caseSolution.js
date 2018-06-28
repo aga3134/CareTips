@@ -15,6 +15,10 @@ module.exports = function(sequelize, DataTypes) {
 			references: { model: "users", key: "id" },
 		},
 		info: DataTypes.TEXT,	//json with solution list
+		status: {
+			type: DataTypes.STRING,
+			defaultValue: 'valid'
+		},
 		//statistic
 		msgNum: {
 			type: DataTypes.INTEGER,

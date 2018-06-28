@@ -11,6 +11,10 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		desc: DataTypes.TEXT,	//desc for newest version
 		info: DataTypes.TEXT,	//json problem,desc list for different version
+		status: {
+			type: DataTypes.STRING,
+			defaultValue: 'valid'
+		},
 		//statistic
 		D1Num: DataTypes.INTEGER,
 		D2Num: DataTypes.INTEGER,

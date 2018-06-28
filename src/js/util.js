@@ -37,4 +37,30 @@ util.GetUrlParameter = function(){
 	return result;
 };
 
+util.GoToAnchor = function(name, offset, callback){
+	var anchor = $('[name="' + name + '"]');
+	if(anchor.length == 0){
+		anchor = $('a[id="' + name + '"]');
+	}
+	if(anchor.length > 0){
+		$('html').animate({
+			scrollTop: anchor.offset().top+offset
+		}, 500, callback);
+		return false;
+	}
+	return true;
+};
+
+util.SetupAnchorScroll = function(offset){
+	$('a').click(function(){
+		var href = $.attr(this, 'href');
+		if(href){
+			var scroll = $("html").scrollTop();
+			var index= href.indexOf("#");
+			return util.GoToAnchor(href.substr(index+1),offset);
+		}
+		return false;
+	});
+};
+
 module.exports = util;

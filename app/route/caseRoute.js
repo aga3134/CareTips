@@ -53,7 +53,11 @@ router.get('/delete', util.CheckLogin, util.CheckMyCase, function(req, res) {
 		res.redirect('/?message='+encodeURIComponent('案例已刪除'));
 	};
 	param.failFunc = function(result){
-		res.redirect('/?message='+encodeURIComponent('案例刪除失敗'));
+		var msg = '案例刪除失敗';
+		if(result.err == "solNum not zero") msg = "無法刪除已有解決方案的案例";
+		else if(result.err == "msgNum not zero") msg = "無法刪除已有留言的案例";
+		else if(result.err == "likeNum not zero") msg = "無法刪除已被按讚的案例";
+		res.redirect('/?message='+encodeURIComponent(msg));
 	};
 	careCase.DeleteCase(param);
 });
@@ -173,6 +177,7 @@ router.get('/message/list', function(req, res) {
 router.post('/message/delete', util.CheckMyCaseMessage, function(req, res) {
 	var param = {};
 	param.ownerID = req.user.id;
+	param.caseID = req.body.case;
 	param.messageID = req.body.message;
 
 	param.succFunc = function(result){
