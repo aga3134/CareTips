@@ -1,6 +1,5 @@
 <template lang="html">
 <div class="care-calculator">
-	<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
 	<div class="price-panel">
 		<div class="comp-header">照服計算機</div>
 		<div class="option-container">
@@ -356,8 +355,6 @@ var g_Util = require('../js/util');
 export default {
 	data: function () {
 		return {
-			message: "",
-			showMessage: false,
 			identity: 2,
 			careLevel: 0,
 			transportLevel: 0,
@@ -714,13 +711,7 @@ export default {
 			});
 			this.UpdatePrice();
 			this.openInputPanel = false;
-
-			this.showMessage = true;
-			this.message = "加入服務 "+item.code;
-			setTimeout(function(){
-				this.showMessage = false;
-				this.message = "";
-			}.bind(this),3000);
+			this.$root.ShowMessage("加入服務 "+item.code);
 		},
 		DeleteItem: function(code, index){
 			if(confirm("確定刪除?")){

@@ -446,15 +446,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function () {
 		return {
-			message: "",
-			showMessage: false,
 			identity: 2,
 			careLevel: 0,
 			transportLevel: 0,
@@ -801,13 +798,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			});
 			this.UpdatePrice();
 			this.openInputPanel = false;
-
-			this.showMessage = true;
-			this.message = "加入服務 " + item.code;
-			setTimeout(function () {
-				this.showMessage = false;
-				this.message = "";
-			}.bind(this), 3000);
+			this.$root.ShowMessage("加入服務 " + item.code);
 		},
 		DeleteItem: function (code, index) {
 			if (confirm("確定刪除?")) {
@@ -971,7 +962,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
@@ -983,8 +973,6 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 	},
 	data: function () {
 		return {
-			message: "",
-			showMessage: false,
 			omaha: null,
 			selectDomain: "D1",
 			selectProblem: 0,
@@ -1051,13 +1039,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 			this.openInput = false;
 			this.problemDesc = "";
-
-			this.showMessage = true;
-			this.message = "加入問題 " + p.id;
-			setTimeout(function () {
-				this.showMessage = false;
-				this.message = "";
-			}.bind(this), 3000);
+			this.$root.ShowMessage("加入問題 " + p.id);
 		},
 		ModifyItem: function (category, index) {
 			this.modify = true;
@@ -1847,7 +1829,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			//console.log(this.user.profession);
 			$.post("/user/edit", { data: this.user }, function (result) {
 				if (this.submitCallback) this.submitCallback(result);else {
-					alert(data.status == "ok" ? "修改成功" : "修改失敗");
+					alert(result.status == "ok" ? "修改成功" : "修改失敗");
 				}
 			}.bind(this));
 		}
@@ -2842,12 +2824,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "care-calculator" }, [
-    _c(
-      "div",
-      { staticClass: "inform-message", class: { show: _vm.showMessage } },
-      [_vm._v(_vm._s(_vm.message))]
-    ),
-    _vm._v(" "),
     _c("div", { staticClass: "price-panel" }, [
       _c("div", { staticClass: "comp-header" }, [_vm._v("照服計算機")]),
       _vm._v(" "),
@@ -4715,12 +4691,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("div", { staticClass: "case-editor" }, [
-      _c(
-        "div",
-        { staticClass: "inform-message", class: { show: _vm.showMessage } },
-        [_vm._v(_vm._s(_vm.message))]
-      ),
-      _vm._v(" "),
       _c("div", { staticClass: "case-info" }, [
         _c("a", { attrs: { name: "caseDesc" } }),
         _vm._v(" "),
@@ -6823,7 +6793,9 @@ new Vue({
 	el: '#careTips',
 	components: { topbar: _vue_topbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"], calculator: _vue_calculator_vue__WEBPACK_IMPORTED_MODULE_1__["default"], loginPanel: _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__["default"], userInfoEditor: _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__["default"], caseEditor: _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__["default"], caseListThumb: _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__["default"], caseList: _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__["default"], caseView: _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_7__["default"] },
 	data: {
-		user: null
+		user: null,
+		message: "",
+		showMessage: false
 	},
 	created: function () {
 		window.addEventListener('resize', this.CloseMenu);
@@ -6835,10 +6807,12 @@ new Vue({
 				if (this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
 				if (this.$refs.caseEditor) this.$refs.caseEditor.SetUser(data.user);
 			}
+
 			var urlParam = g_Util.GetUrlParameter();
 			if (urlParam.message) {
 				alert(decodeURIComponent(urlParam.message));
 			}
+
 			g_Util.SetupAnchorScroll(-80);
 		}.bind(this));
 	},
@@ -6848,6 +6822,14 @@ new Vue({
 		},
 		ChangeUserPhoto: function (response) {
 			if (this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(response);
+		},
+		ShowMessage: function (msg) {
+			this.showMessage = true;
+			this.message = msg;
+			setTimeout(function () {
+				this.showMessage = false;
+				this.message = "";
+			}.bind(this), 3000);
 		}
 	}
 });

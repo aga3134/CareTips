@@ -1,7 +1,6 @@
 <template lang="html">
 <div>
 	<div class="case-editor">
-		<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
 		<div class="case-info">
 			<a name="caseDesc"></a>
 			<div class="cat-header">案例簡述</div>
@@ -110,8 +109,6 @@ export default {
 	},
 	data: function () {
 		return {
-			message: "",
-			showMessage: false,
 			omaha: null,
 			selectDomain: "D1",
 			selectProblem: 0,
@@ -179,13 +176,7 @@ export default {
 
 			this.openInput = false;
 			this.problemDesc = "";
-
-			this.showMessage = true;
-			this.message = "加入問題 "+p.id;
-			setTimeout(function(){
-				this.showMessage = false;
-				this.message = "";
-			}.bind(this),3000);
+			this.$root.ShowMessage("加入問題 "+p.id);
 		},
 		ModifyItem: function(category, index){
 			this.modify = true;

@@ -5,6 +5,7 @@
 	</head>
 	<body>
 		<div class="care-tips" id="careTips">
+			<div class="inform-message" v-bind:class="{show: showMessage}">{{message}}</div>
 			<topbar ref="topbar"></topbar>
 			<div class="main-container" v-on:click="CloseMenu();">
 				<%-content%>

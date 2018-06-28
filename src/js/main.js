@@ -14,7 +14,9 @@ new Vue({
 	el: '#careTips',
 	components:{topbar,calculator,loginPanel,userInfoEditor,caseEditor,caseListThumb,caseList,caseView},
 	data:{
-		user: null
+		user: null,
+		message: "",
+		showMessage: false,
 	},
 	created: function(){
 		window.addEventListener('resize', this.CloseMenu);
@@ -26,10 +28,12 @@ new Vue({
 				if(this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
 				if(this.$refs.caseEditor) this.$refs.caseEditor.SetUser(data.user);
 			}
+
 			var urlParam = g_Util.GetUrlParameter();
 			if(urlParam.message){
 				alert(decodeURIComponent(urlParam.message));
 			}
+			
 			g_Util.SetupAnchorScroll(-80);
 		}.bind(this));
 	},
@@ -39,6 +43,14 @@ new Vue({
 		},
 		ChangeUserPhoto: function(response){
 			if(this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(response);
+		},
+		ShowMessage: function(msg){
+			this.showMessage = true;
+			this.message = msg;
+			setTimeout(function(){
+				this.showMessage = false;
+				this.message = "";
+			}.bind(this),3000);
 		}
 	}
 })

@@ -123,7 +123,7 @@ export default {
 			$.post("/user/edit", {data: this.user}, function(result){
 				if(this.submitCallback) this.submitCallback(result);
 				else{
-					alert(data.status == "ok"?"修改成功":"修改失敗");
+					alert(result.status == "ok"?"修改成功":"修改失敗");
 				}
 			}.bind(this));
 		}
