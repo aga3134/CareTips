@@ -11,12 +11,12 @@
 				<div class="info-label canNotEmpty">姓名</div>
 				<input type="text" v-model="user.name">
 				<div class="info-label canNotEmpty">服務專業</div>
-				<select v-model="selectService">
-					<option v-for="service in services" v-bind:value="service">{{service}}</option>
+				<select v-model="selectProfession">
+					<option v-for="profession in professions" v-bind:value="profession">{{profession}}</option>
 				</select>
-				<div v-show="selectService == '其他' ">
+				<div v-show="selectProfession == '其他' ">
 					<div class="info-label canNotEmpty">請填寫服務專業</div>
-					<input type="text" v-model="otherService">
+					<input type="text" v-model="otherProfession">
 				</div>
 				<div class="info-label">服務縣市</div>
 				<select v-model="user.county">
@@ -50,21 +50,24 @@ export default {
 	data: function () {
 		return {
 			user: {},
-			selectService:"",
-			otherService:"",
-			services: ["照專/個管","照顧服務","物理治療","職能治療","居家護理","居家醫療","居家藥師","家事服務","藝術治療","園藝治療","語言治療","輔具評估與器材","交通服務","其他"],
+			selectProfession:"",
+			otherProfession:"",
+			professions: ["照專/個管","照顧服務","物理治療","職能治療","居家護理","居家醫療","居家藥師","家事服務","藝術治療","園藝治療","語言治療","輔具評估與器材","交通服務","其他"],
 			counties: ["臺北市","新北市","基隆市","桃園市","新竹縣","新竹市","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義縣","嘉義市","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"],
 			submitCallback: null,
 			finalCheck: false
 		};
 	},
 	created: function(){
-
+		$.get("/static/profession.json", function(data){
+			this.professions = data.profession;
+			this.counties = data.county;
+		}.bind(this));
 	},
 	methods: {
 		SetUser: function(user){
 			this.user = user;
-			this.InitSelectService();
+			this.InitSelectProfession();
 		},
 		ChangePhoto: function(){
 			var elem = this.$refs.uploadBt;
@@ -92,23 +95,23 @@ export default {
 				}
 			});
 		},
-		InitSelectService: function(){
+		InitSelectProfession: function(){
 			if(this.user.profession){
-				if(this.services.includes(this.user.profession)){
-					this.selectService = this.user.profession;
+				if(this.professions.includes(this.user.profession)){
+					this.selectProfession = this.user.profession;
 				}
 				else{
-					this.selectService = "其他";
-					this.otherService = this.user.profession;
+					this.selectProfession = "其他";
+					this.otherProfession = this.user.profession;
 				}
 			}
 		},
 		SubmitUserInfo: function(){
-			if(this.selectService == "其他"){
-				this.user.profession = this.otherService;
+			if(this.selectProfession == "其他"){
+				this.user.profession = this.otherProfession;
 			}
 			else{
-				this.user.profession = this.selectService;
+				this.user.profession = this.selectProfession;
 			}
 			if(!this.user.name){
 				return alert("請輸入您的姓名");

@@ -14,31 +14,20 @@
   margin: 10px 0px;
   width: 100%; }
 
-.cat-D1 {
-  background-color: #FFA5A4; }
-
-.cat-D2 {
-  background-color: #DEE885; }
-
-.cat-D3 {
-  background-color: #85CAE8; }
-
-.cat-D4 {
-  background-color: #C089E8; }
-
 .problem-cat {
-  background-color: #eeeeee;
+  background-color: #f8f8f8;
   padding: 0px 0px 10px 0px;
+  margin: 10px auto;
   border-radius: 5px; }
   .problem-cat .problem-header {
-    margin: 10px auto;
+    margin: 0px auto;
     font-size: 1.2em;
     text-align: left;
     padding: 10px;
     background-color: #dddddd;
     border-radius: 5px 5px 0px 0px; }
   .problem-cat .problem-container {
-    padding: 10px; }
+    padding: 0px; }
   .problem-cat .problem-item {
     border-radius: 5px; }
     .problem-cat .problem-item.select {
@@ -68,6 +57,42 @@
       .problem-cat .problem-item .item-bt:hover {
         background-color: #ffffff; }
 
+.cat-D1 {
+  background-color: #FFA5A4; }
+
+.cat-D2 {
+  background-color: #DEE885; }
+
+.cat-D3 {
+  background-color: #85CAE8; }
+
+.cat-D4 {
+  background-color: #C089E8; }
+
+.cat-A {
+  background-color: #FFA5A4; }
+
+.cat-B {
+  background-color: #FFDE9C; }
+
+.cat-C {
+  background-color: #DEE885; }
+
+.cat-D {
+  background-color: #9FFFBC; }
+
+.cat-E {
+  background-color: #85CAE8; }
+
+.cat-F {
+  background-color: #AF93FF; }
+
+.cat-G {
+  background-color: #C089E8; }
+
+.cat-O {
+  background-color: #FF8AE7; }
+
 html, body {
   height: 100%;
   margin: 0;
@@ -93,6 +118,9 @@ html, body {
 .bold {
   font-weight: bold; }
 
+.inline-block {
+  display: inline-block; }
+
 .main-container {
   width: 100%;
   margin: 80px auto 20px auto;
@@ -102,6 +130,10 @@ html, body {
     font-size: 1.5em;
     text-align: center;
     color: red; }
+
+.care-tips .separator {
+  margin: 30px;
+  border-bottom: 1px solid #999999; }
 
 .care-tips .owner-info {
   display: flex;
@@ -124,7 +156,7 @@ html, body {
 .care-tips .input-bt {
   display: inline-block;
   color: #ffffff;
-  padding: 10px 20px;
+  padding: 7px 10px;
   margin: 5px;
   background-color: #555555;
   cursor: pointer;
@@ -133,8 +165,8 @@ html, body {
     background-color: #888888; }
 
 .care-tips .action-bt {
-  color: #ff8888;
-  border: 1px solid #ff8888;
+  color: #ff5555;
+  border: 1px solid #ff5555;
   border-radius: 5px;
   padding: 5px 10px;
   margin: 5px;
@@ -159,7 +191,7 @@ html, body {
   .care-tips .feedback-statistic .clickable {
     cursor: pointer; }
     .care-tips .feedback-statistic .clickable:hover {
-      border-bottom: 2px solid #ff8888;
+      border-bottom: 2px solid #ff5555;
       -webkit-filter: brightness(80%);
       filter: brightness(80%); }
   .care-tips .feedback-statistic .feedback-icon {
@@ -183,6 +215,24 @@ html, body {
   transition: top 0.5s ease; }
   .care-tips .inform-message.show {
     top: 0px; }
+
+.care-tips .message-list .message {
+  margin: 10px;
+  border-bottom: 1px solid #dddddd;
+  padding: 0px; }
+  .care-tips .message-list .message .message-content {
+    padding-left: 10px;
+    white-space: pre-wrap; }
+
+.care-tips .message-list .sub-info {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.8em;
+  color: #888888; }
+  .care-tips .message-list .sub-info .info-item {
+    margin: 10px 5px; }
 
 .care-tips .message-box {
   border: 1px solid #cccccc;
@@ -212,6 +262,11 @@ html, body {
       .care-tips .message-box .bt-container .bt:hover {
         background-color: #888888; }
 
+.care-tips .panel-title {
+  font-size: 1.5em;
+  text-align: center;
+  margin: 20px; }
+
 .care-tips .input-panel {
   position: fixed;
   top: 0px;
@@ -220,18 +275,14 @@ html, body {
   height: 100%;
   padding: 10px;
   background-color: rgba(50, 50, 50, 0.8);
-  z-index: 10;
   overflow-x: hidden;
   overflow-y: hidden; }
-  .care-tips .input-panel .panel-title {
-    font-size: 1.5em;
-    text-align: center;
-    margin: 20px; }
   .care-tips .input-panel .input-area {
     max-height: 100%;
     overflow-y: auto;
     position: relative;
     background-color: #eeeeee;
+    color: #323232;
     border-radius: 5px;
     width: 800px;
     max-width: 100%;
@@ -242,13 +293,35 @@ html, body {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%); }
     .care-tips .input-panel .input-area .input-item {
-      margin: 10px; }
+      margin: 5px; }
     .care-tips .input-panel .input-area .input-label {
       font-size: 1.2em;
       display: inline-block; }
     .care-tips .input-panel .input-area select {
+      border-radius: 3px;
+      max-width: 100%;
       padding: 5px;
-      max-width: 100%; }
+      font-size: 1.1em; }
+    .care-tips .input-panel .input-area textarea {
+      margin: 10px 0px;
+      border-radius: 3px;
+      padding: 10px;
+      width: 100%;
+      height: 120px;
+      resize: none;
+      font-size: 1.1em; }
+    .care-tips .input-panel .input-area input[type="number"] {
+      max-width: 100%;
+      padding: 5px;
+      border-radius: 3px;
+      max-width: 80px;
+      font-size: 1.1em; }
+    .care-tips .input-panel .input-area input[type="text"] {
+      max-width: 100%;
+      padding: 5px;
+      border-radius: 3px;
+      max-width: 200px;
+      font-size: 1.1em; }
     .care-tips .input-panel .input-area .close-bt {
       position: absolute;
       top: 10px;
@@ -256,19 +329,39 @@ html, body {
       font-size: 1.2em;
       cursor: pointer;
       padding: 5px 10px;
-      color: #ff8888;
-      border: 1px solid #ff8888;
+      color: #ff5555;
+      border: 1px solid #ff5555;
       border-radius: 5px; }
       .care-tips .input-panel .input-area .close-bt:hover {
         color: #ff3333;
         border: 1px solid #ff3333; }
+
+.care-tips .slide-panel {
+  position: fixed;
+  top: 0px;
+  left: 100%;
+  width: 100%;
+  height: calc(100% - 60px);
+  padding: 10px;
+  z-index: 10;
+  color: white;
+  background-color: rgba(50, 50, 50, 0.8);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-transition: left 0.5s ease;
+  transition: left 0.5s ease; }
+  .care-tips .slide-panel.open {
+    left: 0px; }
 
 .care-tips .tab-bar {
   position: fixed;
   left: 0px;
   bottom: 0px;
   width: 100%;
-  background-color: rgba(100, 100, 100, 0.9);
+  height: 60px;
+  z-index: 9;
+  background-color: rgba(240, 240, 240, 0.9);
+  box-shadow: 0px 0px 5px #888888;
   display: flex;
   justify-content: center;
   align-items: center; }
@@ -277,6 +370,7 @@ html, body {
     overflow-x: auto;
     padding: 10px; }
   .care-tips .tab-bar .tab-bt {
+    text-align: center;
     min-width: 90px;
     cursor: pointer;
     padding: 5px 10px;
@@ -289,8 +383,8 @@ html, body {
       color: #888888;
       border: 1px solid #888888; }
     .care-tips .tab-bar .tab-bt.on {
-      color: #ff8888;
-      border: 1px solid #ff8888; }
+      color: #ff5555;
+      border: 1px solid #ff5555; }
 
 
 /*# sourceMappingURL=main.css.map*/

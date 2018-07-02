@@ -3,84 +3,30 @@ var ejs = require("ejs");
 var router = express.Router();
 var Config = require("../../config.json");
 var util = require("../controller/util");
-var careCase = require("../controller/careCase");
+var caseSolution = require("../controller/caseSolution");
 
-//router registers to /case
-var meta = {};
-meta.version = Config.version;
-meta.hostname = Config.hostname;
-
-router.get('/', function(req, res) {
-	var caseID = req.query.case;
-	if(!caseID) res.redirect('/?message='+encodeURIComponent('無此案例'));
-	meta.title = "照服秘笈 - 案例分享";
-	meta.path = req.originalUrl;
-	meta.desc = Config.desc;
-	ejs.renderFile("view/content/case-view.ejs")
-	.then(function(content){
-		res.render("template.ejs",{meta: meta, content: content});
-	});
-});
-
-router.get('/create', util.CheckLogin, function(req, res) {
-	meta.title = "照服秘笈 - 新增案例";
-	meta.path = req.originalUrl;
-	meta.desc = Config.desc;
-	ejs.renderFile("view/content/case-editor.ejs",{action: "create"})
-	.then(function(content){
-		res.render("template.ejs",{meta: meta, content: content});
-	});
-});
-
-router.get('/edit', util.CheckLogin, function(req, res) {
-	var caseID = req.query.case;
-	if(!caseID) res.redirect('/?message='+encodeURIComponent('無此案例'));
-
-	meta.title = "照服秘笈 - 修改案例";
-	meta.path = req.originalUrl;
-	meta.desc = Config.desc;
-	ejs.renderFile("view/content/case-editor.ejs",{action: "edit"})
-	.then(function(content){
-		res.render("template.ejs",{meta: meta, content: content});
-	});
-});
-
-router.get('/delete', util.CheckLogin, util.CheckMyCase, function(req, res) {
-	var param = {};
-	param.caseID = req.query.case;
-	param.ownerID = req.user.id;
-	param.succFunc = function(result){
-		res.redirect('/?message='+encodeURIComponent('案例已刪除'));
-	};
-	param.failFunc = function(result){
-		var msg = '案例刪除失敗';
-		if(result.err == "solNum not zero") msg = "無法刪除已有解決方案的案例";
-		else if(result.err == "msgNum not zero") msg = "無法刪除已有留言的案例";
-		else if(result.err == "likeNum not zero") msg = "無法刪除已被按讚的案例";
-		res.redirect('/?message='+encodeURIComponent(msg));
-	};
-	careCase.DeleteCase(param);
-});
-
+//router registers to /solution
 //=================ajax api====================
 router.get('/list', function(req, res) {
 	var param = {};
 	param.keyword = req.query.keyword;
 	param.fetchPage = req.query.fetchPage || 0;
 	param.owner = req.query.owner;
+	param.caseID = req.query.case;
+	param.caseVersion = req.query.caseVersion;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result});
 	};
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.ListCase(param);
+	caseSolution.ListSolution(param);
 });
 
 router.get('/view', function(req, res) {
-	if(!req.query.case) return res.status(200).json({"status":"fail","message": "case not found"});
+	if(!req.query.solution) return res.status(200).json({"status":"fail","message": "solution not found"});
 	var param = {};
-	param.caseID = req.query.case;
+	param.solutionID = req.query.solution;
 	param.user = req.user;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result});
@@ -88,7 +34,7 @@ router.get('/view', function(req, res) {
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.ViewCase(param);
+	caseSolution.ViewSolution(param);
 });
 
 router.post('/create', util.CheckLogin, function(req, res) {
@@ -101,28 +47,28 @@ router.post('/create', util.CheckLogin, function(req, res) {
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.CreateCase(param);
+	caseSolution.CreateSolution(param);
 });
 
-router.post('/edit', util.CheckMyCase, function(req, res) {
-	if(!req.query.case) return res.status(200).json({"status":"fail","message": "case not found"});
-
+router.post('/edit', util.CheckMySolution, function(req, res) {
 	var param = {};
 	param.user = req.user;
-	param.data = req.body.data;
-	param.caseID = req.query.case;
+	param.caseID = req.body.data.caseID;
+	param.caseVersion = req.body.data.caseVersion;
+	param.info = req.body.data.info;
+	param.solutionID = req.query.solution;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result.id});
 	};
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.EditCase(param);
+	caseSolution.EditSolution(param);
 });
-//============================like==============================
-router.post('/like/create', util.CheckLogin, function(req, res) {
+
+router.get('/delete', util.CheckMySolution, function(req, res){
 	var param = {};
-	param.caseID = req.body.caseID;
+	param.solutionID = req.query.solution;
 	param.ownerID = req.user.id;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result.id});
@@ -130,12 +76,26 @@ router.post('/like/create', util.CheckLogin, function(req, res) {
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.CreateLike(param);
+	caseSolution.DeleteSolution(param);
+});
+
+//============================like==============================
+router.post('/like/create', util.CheckLogin, function(req, res) {
+	var param = {};
+	param.solutionID = req.body.solutionID;
+	param.ownerID = req.user.id;
+	param.succFunc = function(result){
+		res.status(200).json({"status":"ok","data": result.id});
+	};
+	param.failFunc = function(result){
+		res.status(200).json({"status": "fail","message": result.err});
+	};
+	caseSolution.CreateLike(param);
 });
 
 router.post('/like/delete', util.CheckLogin, function(req, res) {
 	var param = {};
-	param.caseID = req.body.caseID;
+	param.solutionID = req.body.solutionID;
 	param.ownerID = req.user.id;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result.id});
@@ -143,7 +103,7 @@ router.post('/like/delete', util.CheckLogin, function(req, res) {
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.DeleteLike(param);
+	caseSolution.DeleteLike(param);
 });
 
 //============================message==============================
@@ -151,33 +111,32 @@ router.post('/message/create', util.CheckLogin, function(req, res) {
 	var param = {};
 	param.ownerID = req.user.id;
 	param.message = req.body.message;
-	param.caseID = req.body.caseID;
-	param.caseVersion = req.body.caseVersion;
+	param.solutionID = req.body.solutionID;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result});
 	};
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.CreateMessage(param);
+	caseSolution.CreateMessage(param);
 });
 
 router.get('/message/list', function(req, res) {
 	var param = {};
-	param.caseID = req.query.case;
+	param.solutionID = req.query.solution;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result});
 	};
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.ListMessage(param);
+	caseSolution.ListMessage(param);
 });
 
-router.post('/message/delete', util.CheckMyCaseMessage, function(req, res) {
+router.post('/message/delete', util.CheckMySolutionMessage, function(req, res) {
 	var param = {};
 	param.ownerID = req.user.id;
-	param.caseID = req.body.case;
+	param.solutionID = req.body.solution;
 	param.messageID = req.body.message;
 
 	param.succFunc = function(result){
@@ -186,7 +145,7 @@ router.post('/message/delete', util.CheckMyCaseMessage, function(req, res) {
 	param.failFunc = function(result){
 		res.status(200).json({"status": "fail","message": result.err});
 	};
-	careCase.DeleteMessage(param);
+	caseSolution.DeleteMessage(param);
 });
 
 module.exports = router;

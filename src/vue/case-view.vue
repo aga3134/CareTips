@@ -20,6 +20,9 @@
 			<div class="action-bt" v-on:click="DeleteCase();">刪除案例</div>
 		</div>
 	</div>
+	<div class="input-bt" v-on:click="ProvideSolution();">我要解題</div>
+	<div class="input-bt" v-on:click="ViewSolution(solutionID);">觀看解方</div>
+
 	<div class="case-title">案例簡述</div>
 	<div class="case-desc" v-if="caseInfo">{{caseInfo.info[vIndex].desc}}</div>
 	<div class="case-title">問題列表</div>
@@ -50,6 +53,7 @@
 		</div>
 	</div>
 	<div class="message-list" v-if="caseInfo">
+		<a name="messageList"></a>
 		<div class="message" v-for="(m,i) in messageList" v-show="m.caseVersion == caseInfo.info[vIndex].version">
 			<div class="owner-info">
 				<img class="owner-icon" v-bind:src="m.user.icon">
@@ -62,11 +66,45 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="input-panel" v-show="setupUserInfo">
+		<div class="input-area">
+			<div class="panel-title">請先輸入您的個人資訊</div>
+			<user-info-editor ref="userInfoEditor"></user-info-editor>
+		</div>
+	</div>
+
+	<div class="slide-panel" v-bind:class="{open: status == 'ProvideSolution'}">
+		<div class="panel-title">請依序回答下列問題</div>
+		<case-provide-solution ref="caseProvideSolution"></case-provide-solution>
+	</div>
+
+	<div class="slide-panel" v-bind:class="{open: status == 'SolutionList'}">
+		<div class="panel-title">解方列表</div>
+		<solution-list ref="solutionList"></solution-list>
+	</div>
+
+	<div class="slide-panel" v-bind:class="{open: status == 'ViewSolution'}">
+		<div class="panel-title">觀看解方</div>
+		<case-view-solution ref="caseViewSolution"></case-view-solution>
+	</div>
+
+	<div class="tab-bar">
+		<div class="tab-bt-container">
+			<div class="tab-bt" v-bind:class="{on: status=='ViewCase'}" v-on:click="ViewCase();">觀看案例</div>
+			<div class="tab-bt" v-bind:class="{on: status=='ProvideSolution'}" v-on:click="ProvideSolution();">我要解題</div>
+			<div class="tab-bt" v-bind:class="{on: status=='ViewSolution'}" v-on:click="ViewSolution(solutionID);">觀看解方</div>
+		</div>
+	</div>
 	
 </div>
 </template>
 
 <script>
+import userInfoEditor from "../vue/user-info-editor.vue"
+import caseProvideSolution from "../vue/case-provide-solution.vue"
+import caseViewSolution from "../vue/case-view-solution.vue"
+import solutionList from "../vue/solution-list.vue"
 var g_Util = require("../js/util");
 
 export default {
@@ -80,8 +118,17 @@ export default {
 			vIndex: 0,
 			problem: {"D1":[], "D2":[], "D3":[], "D4":[]},
 			sendMessage: "",
-			messageList: []
+			messageList: [],
+			setupUserInfo: false,
+			status: "ViewCase",
+			solutionID: null
 		};
+	},
+	components: {
+    	'user-info-editor': userInfoEditor,
+    	'case-provide-solution': caseProvideSolution,
+    	'case-view-solution': caseViewSolution,
+    	'solution-list': solutionList
 	},
 	created: function(){
 		var urlParam = g_Util.GetUrlParameter();
@@ -122,6 +169,16 @@ export default {
 			if(this.caseInfo){
 				this.isMyCase = (user.id == this.caseInfo.ownerID);
 			}
+			if(!user.profession){
+				this.setupUserInfo = true;
+				this.$refs.userInfoEditor.submitCallback = function(result){
+					this.setupUserInfo = false;
+				}.bind(this);
+				this.$refs.userInfoEditor.SetUser(user);
+			}
+			if(this.$refs.caseViewSolution){
+				this.$refs.caseViewSolution.SetUser(user);
+			}
 		},
 		UpdateVersion: function(){
 			this.problem = {"D1":[], "D2":[], "D3":[], "D4":[]};
@@ -130,6 +187,12 @@ export default {
 			if(problem.D2) this.problem.D2 = problem.D2;
 			if(problem.D3) this.problem.D3 = problem.D3;
 			if(problem.D4) this.problem.D4 = problem.D4;
+		},
+		GetCaseInfo: function(){
+			var info = {};
+			info.caseID = this.caseInfo.id;
+			info.caseVersion = this.caseInfo.info[this.vIndex].version;
+			return info;
 		},
 		ModifyCase: function(){
 			window.location.href="/case/edit?case="+this.caseInfo.id;
@@ -153,6 +216,9 @@ export default {
 				result.data.user = this.user;
 				this.messageList.splice(0,0,result.data);
 				this.sendMessage = "";
+				g_Util.GoToAnchor("messageList");
+				this.$root.ShowMessage("新增留言成功");
+
 			}.bind(this));
 		},
 		DeleteMessage: function(index){
@@ -192,6 +258,31 @@ export default {
 					this.caseInfo.likeNum++;
 				}.bind(this));
 			}
+		},
+		ViewCase: function(){
+			this.status = "ViewCase";
+		},
+		ProvideSolution: function(solutionID){
+			if(!this.user){
+				var intentUrl = encodeURIComponent("/case?case="+this.caseInfo.id);
+				return window.location.href="/auth/login?intentUrl="+intentUrl;
+			}
+			if(solutionID){
+				this.$refs.caseProvideSolution.EditSolution(solutionID);
+			}
+			this.status = "ProvideSolution";
+		},
+		ViewSolution: function(solutionID){
+			this.solutionID = solutionID;
+			if(solutionID){
+				this.status = "ViewSolution";
+				this.$refs.caseViewSolution.LoadSolution(solutionID);
+			}
+			else{
+				this.status = "SolutionList";
+				this.$refs.solutionList.UpdateList();
+			}
+			
 		}
 	}
 }
@@ -220,29 +311,6 @@ export default {
 
 	.owner{
 		font-size: 1.2em;
-	}
-
-	.message-list{
-		.message{
-			margin: 10px;
-			border-bottom: 1px solid #dddddd;
-			padding: 0px;
-			.message-content{
-				padding-left: 10px;
-				white-space: pre-wrap;
-			}
-		}
-		.sub-info{
-			display: flex;
-			justify-content: flex-end;
-			flex-wrap: wrap;
-			align-items: center;
-			font-size: 0.8em;
-			color: #888888;
-			.info-item{
-				margin: 10px 5px;
-			}
-		}
 	}
 }
 </style>

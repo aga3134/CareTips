@@ -1,5 +1,5 @@
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define("solMessage", {
+	return sequelize.define("solutionMessage", {
 		id: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		solutionID: {
 			type: DataTypes.UUID,
-			references: { model: "careSolutions", key: "id" },
+			references: { model: "caseSolutions", key: "id" },
 		},
 		ownerID: {
 			type: DataTypes.UUID,

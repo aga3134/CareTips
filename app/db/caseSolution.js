@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.UUID,
 			references: { model: "careCases", key: "id" },
 		},
-		caseVersion: type: DataTypes.INTEGER,
+		caseVersion: DataTypes.INTEGER,
 		ownerID: {
 			type: DataTypes.UUID,
 			references: { model: "users", key: "id" },

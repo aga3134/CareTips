@@ -38,6 +38,7 @@ util.GetUrlParameter = function(){
 };
 
 util.GoToAnchor = function(name, offset, callback){
+	if(!offset) offset = -80;
 	var anchor = $('[name="' + name + '"]');
 	if(anchor.length == 0){
 		anchor = $('a[id="' + name + '"]');

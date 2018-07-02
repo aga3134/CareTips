@@ -5,10 +5,11 @@ var session = require("express-session");
 var MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require("body-parser");
 
-var viewRoute = require('./route/viewRoute');
-var authRoute = require('./route/authRoute');
-var userRoute = require('./route/userRoute');
-var caseRoute = require('./route/caseRoute');
+var viewRoute = require("./route/viewRoute");
+var authRoute = require("./route/authRoute");
+var userRoute = require("./route/userRoute");
+var caseRoute = require("./route/caseRoute");
+var solutionRoute = require("./route/solutionRoute");
 var Config = require("../config.json");
 var DB = require("./db/db");
 
@@ -50,10 +51,11 @@ app.use(passport.session());
 
 
 //setup route
-app.use('/', viewRoute);
-app.use('/auth', authRoute);
-app.use('/user', userRoute);
-app.use('/case', caseRoute);
+app.use("/", viewRoute);
+app.use("/auth", authRoute);
+app.use("/user", userRoute);
+app.use("/case", caseRoute);
+app.use("/solution", solutionRoute);
 
 app.listen(app.port, app.host);
 console.log("Server started");

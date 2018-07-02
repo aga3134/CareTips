@@ -4,7 +4,6 @@ import calculator from "../vue/calculator.vue"
 import loginPanel from "../vue/login-panel.vue"
 import userInfoEditor from "../vue/user-info-editor.vue"
 import caseEditor from "../vue/case-editor.vue"
-import caseListThumb from "../vue/case-list-thumb.vue"
 import caseList from "../vue/case-list.vue"
 import caseView from "../vue/case-view.vue"
 
@@ -12,7 +11,7 @@ var g_Util = require('../js/util');
 
 new Vue({
 	el: '#careTips',
-	components:{topbar,calculator,loginPanel,userInfoEditor,caseEditor,caseListThumb,caseList,caseView},
+	components:{topbar,calculator,loginPanel,userInfoEditor,caseEditor,caseList,caseView},
 	data:{
 		user: null,
 		message: "",

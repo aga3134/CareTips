@@ -1,22 +1,12 @@
-.cat-D1{
-	background-color: #FFA5A4;
-}
-.cat-D2{
-	background-color: #DEE885;
-}
-.cat-D3{
-	background-color: #85CAE8;
-}
-.cat-D4{
-	background-color: #C089E8;
-}
+
 
 .problem-cat{
-	background-color: #eeeeee;
+	background-color: #f8f8f8;
 	padding: 0px 0px 10px 0px;
+	margin: 10px auto;
 	border-radius: 5px;
 	.problem-header{
-		margin: 10px auto;
+		margin: 0px auto;
 		font-size: 1.2em;
 		text-align: left;
 		padding: 10px;
@@ -24,7 +14,7 @@
 		border-radius: 5px 5px 0px 0px;
 	}
 	.problem-container{
-		padding: 10px;
+		padding: 0px;
 	}
 	.problem-item{
 		border-radius: 5px;

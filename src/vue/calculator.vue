@@ -121,7 +121,7 @@
 			
 			<div class="price-summary">
 				<div class="sub-header">補助金額</div>
-				<div v-if="header.payment">
+				<div v-if="header">
 					<div class="price-limit">B+C碼可用額度: {{Math.max(0,header.payment[0].pay[careLevel]-usedBC)}} 元/月</div>
 					<div class="price-limit">D碼可用額度: {{Math.max(0,header.payment[parseInt(transportLevel)+1].pay[careLevel]-usedD)}} 元/月</div>
 					<div class="price-limit">E+F碼可用額度: {{Math.max(0,header.payment[5].pay[careLevel]-usedEF)}} 元/3年</div>
@@ -159,7 +159,7 @@
 
 			<div class="price-summary">
 				<div class="sub-header">自費金額</div>
-				<div v-if="header.payment">
+				<div v-if="header">
 					<div class="price-limit">B+C碼自費比例: {{header.payment[0].rate[identity]}} %</div>
 					<div class="price-limit">D碼自費比例: {{header.payment[parseInt(transportLevel)+1].rate[identity]}} %</div>
 					<div class="price-limit">E+F碼自費比例: {{header.payment[5].rate[identity]}} %</div>
@@ -301,46 +301,7 @@
 
 	<div class="input-panel" v-show="openInputPanel">
 		<div class="input-area">
-			<!--<div class="close-bt" v-on:click="openInputPanel = false;">X</div>-->
-			<div class="category-option">
-				<div class="input-label">主類</div>
-				<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
-					<option v-for="(s,i) in header.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
-				</select>
-			</div>
-			<div class="category-option" v-if="header.service && header.service[mainCategory].items.length > 1">
-				<div class="input-label">子類</div>
-				<select v-model="subCategory" v-on:change="UpdateSubCategory();">
-					<option v-for="(s,i) in header.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-				</select>
-			</div>
-			<div class="category-option" v-if="header.service && mainCategory != 7">
-				<div class="input-label">項目</div>
-				<select v-model="selectService" v-on:change="UpdateItemInfo();">
-					<option v-for="(s,i) in header.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-				</select>
-			</div>
-			<div>
-				<span class="category-option" v-if="mainCategory == 4 || mainCategory == 5">
-					<div class="input-label">方式</div>
-					<select v-model="isRent">
-						<option value="0" v-show="itemInfo.payForBuy !== '不適用' ">購買</option>
-						<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
-					</select>
-				</span>
-				<span class="category-option" v-if="mainCategory == 7">
-					<div class="input-label">服務名稱</div>
-					<input type="input" v-model="customName">
-				</span>
-				<span class="category-option" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
-					<div class="input-label">價格</div>
-					<input type="number" min="1" v-model="customPrice">
-				</span>
-				<span class="category-option">
-					<div class="input-label">數量</div>
-					<input type="number" min="1" max="100" v-model="serviceCount">
-				</span>
-			</div>
+			<care-service-selection calcPrice="1" ref="serviceSelect"></care-service-selection>
 			<div class="input-bt" v-on:click="AddService();">新增</div>
 			<div class="input-bt" v-on:click="openInputPanel = false;">取消</div>
 		</div>
@@ -350,6 +311,7 @@
 </template>
 
 <script>
+import careServiceSelection from "../vue/care-service-selection.vue"
 var g_Util = require('../js/util');
 
 export default {
@@ -363,14 +325,6 @@ export default {
 			usedD: 0,
 			usedEF: 0,
 			usedG: 0,
-			customPrice: 0,
-			customName: "自費服務",
-			isRent: 0,
-			mainCategory: 0,
-			subCategory: 0,
-			selectService: 0,
-			itemInfo: "",
-			serviceCount: 1,
 			openDetail: false,
 			price: {
 				"A": {"total": 0, "gov": 0, "own": 0},
@@ -391,22 +345,24 @@ export default {
 				"equipBuy": {"total": 0, "gov": 0, "own": 0},
 				"rest": {"total": 0, "gov": 0, "own": 0}
 			},
-			header: {},
+			header: null,
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
 			openInputPanel: false
 		};
 	},
+	components: {
+    	'care-service-selection': careServiceSelection
+	},
 	created: function(){
-		$.get("/static/service-code.json",function(data){
-			this.header = data;
-			this.UpdateItemInfo();
-		}.bind(this));
-
+		
 	},
 	methods: {
 		UpdatePrice: function(){
+			if(!this.header){
+				this.header = this.$refs.serviceSelect.GetServiceCode();
+			}
 			var priceKey = this.remoteArea?"priceRemote":"price";
 			var payment, price, cat, maxPay, rate;
 			var priceRent,priceBuy;
@@ -669,38 +625,9 @@ export default {
 			this.totalPrice.rest = tr;
 		},
 		AddService: function(){
-			var category = this.header.service[this.mainCategory].code;
-			var item = {};
-			item.mainCategory = this.mainCategory;
-			item.subCategory = this.subCategory;
-			item.selectService = this.selectService;
-			item.code = this.itemInfo.code;
-			item.name = this.itemInfo.name;
-			item.num = this.serviceCount;
-			switch(category){
-				case "A": case "B": case "C": case "G":
-					item.price = this.itemInfo.price;
-					item.priceRemote = this.itemInfo.priceRemote;
-					break;
-				case "D":
-					item.price = this.customPrice;
-					item.priceRemote = this.customPrice;
-					break;
-				case "E": case "F":
-					item.isRent = this.isRent;
-					item.price = this.customPrice;
-					item.priceRemote = this.customPrice;
-					item.payForRent = this.itemInfo.payForRent;
-					item.payForBuy = this.itemInfo.payForBuy;
-					break;
-				case "O"://自費
-					item.price = this.customPrice;
-					item.priceRemote = this.customPrice;
-					item.name = this.customName;
-					break;
-			}
-			this.items[category].push(item);
-			this.items[category].sort(function (a, b) {
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			this.items[item.category].push(item);
+			this.items[item.category].sort(function (a, b) {
 				if (a.code < b.code) {
 					return -1;
 				}
@@ -729,35 +656,12 @@ export default {
 				this.UpdatePrice();
 			}
 		},
-		UpdateMainCategory: function(){
-			this.subCategory = 0;
-			this.selectService = 0;
-			this.UpdateItemInfo();
-		},
-		UpdateSubCategory: function(){
-			this.selectService = 0;
-			this.UpdateItemInfo();
-		},
-		UpdateItemInfo: function(){
-			this.customPrice = 0;
-			this.serviceCount = 1;
-			this.itemInfo = this.header.service[this.mainCategory].items[this.subCategory].items[this.selectService];
-			var category = this.header.service[this.mainCategory].code;
-			if(category == "E" || category == "F"){
-				if(this.itemInfo.payForRent == "不適用" && this.isRent == 1){
-					this.isRent = 0;
-				}
-				else if(this.itemInfo.payForBuy == "不適用" && this.isRent == 0){
-					this.isRent = 1;
-				}
-			}
-		},
 		ToggleDetail: function(){
 			this.openDetail = !this.openDetail;
 			if(this.openDetail){
 				//需等vue展開完後再scroll
 				setTimeout(function(){
-					g_Util.GoToAnchor("openDetail",-80);
+					g_Util.GoToAnchor("openDetail");
 				},10);
 			}
 		}
@@ -786,35 +690,6 @@ $link-hover-color: #FF3333;
 		&:hover{
 			color: $link-hover-color;
 		}
-	}
-
-	.cat-A{
-		background-color: #FFA5A4;
-	}
-	.cat-B{
-		background-color: #FFDE9C;
-	}
-	.cat-C{
-		background-color: #DEE885;
-	}
-	.cat-D{
-		background-color: #9FFFBC;
-	}
-	.cat-E{
-		background-color: #85CAE8;
-	}
-	.cat-F{
-		background-color: #AF93FF;
-	}
-	.cat-G{
-		background-color: #C089E8;
-	}
-	.cat-O{
-		background-color: #FF8AE7;
-	}
-	.separator{
-		margin: 30px;
-		border-bottom: 1px solid #999999;
 	}
 
 	.comp-header{

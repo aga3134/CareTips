@@ -12,6 +12,10 @@ db.Init = function(){
 	db.CaseMessage = db.sequelize.import("./caseMessage.js");
 	db.CaseLike = db.sequelize.import("./caseLike.js");
 
+	db.CaseSolution = db.sequelize.import("./caseSolution.js");
+	db.SolutionMessage = db.sequelize.import("./solutionMessage.js");
+	db.SolutionLike = db.sequelize.import("./solutionLike.js");
+
 	//accociation
 	db.User.hasMany(db.CareCase, {foreignKey: "ownerID"});
 	db.CareCase.belongsTo(db.User, {foreignKey: "ownerID"});
@@ -21,6 +25,14 @@ db.Init = function(){
 	db.CaseMessage.belongsTo(db.User, {foreignKey: "ownerID"});
 	db.CaseLike.belongsTo(db.User, {foreignKey: "ownerID"});
 	db.CaseLike.belongsTo(db.CareCase, {foreignKey: "caseID"});
+
+	db.CaseSolution.belongsTo(db.User, {foreignKey: "ownerID"});
+	db.CaseSolution.hasMany(db.SolutionMessage, {foreignKey: "solutionID"});
+	db.CaseSolution.hasMany(db.SolutionLike, {foreignKey: "solutionID"});
+	db.SolutionMessage.belongsTo(db.CaseSolution, {foreignKey: "solutionID"});
+	db.SolutionMessage.belongsTo(db.User, {foreignKey: "ownerID"});
+	db.SolutionLike.belongsTo(db.User, {foreignKey: "ownerID"});
+	db.SolutionLike.belongsTo(db.CaseSolution, {foreignKey: "solutionID"});
 	
 	var syncOp = {};
 	syncOp.force = false;

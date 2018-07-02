@@ -65,4 +65,33 @@ util.CheckMyCaseMessage = function (req, res, next) {
 	});
 };
 
+util.CheckMySolution = function (req, res, next) {
+	if(!req.user) return util.FailRedirect(req,res,"/","權限不足");
+	var solutionID = req.query.solution || req.body.solution;
+
+	DB.CaseSolution.findOne({where: {id: solutionID}}).then(function(result){
+		if(!result) return util.FailRedirect(req,res,"/","無此解方");
+
+		if(result.ownerID == req.user.id){
+			return next();
+		}
+		else return util.FailRedirect(req,res,"/","權限不足");
+	});
+};
+
+util.CheckMySolutionMessage = function (req, res, next) {
+	if(!req.user) return util.FailRedirect(req,res,"/","權限不足");
+
+	var messageID = req.query.message || req.body.message;
+
+	DB.SolutionMessage.findOne({where: {id: messageID}}).then(function(result){
+		if(!result) return util.FailRedirect(req,res,"/","無此留言");
+
+		if(result.ownerID == req.user.id){
+			return next();
+		}
+		else return util.FailRedirect(req,res,"/","權限不足");
+	});
+};
+
 module.exports = util;

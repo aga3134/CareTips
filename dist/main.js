@@ -95,6 +95,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vue_care_service_selection_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../vue/care-service-selection.vue */ "./src/vue/care-service-selection.vue");
 //
 //
 //
@@ -407,45 +408,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
@@ -460,14 +423,6 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			usedD: 0,
 			usedEF: 0,
 			usedG: 0,
-			customPrice: 0,
-			customName: "自費服務",
-			isRent: 0,
-			mainCategory: 0,
-			subCategory: 0,
-			selectService: 0,
-			itemInfo: "",
-			serviceCount: 1,
 			openDetail: false,
 			price: {
 				"A": { "total": 0, "gov": 0, "own": 0 },
@@ -488,21 +443,22 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				"equipBuy": { "total": 0, "gov": 0, "own": 0 },
 				"rest": { "total": 0, "gov": 0, "own": 0 }
 			},
-			header: {},
+			header: null,
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
 			openInputPanel: false
 		};
 	},
-	created: function () {
-		$.get("/static/service-code.json", function (data) {
-			this.header = data;
-			this.UpdateItemInfo();
-		}.bind(this));
+	components: {
+		'care-service-selection': _vue_care_service_selection_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
 	},
+	created: function () {},
 	methods: {
 		UpdatePrice: function () {
+			if (!this.header) {
+				this.header = this.$refs.serviceSelect.GetServiceCode();
+			}
 			var priceKey = this.remoteArea ? "priceRemote" : "price";
 			var payment, price, cat, maxPay, rate;
 			var priceRent, priceBuy;
@@ -757,8 +713,146 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.totalPrice.rest = tr;
 		},
 		AddService: function () {
-			var category = this.header.service[this.mainCategory].code;
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			this.items[item.category].push(item);
+			this.items[item.category].sort(function (a, b) {
+				if (a.code < b.code) {
+					return -1;
+				} else if (a.code > b.code) {
+					return 1;
+				} else return 0;
+			});
+			this.UpdatePrice();
+			this.openInputPanel = false;
+			this.$root.ShowMessage("加入服務 " + item.code);
+		},
+		DeleteItem: function (code, index) {
+			if (confirm("確定刪除?")) {
+				var arr = this.items[code];
+				if (!arr || index < 0 || index >= arr.length) return;
+				arr.splice(index, 1);
+				this.UpdatePrice();
+			}
+		},
+		ClearService: function () {
+			if (confirm("確定全部重設?")) {
+				this.items = {
+					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
+				};
+				this.UpdatePrice();
+			}
+		},
+		ToggleDetail: function () {
+			this.openDetail = !this.openDetail;
+			if (this.openDetail) {
+				//需等vue展開完後再scroll
+				setTimeout(function () {
+					g_Util.GoToAnchor("openDetail");
+				}, 10);
+			}
+		}
+	}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=script&lang=js":
+/*!******************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=script&lang=js ***!
+  \******************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	props: ["calcPrice"],
+	data: function () {
+		return {
+			serviceCode: null,
+			customPrice: 0,
+			customName: "自費服務",
+			isRent: 0,
+			mainCategory: 0,
+			subCategory: 0,
+			selectService: 0,
+			itemInfo: null,
+			serviceCount: 1
+		};
+	},
+	created: function () {
+		$.get("/static/service-code.json", function (data) {
+			this.serviceCode = data;
+			this.UpdateItemInfo();
+		}.bind(this));
+	},
+	methods: {
+		GetServiceCode: function () {
+			return this.serviceCode;
+		},
+		GetSelectService: function () {
+			var data = {};
+			data.customPrice = this.customPrice;
+			data.customName = this.customName;
+			data.isRent = this.isRent;
+			data.mainCategory = this.mainCategory;
+			data.subCategory = this.subCategory;
+			data.selectService = this.selectService;
+			data.itemInfo = this.itemInfo;
+			data.serviceCount = this.serviceCount;
+			return data;
+		},
+		GetSelectItem: function () {
+			var category = this.serviceCode.service[this.mainCategory].code;
 			var item = {};
+			item.category = category;
 			item.mainCategory = this.mainCategory;
 			item.subCategory = this.subCategory;
 			item.selectService = this.selectService;
@@ -788,32 +882,31 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					item.name = this.customName;
 					break;
 			}
-			this.items[category].push(item);
-			this.items[category].sort(function (a, b) {
-				if (a.code < b.code) {
-					return -1;
-				} else if (a.code > b.code) {
-					return 1;
-				} else return 0;
-			});
-			this.UpdatePrice();
-			this.openInputPanel = false;
-			this.$root.ShowMessage("加入服務 " + item.code);
+			return item;
 		},
-		DeleteItem: function (code, index) {
-			if (confirm("確定刪除?")) {
-				var arr = this.items[code];
-				if (!arr || index < 0 || index >= arr.length) return;
-				arr.splice(index, 1);
-				this.UpdatePrice();
-			}
-		},
-		ClearService: function () {
-			if (confirm("確定全部重設?")) {
-				this.items = {
-					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
-				};
-				this.UpdatePrice();
+		SetSelectItem: function (item) {
+			var category = item.category;
+			this.mainCategory = item.mainCategory;
+			this.subCategory = item.subCategory;
+			this.selectService = item.selectService;
+			this.itemInfo = this.serviceCode.service[this.mainCategory].items[this.subCategory].items[this.selectService];
+
+			this.serviceCount = item.num;
+			switch (category) {
+				case "A":case "B":case "C":case "G":
+					break;
+				case "D":
+					this.customPrice = item.price;
+					break;
+				case "E":case "F":
+					this.isRent = item.isRent;
+					this.customPrice = item.price;
+					break;
+				case "O":
+					//自費
+					this.customPrice = item.price;
+					this.customName = item.name;
+					break;
 			}
 		},
 		UpdateMainCategory: function () {
@@ -828,23 +921,14 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		UpdateItemInfo: function () {
 			this.customPrice = 0;
 			this.serviceCount = 1;
-			this.itemInfo = this.header.service[this.mainCategory].items[this.subCategory].items[this.selectService];
-			var category = this.header.service[this.mainCategory].code;
+			this.itemInfo = this.serviceCode.service[this.mainCategory].items[this.subCategory].items[this.selectService];
+			var category = this.serviceCode.service[this.mainCategory].code;
 			if (category == "E" || category == "F") {
 				if (this.itemInfo.payForRent == "不適用" && this.isRent == 1) {
 					this.isRent = 0;
 				} else if (this.itemInfo.payForBuy == "不適用" && this.isRent == 0) {
 					this.isRent = 1;
 				}
-			}
-		},
-		ToggleDetail: function () {
-			this.openDetail = !this.openDetail;
-			if (this.openDetail) {
-				//需等vue展開完後再scroll
-				setTimeout(function () {
-					g_Util.GoToAnchor("openDetail", -80);
-				}, 10);
 			}
 		}
 	}
@@ -1271,15 +1355,360 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js":
-/*!*****************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js ***!
-  \*****************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=script&lang=js":
+/*!*****************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=script&lang=js ***!
+  \*****************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vue_care_service_selection_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../vue/care-service-selection.vue */ "./src/vue/care-service-selection.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function () {
+		return {
+			action: "create",
+			solutionID: null,
+			quest: {},
+			priority: {},
+			intervention: {},
+			professions: [],
+			customProfession: "",
+			solution: [{ 0: [], 1: [], 2: [] }, { 0: [], 1: [], 2: [] }, { 0: [] }, { 0: [] }],
+			step: 0,
+			openInputPanel: false,
+			//for intervention
+			selectPriority: 0,
+			selectIntervention: 0,
+			selectProfession: "",
+			inputDesc: "",
+			modify: false,
+			modifyCategory: "",
+			modifyIndex: -1
+		};
+	},
+	components: {
+		'care-service-selection': _vue_care_service_selection_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+	},
+	created: function () {
+		$.get("/static/solution.json", function (data) {
+			this.quest = data.quest;
+			this.priority = data.priority;
+			this.intervention = data.intervention;
+			this.professions = data.profession;
+			this.selectProfession = this.professions[0];
+		}.bind(this));
+	},
+	methods: {
+		EditSolution: function (solutionID) {
+			$.get("/solution/view?solution=" + solutionID, function (result) {
+				if (result.status != "ok") return alert("讀取解方失敗");
+				this.solutionID = solutionID;
+				this.action = "edit";
+				this.solution = JSON.parse(result.data.info);
+				this.step = 0;
+			}.bind(this));
+		},
+		ClearEditSolution: function (backToSolution) {
+			if (backToSolution) {
+				this.$parent.ViewSolution(this.solutionID);
+			}
+			this.solutionID = null;
+			this.action = "create";
+			this.solution = [{ 0: [], 1: [], 2: [] }, { 0: [], 1: [], 2: [] }, { 0: [] }, { 0: [] }];
+			this.step = 0;
+		},
+		AddItem: function () {
+			switch (this.step) {
+				case 0:
+					this.AddIntervention();break;
+				case 1:
+					this.AddIntervention();break;
+				case 2:
+					this.AddProfession();break;
+				case 3:
+					this.AddService();break;
+			}
+			this.openInputPanel = false;
+		},
+		AddIntervention: function () {
+			var plan = {};
+			plan.priority = this.selectPriority;
+			plan.intervention = this.selectIntervention;
+			plan.desc = this.inputDesc;
+			this.inputDesc = "";
+			this.solution[this.step][this.selectPriority].push(plan);
+		},
+		AddProfession: function () {
+			var plan = {};
+			if (this.selectProfession == "其他") {
+				plan.profession = this.customProfession;
+			} else plan.profession = this.selectProfession;
+			plan.desc = this.inputDesc;
+			this.inputDesc = "";
+			this.solution[this.step][0].push(plan);
+		},
+		AddService: function () {
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			item.desc = this.inputDesc;
+			this.inputDesc = "";
+			this.solution[this.step][0].push(item);
+		},
+		ModifyItem: function (category, index) {
+			this.modify = true;
+			this.modifyCategory = category;
+			this.modifyIndex = index;
+			var plan = this.solution[this.step][category][index];
+			switch (this.step) {
+				case 0:case 1:
+					this.selectPriority = plan.priority;
+					this.selectIntervention = plan.intervention;
+					break;
+				case 2:
+					if (!this.professions.includes(plan.profession)) {
+						this.selectProfession = "其他";
+						this.customProfession = plan.profession;
+					} else this.selectProfession = plan.profession;
+					break;
+				case 3:
+					this.$refs.serviceSelect.SetSelectItem(plan);
+					break;
+			}
+			this.inputDesc = plan.desc;
+
+			this.openInputPanel = true;
+		},
+		DeleteItem: function (category, index) {
+			if (confirm("確定刪除?")) {
+				var arr = this.solution[this.step][category];
+				if (!arr || index < 0 || index >= arr.length) return;
+				arr.splice(index, 1);
+			}
+		},
+		DoModify: function () {
+			var plan = {};
+			switch (this.step) {
+				case 0:case 1:
+					plan.priority = this.selectPriority;
+					plan.intervention = this.selectIntervention;
+					break;
+				case 2:
+					if (this.selectProfession == "其他") {
+						plan.profession = this.customProfession;
+					} else plan.profession = this.selectProfession;
+					break;
+				case 3:
+					plan = this.$refs.serviceSelect.GetSelectItem();
+					break;
+			}
+			plan.desc = this.inputDesc;
+
+			this.solution[this.step][this.modifyCategory][this.modifyIndex] = plan;
+			this.ClearModify();
+		},
+		ClearModify: function () {
+			this.modify = false;
+			this.modifyCategory = "";
+			this.modifyIndex = -1;
+			this.inputDesc = "";
+			this.openInputPanel = false;
+		},
+		NextQuest: function () {
+			var solNum = 0;
+			for (var key in this.solution[this.step]) {
+				solNum += this.solution[this.step][key].length;
+			}
+			if (this.step == 0 && solNum == 0) {
+				return alert("請新增至少一個項目");
+			}
+			if (this.step < this.quest.length - 1) this.step++;
+		},
+		PrevQuest: function () {
+			if (this.step > 0) this.step--;
+		},
+		SubmitSolution: function () {
+			var solution = {};
+			var caseInfo = this.$parent.GetCaseInfo();
+			solution.caseID = caseInfo.caseID;
+			solution.caseVersion = caseInfo.caseVersion;
+			solution.info = JSON.stringify(this.solution);
+			switch (this.action) {
+				case "create":
+					$.post("/solution/create", { data: solution }, function (result) {
+						if (result.status != "ok") return alert("新增解方失敗");
+						alert("新增解方成功");
+						this.$parent.ViewSolution(result.data);
+						this.ClearEditSolution();
+					}.bind(this));
+					break;
+				case "edit":
+					$.post("/solution/edit?solution=" + this.solutionID, { data: solution }, function (result) {
+						if (result.status != "ok") return alert("修改解方失敗");
+						alert("修改解方成功");
+						this.$parent.ViewSolution(result.data);
+						this.ClearEditSolution();
+					}.bind(this));
+					break;
+			}
+		},
+		ViewCase: function () {
+			this.$parent.ViewCase();
+		}
+	}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=script&lang=js":
+/*!**************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=script&lang=js ***!
+  \**************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1354,6 +1783,254 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function () {
 		return {
+			quest: [],
+			priority: [],
+			intervention: [],
+			user: null,
+			isMySolution: false,
+			isLike: false,
+			solutionInfo: null,
+			sendMessage: "",
+			messageList: [],
+			solutionID: null
+		};
+	},
+	created: function () {
+		$.get("/static/solution.json", function (data) {
+			this.quest = data.quest;
+			this.priority = data.priority;
+			this.intervention = data.intervention;
+		}.bind(this));
+	},
+	methods: {
+		SetUser: function (user) {
+			this.user = user;
+			if (this.solutionInfo) {
+				this.isMySolution = user.id == this.solutionInfo.ownerID;
+			}
+		},
+		BackToSolutionList: function () {
+			this.$parent.ViewSolution();
+		},
+		ModifySolution: function () {
+			this.$parent.ProvideSolution(this.solutionInfo.id);
+		},
+		DeleteSolution: function () {
+			if (confirm("確定刪除解方?")) {
+				$.get("/solution/delete?solution=" + this.solutionInfo.id, function (result) {
+					if (result.status != "ok") return alert("無法刪除解方");
+					alert("解方已刪除");
+					this.BackToSolutionList();
+				}.bind(this));
+			}
+		},
+		LoadSolution: function (solutionID) {
+			$.get("/solution/view?solution=" + solutionID, function (result) {
+				if (result.status != "ok") return alert("無法讀取解方");
+				//console.log(result.data);
+				this.solutionInfo = result.data;
+				this.solutionInfo.info = JSON.parse(this.solutionInfo.info);
+				this.isMySolution = false;
+				if (result.data.liked) this.isLike = true;
+				if (this.user) {
+					this.isMySolution = this.user.id == this.solutionInfo.ownerID;
+				}
+			}.bind(this));
+
+			$.get("/solution/message/list?solution=" + solutionID, function (result) {
+				if (result.status != "ok") return alert("無法讀取留言");
+
+				for (var i = 0; i < result.data.length; i++) {
+					var t = moment(result.data[i].createdAt).tz("Asia/Taipei");
+					result.data[i].time = t.format("YYYY-MM-DD HH:mm");
+				}
+				this.messageList = result.data;
+			}.bind(this));
+		},
+		SendMessage: function () {
+			var body = {};
+			body.solutionID = this.solutionInfo.id;
+			body.message = this.sendMessage;
+
+			$.post("/solution/message/create", body, function (result) {
+				if (result.status != "ok") return alert("新增留言失敗");
+
+				var t = moment(result.data.createdAt).tz("Asia/Taipei");
+				result.data.time = t.format("YYYY-MM-DD HH:mm");
+				result.data.user = this.user;
+				this.messageList.splice(0, 0, result.data);
+				this.sendMessage = "";
+				g_Util.GoToAnchor("messageList");
+				this.$root.ShowMessage("新增留言成功");
+			}.bind(this));
+		},
+		DeleteMessage: function (index) {
+			if (confirm("確定刪除留言?")) {
+				var body = {};
+				body.message = this.messageList[index].id;
+				body.solution = this.solutionInfo.id;
+
+				$.post("/solution/message/delete", body, function (result) {
+					if (result.status != "ok") return alert("刪除留言失敗");
+					this.messageList.splice(index, 1);
+				}.bind(this));
+			}
+		},
+		ToggleLike: function () {
+			if (!this.user) {
+				var intentUrl = encodeURIComponent("/case?case=" + this.caseInfo.id);
+				return window.location.href = "/auth/login?intentUrl=" + intentUrl;
+			}
+			var body = {};
+			body.solutionID = this.solutionInfo.id;
+			body.ownerID = this.user.id;
+
+			if (this.isLike) {
+				if (confirm("您已按過讚，要將按讚取消?")) {
+					$.post("/solution/like/delete", body, function (data) {
+						if (data.status != "ok") return alert("按讚失敗");
+						this.isLike = false;
+						this.solutionInfo.likeNum--;
+					}.bind(this));
+				}
+			} else {
+				$.post("/solution/like/create", body, function (data) {
+					if (data.status != "ok") return alert("按讚失敗");
+					this.isLike = true;
+					this.solutionInfo.likeNum++;
+				}.bind(this));
+			}
+		}
+	}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js":
+/*!*****************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=script&lang=js ***!
+  \*****************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../vue/user-info-editor.vue */ "./src/vue/user-info-editor.vue");
+/* harmony import */ var _vue_case_provide_solution_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../vue/case-provide-solution.vue */ "./src/vue/case-provide-solution.vue");
+/* harmony import */ var _vue_case_view_solution_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../vue/case-view-solution.vue */ "./src/vue/case-view-solution.vue");
+/* harmony import */ var _vue_solution_list_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../vue/solution-list.vue */ "./src/vue/solution-list.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function () {
+		return {
 			user: null,
 			isMyCase: false,
 			isLike: false,
@@ -1362,8 +2039,17 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			vIndex: 0,
 			problem: { "D1": [], "D2": [], "D3": [], "D4": [] },
 			sendMessage: "",
-			messageList: []
+			messageList: [],
+			setupUserInfo: false,
+			status: "ViewCase",
+			solutionID: null
 		};
+	},
+	components: {
+		'user-info-editor': _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+		'case-provide-solution': _vue_case_provide_solution_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+		'case-view-solution': _vue_case_view_solution_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+		'solution-list': _vue_solution_list_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
 	},
 	created: function () {
 		var urlParam = g_Util.GetUrlParameter();
@@ -1403,6 +2089,16 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			if (this.caseInfo) {
 				this.isMyCase = user.id == this.caseInfo.ownerID;
 			}
+			if (!user.profession) {
+				this.setupUserInfo = true;
+				this.$refs.userInfoEditor.submitCallback = function (result) {
+					this.setupUserInfo = false;
+				}.bind(this);
+				this.$refs.userInfoEditor.SetUser(user);
+			}
+			if (this.$refs.caseViewSolution) {
+				this.$refs.caseViewSolution.SetUser(user);
+			}
 		},
 		UpdateVersion: function () {
 			this.problem = { "D1": [], "D2": [], "D3": [], "D4": [] };
@@ -1411,6 +2107,12 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			if (problem.D2) this.problem.D2 = problem.D2;
 			if (problem.D3) this.problem.D3 = problem.D3;
 			if (problem.D4) this.problem.D4 = problem.D4;
+		},
+		GetCaseInfo: function () {
+			var info = {};
+			info.caseID = this.caseInfo.id;
+			info.caseVersion = this.caseInfo.info[this.vIndex].version;
+			return info;
 		},
 		ModifyCase: function () {
 			window.location.href = "/case/edit?case=" + this.caseInfo.id;
@@ -1434,6 +2136,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				result.data.user = this.user;
 				this.messageList.splice(0, 0, result.data);
 				this.sendMessage = "";
+				g_Util.GoToAnchor("messageList");
+				this.$root.ShowMessage("新增留言成功");
 			}.bind(this));
 		},
 		DeleteMessage: function (index) {
@@ -1471,6 +2175,29 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					this.isLike = true;
 					this.caseInfo.likeNum++;
 				}.bind(this));
+			}
+		},
+		ViewCase: function () {
+			this.status = "ViewCase";
+		},
+		ProvideSolution: function (solutionID) {
+			if (!this.user) {
+				var intentUrl = encodeURIComponent("/case?case=" + this.caseInfo.id);
+				return window.location.href = "/auth/login?intentUrl=" + intentUrl;
+			}
+			if (solutionID) {
+				this.$refs.caseProvideSolution.EditSolution(solutionID);
+			}
+			this.status = "ProvideSolution";
+		},
+		ViewSolution: function (solutionID) {
+			this.solutionID = solutionID;
+			if (solutionID) {
+				this.status = "ViewSolution";
+				this.$refs.caseViewSolution.LoadSolution(solutionID);
+			} else {
+				this.status = "SolutionList";
+				this.$refs.solutionList.UpdateList();
 			}
 		}
 	}
@@ -1621,6 +2348,110 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=script&lang=js":
+/*!*********************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/solution-list.vue?vue&type=script&lang=js ***!
+  \*********************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function () {
+		return {
+			solutionList: []
+		};
+	},
+	created: function () {
+		this.UpdateList();
+	},
+	methods: {
+		InitHeadColor: function () {
+			var colorNum = 30;
+			var colorArr = g_Util.ColorCategory(colorNum, 0.9);
+			for (var i = 0; i < this.solutionList.length; i++) {
+				var profession = this.solutionList[i].user.profession;
+				var index = g_Util.StrCodeToInt(profession) % colorNum;
+				$(this.$refs["userInfo" + i]).css("background-color", colorArr(index));
+			}
+		},
+		UpdateList: function () {
+			$.get("/solution/list", function (result) {
+				for (var i = 0; i < result.data.length; i++) {
+					result.data[i].info = JSON.parse(result.data[i].info);
+					var desc = "";
+					for (var step = 0; step < result.data[i].info.length; step++) {
+						var sol = result.data[i].info[step];
+						var sum = 0;
+						for (var priority in sol) {
+							sum += sol[priority].length;
+							if (desc == "" && sol[priority].length > 0) {
+								desc += sol[priority][0].desc;
+							}
+						}
+						result.data[i]["S" + (step + 1) + "Num"] = sum;
+					}
+					result.data[i].desc = desc;
+				}
+				this.solutionList = result.data;
+				setTimeout(function () {
+					this.InitHeadColor();
+				}.bind(this), 10);
+			}.bind(this));
+		},
+		ViewSolution: function (id) {
+			this.$parent.ViewSolution(id);
+		}
+
+	}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/topbar.vue?vue&type=script&lang=js":
 /*!**************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/topbar.vue?vue&type=script&lang=js ***!
@@ -1761,19 +2592,24 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 	data: function () {
 		return {
 			user: {},
-			selectService: "",
-			otherService: "",
-			services: ["照專/個管", "照顧服務", "物理治療", "職能治療", "居家護理", "居家醫療", "居家藥師", "家事服務", "藝術治療", "園藝治療", "語言治療", "輔具評估與器材", "交通服務", "其他"],
+			selectProfession: "",
+			otherProfession: "",
+			professions: ["照專/個管", "照顧服務", "物理治療", "職能治療", "居家護理", "居家醫療", "居家藥師", "家事服務", "藝術治療", "園藝治療", "語言治療", "輔具評估與器材", "交通服務", "其他"],
 			counties: ["臺北市", "新北市", "基隆市", "桃園市", "新竹縣", "新竹市", "苗栗縣", "臺中市", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "嘉義市", "臺南市", "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"],
 			submitCallback: null,
 			finalCheck: false
 		};
 	},
-	created: function () {},
+	created: function () {
+		$.get("/static/profession.json", function (data) {
+			this.professions = data.profession;
+			this.counties = data.county;
+		}.bind(this));
+	},
 	methods: {
 		SetUser: function (user) {
 			this.user = user;
-			this.InitSelectService();
+			this.InitSelectProfession();
 		},
 		ChangePhoto: function () {
 			var elem = this.$refs.uploadBt;
@@ -1801,21 +2637,21 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				}
 			});
 		},
-		InitSelectService: function () {
+		InitSelectProfession: function () {
 			if (this.user.profession) {
-				if (this.services.includes(this.user.profession)) {
-					this.selectService = this.user.profession;
+				if (this.professions.includes(this.user.profession)) {
+					this.selectProfession = this.user.profession;
 				} else {
-					this.selectService = "其他";
-					this.otherService = this.user.profession;
+					this.selectProfession = "其他";
+					this.otherProfession = this.user.profession;
 				}
 			}
 		},
 		SubmitUserInfo: function () {
-			if (this.selectService == "其他") {
-				this.user.profession = this.otherService;
+			if (this.selectProfession == "其他") {
+				this.user.profession = this.otherProfession;
 			} else {
-				this.user.profession = this.selectService;
+				this.user.profession = this.selectProfession;
 			}
 			if (!this.user.name) {
 				return alert("請輸入您的姓名");
@@ -1850,7 +2686,26 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-34f6f61e] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-34f6f61e] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-34f6f61e] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-34f6f61e] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-34f6f61e] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-34f6f61e] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-34f6f61e] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-34f6f61e] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-34f6f61e] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-34f6f61e] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-34f6f61e] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-34f6f61e] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-34f6f61e] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-34f6f61e] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-34f6f61e] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-34f6f61e]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-34f6f61e] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-34f6f61e]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-34f6f61e] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-34f6f61e] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-34f6f61e] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-34f6f61e] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-34f6f61e] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-34f6f61e] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-34f6f61e] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-34f6f61e] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-34f6f61e] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-34f6f61e] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-34f6f61e] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-34f6f61e] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-34f6f61e]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-34f6f61e] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-34f6f61e] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-34f6f61e] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-34f6f61e]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-34f6f61e] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .cat-A[data-v-34f6f61e] {\n    background-color: #FFA5A4;\n}\n.care-calculator .cat-B[data-v-34f6f61e] {\n    background-color: #FFDE9C;\n}\n.care-calculator .cat-C[data-v-34f6f61e] {\n    background-color: #DEE885;\n}\n.care-calculator .cat-D[data-v-34f6f61e] {\n    background-color: #9FFFBC;\n}\n.care-calculator .cat-E[data-v-34f6f61e] {\n    background-color: #85CAE8;\n}\n.care-calculator .cat-F[data-v-34f6f61e] {\n    background-color: #AF93FF;\n}\n.care-calculator .cat-G[data-v-34f6f61e] {\n    background-color: #C089E8;\n}\n.care-calculator .cat-O[data-v-34f6f61e] {\n    background-color: #FF8AE7;\n}\n.care-calculator .separator[data-v-34f6f61e] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n    border-radius: 3px 3px 0px 0px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-bt-container[data-v-34f6f61e] {\n    margin: 20px auto 10px auto;\n}\n.care-calculator .category-option[data-v-34f6f61e] {\n    text-align: left;\n    padding: 0px 5px;\n}\n.care-calculator .category-option select[data-v-34f6f61e] {\n      font-size: 1.1em;\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n}\n.care-calculator .category-option input[type=\"number\"][data-v-34f6f61e] {\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n      max-width: 80px;\n}\n.care-calculator .category-option input[type=\"input\"][data-v-34f6f61e] {\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n      max-width: 100px;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-34f6f61e] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-34f6f61e] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-34f6f61e] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-34f6f61e] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-34f6f61e] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-34f6f61e] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-34f6f61e] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-34f6f61e] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-34f6f61e] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-34f6f61e] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-34f6f61e] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-34f6f61e] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-34f6f61e]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-34f6f61e] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-34f6f61e] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-34f6f61e] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-34f6f61e] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-34f6f61e] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-34f6f61e] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-34f6f61e] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-34f6f61e] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-34f6f61e] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-34f6f61e] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-34f6f61e] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-34f6f61e] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-34f6f61e], body[data-v-34f6f61e] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-34f6f61e] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-34f6f61e] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-34f6f61e] {\n  display: none;\n}\n.warning[data-v-34f6f61e] {\n  color: red;\n}\n.bold[data-v-34f6f61e] {\n  font-weight: bold;\n}\n.inline-block[data-v-34f6f61e] {\n  display: inline-block;\n}\n.main-container[data-v-34f6f61e] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-34f6f61e] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-34f6f61e] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-34f6f61e] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-34f6f61e] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-34f6f61e] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-34f6f61e]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-34f6f61e] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-34f6f61e]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-34f6f61e]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-34f6f61e] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-34f6f61e] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-34f6f61e] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-34f6f61e] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-34f6f61e] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-34f6f61e] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-34f6f61e] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-34f6f61e] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-34f6f61e] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-34f6f61e] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-34f6f61e] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-34f6f61e]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-34f6f61e] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-34f6f61e] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-34f6f61e] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-34f6f61e] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-34f6f61e] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-34f6f61e] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-34f6f61e] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-34f6f61e] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-34f6f61e] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-34f6f61e] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-34f6f61e]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-34f6f61e] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-34f6f61e] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-34f6f61e] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-34f6f61e] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-34f6f61e] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-34f6f61e]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-34f6f61e] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.care-calculator[data-v-34f6f61e] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-calculator a[data-v-34f6f61e] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.care-calculator a[data-v-34f6f61e]:hover {\n      color: #FF3333;\n}\n.care-calculator .comp-header[data-v-34f6f61e] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #6A8A82;\n    border-radius: 3px 3px 0px 0px;\n}\n.care-calculator .price-panel[data-v-34f6f61e] {\n    max-width: 100%;\n    margin: auto;\n}\n.care-calculator .price-panel .option-container[data-v-34f6f61e] {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      align-items: center;\n}\n.care-calculator .price-panel .used-title[data-v-34f6f61e] {\n      text-align: center;\n      font-size: 1.2em;\n}\n.care-calculator .price-panel .price-option[data-v-34f6f61e] {\n      display: inline-block;\n      margin: 10px;\n      padding: 10px;\n      height: 50px;\n      width: 230px;\n      max-width: 100%;\n      text-align: center;\n      background-color: #dddddd;\n}\n.care-calculator .price-panel .price-option select[data-v-34f6f61e] {\n        margin: 0px 10px;\n        padding: 5px;\n}\n.care-calculator .price-panel .price-option input[type=\"checkbox\"][data-v-34f6f61e] {\n        width: 20px;\n        height: 20px;\n        position: relative;\n        top: 3px;\n}\n.care-calculator .price-panel .price-option input[type=\"number\"][data-v-34f6f61e] {\n        max-width: 80px;\n        padding: 5px;\n        margin: 0px 10px;\n}\n.care-calculator .price-panel .price-summary[data-v-34f6f61e] {\n      margin: 10px;\n      background-color: #eeeeee;\n      padding: 0px 0px 10px 0px;\n}\n.care-calculator .price-panel .price-summary .sub-header[data-v-34f6f61e] {\n        margin: 10px auto;\n        font-size: 1.2em;\n        text-align: left;\n        padding: 10px;\n        color: #ffffff;\n        background-color: #A4A4BF;\n}\n.care-calculator .price-panel .price-summary .price-category[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        padding: 10px;\n        border-radius: 3px;\n}\n.care-calculator .price-panel .price-summary .price-limit[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n}\n.care-calculator .price-panel .price-final[data-v-34f6f61e] {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.care-calculator .price-panel .price-final .price-type[data-v-34f6f61e] {\n        font-weight: bold;\n        font-size: 1.3em;\n        padding: 10px;\n        border-bottom: 1px solid #BE9063;\n}\n.care-calculator .price-panel .price-final .final-item[data-v-34f6f61e] {\n        font-size: 1.2em;\n        color: #333333;\n        padding: 10px;\n}\n.care-calculator .price-panel .remark[data-v-34f6f61e] {\n      margin: 10px;\n      text-align: center;\n      font-size: 1em;\n      color: red;\n}\n.care-calculator .service-list[data-v-34f6f61e] {\n    background-color: #eeeeee;\n    padding-bottom: 100px;\n    margin-bottom: 10px;\n}\n.care-calculator .service-list .remark[data-v-34f6f61e] {\n      font-size: 1em;\n      text-align: center;\n      margin: 10px;\n}\n.care-calculator .service-list .service-item[data-v-34f6f61e] {\n      border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-title[data-v-34f6f61e] {\n        padding: 10px;\n        font-size: 1.2em;\n        font-weight: bold;\n        border-bottom: 1px solid #eeeeee;\n}\n.care-calculator .service-list .service-item .item-attr[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 10px;\n        font-size: 1.2em;\n}\n.care-calculator .service-list .service-item .item-bt-container[data-v-34f6f61e] {\n        padding: 10px;\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n        flex-wrap: wrap;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e] {\n        display: inline-block;\n        margin: 0px 0px 0px 10px;\n        padding: 5px 10px;\n        cursor: pointer;\n        background-color: #eeeeee;\n        color: #333333;\n        border-radius: 3px;\n}\n.care-calculator .service-list .service-item .item-bt[data-v-34f6f61e]:hover {\n          background-color: #dddddd;\n}\n.care-calculator .input-bt-container[data-v-34f6f61e] {\n    margin: 20px auto 10px auto;\n}\n.care-calculator .category-option[data-v-34f6f61e] {\n    text-align: left;\n    padding: 0px 5px;\n}\n.care-calculator .category-option select[data-v-34f6f61e] {\n      font-size: 1.1em;\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n}\n.care-calculator .category-option input[type=\"number\"][data-v-34f6f61e] {\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n      max-width: 80px;\n}\n.care-calculator .category-option input[type=\"input\"][data-v-34f6f61e] {\n      padding: 5px;\n      margin: 5px 0px;\n      border-radius: 3px;\n      max-width: 100px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-35388ed4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-35388ed4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-35388ed4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-35388ed4] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-35388ed4] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-35388ed4] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-35388ed4] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-35388ed4] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-35388ed4] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-35388ed4] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-35388ed4] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-35388ed4] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-35388ed4] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-35388ed4]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-35388ed4] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-35388ed4] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-35388ed4] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-35388ed4] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-35388ed4] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-35388ed4] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-35388ed4] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-35388ed4] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-35388ed4] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-35388ed4] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-35388ed4] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-35388ed4] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-35388ed4], body[data-v-35388ed4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-35388ed4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-35388ed4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-35388ed4] {\n  display: none;\n}\n.warning[data-v-35388ed4] {\n  color: red;\n}\n.bold[data-v-35388ed4] {\n  font-weight: bold;\n}\n.inline-block[data-v-35388ed4] {\n  display: inline-block;\n}\n.main-container[data-v-35388ed4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-35388ed4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-35388ed4] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-35388ed4] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-35388ed4] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-35388ed4] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-35388ed4] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-35388ed4]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-35388ed4] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-35388ed4]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-35388ed4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-35388ed4] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-35388ed4] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-35388ed4]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-35388ed4] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-35388ed4] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-35388ed4] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-35388ed4] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-35388ed4] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-35388ed4] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-35388ed4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-35388ed4] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-35388ed4] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-35388ed4] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-35388ed4] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-35388ed4] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-35388ed4]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-35388ed4] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-35388ed4] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-35388ed4] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-35388ed4] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-35388ed4] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-35388ed4] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-35388ed4] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-35388ed4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-35388ed4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-35388ed4] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-35388ed4]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-35388ed4] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-35388ed4] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-35388ed4] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-35388ed4] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-35388ed4] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-35388ed4]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-35388ed4] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n", ""]);
 
 // exports
 
@@ -1869,7 +2724,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-84ab2184] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-84ab2184] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-84ab2184] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-84ab2184] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-84ab2184] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-84ab2184] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-84ab2184] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-84ab2184] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-84ab2184] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-84ab2184] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-84ab2184] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-84ab2184] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-84ab2184] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-84ab2184] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-84ab2184] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-84ab2184], body[data-v-84ab2184] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-84ab2184] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-84ab2184] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-84ab2184] {\n  display: none;\n}\n.warning[data-v-84ab2184] {\n  color: red;\n}\n.bold[data-v-84ab2184] {\n  font-weight: bold;\n}\n.main-container[data-v-84ab2184] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-84ab2184] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-84ab2184] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-84ab2184] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-84ab2184] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-84ab2184]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-84ab2184] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-84ab2184]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-84ab2184] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-84ab2184] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-84ab2184] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-84ab2184] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-84ab2184] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-84ab2184] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-84ab2184] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-84ab2184] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-84ab2184] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-84ab2184] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-84ab2184] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-84ab2184] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-84ab2184] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-84ab2184] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-84ab2184] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-84ab2184]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-84ab2184] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-84ab2184] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-84ab2184] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-84ab2184]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-84ab2184] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.case-editor[data-v-84ab2184] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.case-editor a[data-v-84ab2184] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.case-editor a[data-v-84ab2184]:hover {\n      color: #FF3333;\n}\n.case-editor textarea[data-v-84ab2184] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.case-editor .case-info[data-v-84ab2184] {\n    width: 1024px;\n    margin: auto;\n    max-width: 100%;\n}\n.case-editor .separator[data-v-84ab2184] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.case-editor .cat-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #36688D;\n    border-radius: 3px;\n}\n.case-editor .box-title[data-v-84ab2184] {\n    font-size: 1.8em;\n    text-align: center;\n    margin: 10px auto;\n}\n.case-editor .remark[data-v-84ab2184] {\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.case-editor .remark .remark-check[data-v-84ab2184] {\n      display: inline-block;\n      color: black;\n}\n.case-editor .remark input[type=\"checkbox\"][data-v-84ab2184] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-84ab2184] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-84ab2184] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-84ab2184] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-84ab2184] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-84ab2184] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-84ab2184] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-84ab2184] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-84ab2184] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-84ab2184] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-84ab2184] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-84ab2184] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-84ab2184] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-84ab2184]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-84ab2184] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-84ab2184] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-84ab2184] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-84ab2184] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-84ab2184] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-84ab2184] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-84ab2184] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-84ab2184] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-84ab2184] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-84ab2184] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-84ab2184] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-84ab2184] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-84ab2184], body[data-v-84ab2184] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-84ab2184] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-84ab2184] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-84ab2184] {\n  display: none;\n}\n.warning[data-v-84ab2184] {\n  color: red;\n}\n.bold[data-v-84ab2184] {\n  font-weight: bold;\n}\n.inline-block[data-v-84ab2184] {\n  display: inline-block;\n}\n.main-container[data-v-84ab2184] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-84ab2184] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-84ab2184] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-84ab2184] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-84ab2184] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-84ab2184] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-84ab2184]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-84ab2184] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-84ab2184]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-84ab2184] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-84ab2184]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-84ab2184] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-84ab2184] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-84ab2184] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-84ab2184] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-84ab2184] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-84ab2184] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-84ab2184] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-84ab2184] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-84ab2184] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-84ab2184] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-84ab2184] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-84ab2184]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-84ab2184] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-84ab2184] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-84ab2184] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-84ab2184] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-84ab2184] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-84ab2184] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-84ab2184] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-84ab2184] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-84ab2184] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-84ab2184] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-84ab2184]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-84ab2184] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-84ab2184] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-84ab2184] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-84ab2184] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-84ab2184] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-84ab2184]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-84ab2184] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-editor[data-v-84ab2184] {\n  width: 100%;\n  height: 100%;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.case-editor a[data-v-84ab2184] {\n    text-decoration: none;\n    color: #FF6666;\n}\n.case-editor a[data-v-84ab2184]:hover {\n      color: #FF3333;\n}\n.case-editor textarea[data-v-84ab2184] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.case-editor .case-info[data-v-84ab2184] {\n    width: 1024px;\n    margin: auto;\n    max-width: 100%;\n}\n.case-editor .separator[data-v-84ab2184] {\n    margin: 30px;\n    border-bottom: 1px solid #999999;\n}\n.case-editor .cat-header[data-v-84ab2184] {\n    margin: 10px auto;\n    font-size: 1.6em;\n    text-align: center;\n    padding: 10px;\n    color: #ffffff;\n    background-color: #36688D;\n    border-radius: 3px;\n}\n.case-editor .box-title[data-v-84ab2184] {\n    font-size: 1.8em;\n    text-align: center;\n    margin: 10px auto;\n}\n.case-editor .remark[data-v-84ab2184] {\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.case-editor .remark .remark-check[data-v-84ab2184] {\n      display: inline-block;\n      color: black;\n}\n.case-editor .remark input[type=\"checkbox\"][data-v-84ab2184] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n", ""]);
 
 // exports
 
@@ -1888,7 +2743,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-e25bf790] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-e25bf790] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-e25bf790] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-e25bf790] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-e25bf790] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-e25bf790] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-e25bf790] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-e25bf790] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-e25bf790] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-e25bf790] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-e25bf790] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-e25bf790] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-e25bf790] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-e25bf790] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-e25bf790] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-e25bf790] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-e25bf790], body[data-v-e25bf790] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-e25bf790] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-e25bf790] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-e25bf790] {\n  display: none;\n}\n.warning[data-v-e25bf790] {\n  color: red;\n}\n.bold[data-v-e25bf790] {\n  font-weight: bold;\n}\n.main-container[data-v-e25bf790] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-e25bf790] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-e25bf790] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-e25bf790] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-e25bf790] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-e25bf790]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-e25bf790] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-e25bf790]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-e25bf790] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-e25bf790] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-e25bf790] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-e25bf790] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-e25bf790] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-e25bf790] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-e25bf790] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-e25bf790] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-e25bf790] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-e25bf790] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-e25bf790] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-e25bf790] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-e25bf790] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-e25bf790] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-e25bf790] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-e25bf790]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-e25bf790] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-e25bf790] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-e25bf790] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-e25bf790]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-e25bf790] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.case-list-thumb[data-v-e25bf790] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.case-list-thumb svg[data-v-e25bf790] {\n    width: 100%;\n    height: 100%;\n}\n.case-list-thumb .info-text[data-v-e25bf790] {\n    position: absolute;\n    text-align: center;\n    bottom: 0px;\n    width: 100%;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-e25bf790] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-e25bf790] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-e25bf790] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-e25bf790] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-e25bf790] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-e25bf790] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-e25bf790] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-e25bf790] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-e25bf790] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-e25bf790] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-e25bf790] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-e25bf790] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-e25bf790]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-e25bf790] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-e25bf790] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-e25bf790] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-e25bf790] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-e25bf790] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-e25bf790] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-e25bf790] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-e25bf790] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-e25bf790] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-e25bf790] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-e25bf790] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-e25bf790] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-e25bf790], body[data-v-e25bf790] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-e25bf790] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-e25bf790] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-e25bf790] {\n  display: none;\n}\n.warning[data-v-e25bf790] {\n  color: red;\n}\n.bold[data-v-e25bf790] {\n  font-weight: bold;\n}\n.inline-block[data-v-e25bf790] {\n  display: inline-block;\n}\n.main-container[data-v-e25bf790] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-e25bf790] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-e25bf790] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-e25bf790] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-e25bf790] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-e25bf790] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-e25bf790]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-e25bf790] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-e25bf790]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-e25bf790] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-e25bf790]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-e25bf790] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-e25bf790] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-e25bf790] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-e25bf790] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-e25bf790] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-e25bf790] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-e25bf790] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-e25bf790] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-e25bf790] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-e25bf790] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-e25bf790] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-e25bf790]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-e25bf790] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-e25bf790] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-e25bf790] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-e25bf790] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-e25bf790] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-e25bf790] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-e25bf790] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-e25bf790] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-e25bf790] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-e25bf790] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-e25bf790]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-e25bf790] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-e25bf790] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-e25bf790] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-e25bf790] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-e25bf790] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-e25bf790]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-e25bf790] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-list-thumb[data-v-e25bf790] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.case-list-thumb svg[data-v-e25bf790] {\n    width: 100%;\n    height: 100%;\n}\n.case-list-thumb .info-text[data-v-e25bf790] {\n    position: absolute;\n    text-align: center;\n    bottom: 0px;\n    width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -1907,7 +2762,45 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-95bdcfa2] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-95bdcfa2] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-95bdcfa2] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-95bdcfa2] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-95bdcfa2] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-95bdcfa2] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-95bdcfa2] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-95bdcfa2] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-95bdcfa2] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-95bdcfa2] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-95bdcfa2] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-95bdcfa2] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-95bdcfa2] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-95bdcfa2] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-95bdcfa2] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-95bdcfa2], body[data-v-95bdcfa2] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-95bdcfa2] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-95bdcfa2] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-95bdcfa2] {\n  display: none;\n}\n.warning[data-v-95bdcfa2] {\n  color: red;\n}\n.bold[data-v-95bdcfa2] {\n  font-weight: bold;\n}\n.main-container[data-v-95bdcfa2] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-95bdcfa2] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-95bdcfa2] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-95bdcfa2] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-95bdcfa2] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-95bdcfa2]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-95bdcfa2] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-95bdcfa2]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-95bdcfa2] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-95bdcfa2] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-95bdcfa2] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-95bdcfa2] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-95bdcfa2] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-95bdcfa2] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-95bdcfa2] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-95bdcfa2] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-95bdcfa2] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-95bdcfa2] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-95bdcfa2] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-95bdcfa2] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-95bdcfa2] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-95bdcfa2]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-95bdcfa2] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-95bdcfa2] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-95bdcfa2] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-95bdcfa2]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-95bdcfa2] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.case-list[data-v-95bdcfa2] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.case-list .list-item[data-v-95bdcfa2] {\n    background-color: #eeeeee;\n    border-radius: 5px;\n    max-width: 100%;\n    margin: 10px 0px;\n    cursor: pointer;\n    box-shadow: 5px 5px 5px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.case-list .list-item[data-v-95bdcfa2] {\n        margin: 10px;\n}\n}\n.case-list .list-item[data-v-95bdcfa2]:hover {\n      box-shadow: 10px 10px 10px #888888;\n}\n.case-list .list-item a[data-v-95bdcfa2] {\n      text-decoration: none;\n      color: black;\n}\n.case-list .list-item .domain-statistic[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info[data-v-95bdcfa2] {\n        position: relative;\n        display: flex;\n        justify-content: flex-start;\n        flex-wrap: wrap;\n        align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-icon[data-v-95bdcfa2] {\n          display: inline-block;\n          padding: 7px;\n          margin: 10px 5px 10px 10px;\n          border-radius: 3px;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-num[data-v-95bdcfa2] {\n          display: inline-block;\n          font-size: 0.8em;\n          vertical-align: middle;\n}\n.case-list .list-item .domain-statistic .domain-info .tip[data-v-95bdcfa2] {\n          padding: 5px;\n          box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n          border-radius: 3px;\n          position: absolute;\n          top: 30px;\n          left: 10px;\n          width: 120px;\n          text-align: center;\n          visibility: hidden;\n          z-index: 1;\n}\n.case-list .list-item .domain-statistic .domain-info:hover .tip[data-v-95bdcfa2] {\n          visibility: visible;\n}\n.case-list .list-item .desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      color: #333333;\n      padding: 0px 20px 0px 10px;\n      width: 100%;\n      height: 4.5em;\n      line-height: 1.5em;\n      overflow: hidden;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-95bdcfa2] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-95bdcfa2] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-95bdcfa2] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-95bdcfa2] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-95bdcfa2] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-95bdcfa2] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-95bdcfa2] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-95bdcfa2] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-95bdcfa2] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-95bdcfa2] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-95bdcfa2] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-95bdcfa2]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-95bdcfa2] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-95bdcfa2] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-95bdcfa2] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-95bdcfa2] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-95bdcfa2] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-95bdcfa2] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-95bdcfa2] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-95bdcfa2] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-95bdcfa2] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-95bdcfa2] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-95bdcfa2] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-95bdcfa2] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-95bdcfa2], body[data-v-95bdcfa2] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-95bdcfa2] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-95bdcfa2] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-95bdcfa2] {\n  display: none;\n}\n.warning[data-v-95bdcfa2] {\n  color: red;\n}\n.bold[data-v-95bdcfa2] {\n  font-weight: bold;\n}\n.inline-block[data-v-95bdcfa2] {\n  display: inline-block;\n}\n.main-container[data-v-95bdcfa2] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-95bdcfa2] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-95bdcfa2] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-95bdcfa2] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-95bdcfa2] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-95bdcfa2] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-95bdcfa2]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-95bdcfa2] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-95bdcfa2]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-95bdcfa2]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-95bdcfa2] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-95bdcfa2] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-95bdcfa2] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-95bdcfa2] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-95bdcfa2] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-95bdcfa2] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-95bdcfa2] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-95bdcfa2] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-95bdcfa2] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-95bdcfa2] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-95bdcfa2] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-95bdcfa2]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-95bdcfa2] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-95bdcfa2] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-95bdcfa2] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-95bdcfa2] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-95bdcfa2] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-95bdcfa2] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-95bdcfa2] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-95bdcfa2] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-95bdcfa2] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-95bdcfa2] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-95bdcfa2]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-95bdcfa2] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-95bdcfa2] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-95bdcfa2] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-95bdcfa2] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-95bdcfa2] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-95bdcfa2]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-95bdcfa2] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-list[data-v-95bdcfa2] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.case-list .list-item[data-v-95bdcfa2] {\n    background-color: #eeeeee;\n    border-radius: 5px;\n    max-width: 100%;\n    margin: 10px 0px;\n    cursor: pointer;\n    box-shadow: 5px 5px 5px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.case-list .list-item[data-v-95bdcfa2] {\n        margin: 10px;\n}\n}\n.case-list .list-item[data-v-95bdcfa2]:hover {\n      box-shadow: 10px 10px 10px #888888;\n}\n.case-list .list-item a[data-v-95bdcfa2] {\n      text-decoration: none;\n      color: black;\n}\n.case-list .list-item .domain-statistic[data-v-95bdcfa2] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info[data-v-95bdcfa2] {\n        position: relative;\n        display: flex;\n        justify-content: flex-start;\n        flex-wrap: wrap;\n        align-items: center;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-icon[data-v-95bdcfa2] {\n          display: inline-block;\n          padding: 7px;\n          margin: 10px 5px 10px 10px;\n          border-radius: 3px;\n}\n.case-list .list-item .domain-statistic .domain-info .domain-num[data-v-95bdcfa2] {\n          display: inline-block;\n          font-size: 0.8em;\n          vertical-align: middle;\n}\n.case-list .list-item .domain-statistic .domain-info .tip[data-v-95bdcfa2] {\n          padding: 5px;\n          box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n          border-radius: 3px;\n          position: absolute;\n          top: 30px;\n          left: 10px;\n          width: 120px;\n          text-align: center;\n          visibility: hidden;\n          z-index: 1;\n}\n.case-list .list-item .domain-statistic .domain-info:hover .tip[data-v-95bdcfa2] {\n          visibility: visible;\n}\n.case-list .list-item .desc[data-v-95bdcfa2] {\n      white-space: pre-wrap;\n      color: #333333;\n      padding: 0px 20px 0px 10px;\n      width: 100%;\n      height: 4.5em;\n      line-height: 1.5em;\n      overflow: hidden;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45c585b6] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45c585b6] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45c585b6] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-45c585b6] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-45c585b6] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-45c585b6] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-45c585b6] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-45c585b6] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-45c585b6] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-45c585b6] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-45c585b6] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-45c585b6] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-45c585b6] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-45c585b6]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-45c585b6] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-45c585b6] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-45c585b6] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-45c585b6] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-45c585b6] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-45c585b6] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-45c585b6] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-45c585b6] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-45c585b6] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-45c585b6] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-45c585b6] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-45c585b6] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-45c585b6], body[data-v-45c585b6] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45c585b6] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45c585b6] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45c585b6] {\n  display: none;\n}\n.warning[data-v-45c585b6] {\n  color: red;\n}\n.bold[data-v-45c585b6] {\n  font-weight: bold;\n}\n.inline-block[data-v-45c585b6] {\n  display: inline-block;\n}\n.main-container[data-v-45c585b6] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45c585b6] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-45c585b6] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-45c585b6] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-45c585b6] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-45c585b6] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-45c585b6] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-45c585b6]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-45c585b6] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-45c585b6]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-45c585b6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-45c585b6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-45c585b6] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-45c585b6]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-45c585b6] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-45c585b6] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-45c585b6] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-45c585b6] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-45c585b6] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-45c585b6] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-45c585b6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-45c585b6] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-45c585b6] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-45c585b6] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-45c585b6] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-45c585b6] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-45c585b6]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-45c585b6] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-45c585b6] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-45c585b6] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-45c585b6] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-45c585b6] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-45c585b6] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-45c585b6] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-45c585b6] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-45c585b6] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45c585b6] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45c585b6]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-45c585b6] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-45c585b6] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-45c585b6] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-45c585b6] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45c585b6] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45c585b6]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-45c585b6] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-provide-solution[data-v-45c585b6] {\n  width: 100%;\n  height: 100%;\n}\n.case-provide-solution .step-page[data-v-45c585b6] {\n    background-color: #eeeeee;\n    color: #323232;\n    width: 800px;\n    max-width: 100%;\n    padding: 10px;\n    border-radius: 5px;\n    margin: 10px auto;\n}\n.case-provide-solution .quest[data-v-45c585b6] {\n    padding: 5px 0px;\n    font-size: 1.2em;\n}\n.case-provide-solution .remark[data-v-45c585b6] {\n    text-align: center;\n    padding: 5px 0px;\n    font-size: 0.9em;\n    color: #888888;\n}\n.case-provide-solution .step-bt-container[data-v-45c585b6] {\n    display: flex;\n    justify-content: flex-end;\n    align-items: center;\n    flex-wrap: wrap;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-d6a82440] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-d6a82440] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-d6a82440] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-d6a82440] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-d6a82440] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-d6a82440] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-d6a82440] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-d6a82440] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-d6a82440] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-d6a82440] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-d6a82440] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-d6a82440] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-d6a82440] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-d6a82440]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-d6a82440] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-d6a82440] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-d6a82440] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-d6a82440] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-d6a82440] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-d6a82440] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-d6a82440] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-d6a82440] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-d6a82440] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-d6a82440] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-d6a82440] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-d6a82440] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-d6a82440], body[data-v-d6a82440] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-d6a82440] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-d6a82440] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-d6a82440] {\n  display: none;\n}\n.warning[data-v-d6a82440] {\n  color: red;\n}\n.bold[data-v-d6a82440] {\n  font-weight: bold;\n}\n.inline-block[data-v-d6a82440] {\n  display: inline-block;\n}\n.main-container[data-v-d6a82440] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-d6a82440] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-d6a82440] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-d6a82440] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-d6a82440] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-d6a82440] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-d6a82440] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-d6a82440]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-d6a82440] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-d6a82440]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-d6a82440] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-d6a82440] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-d6a82440] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-d6a82440]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-d6a82440] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-d6a82440] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-d6a82440] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-d6a82440] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-d6a82440] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-d6a82440] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-d6a82440] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-d6a82440] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-d6a82440] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-d6a82440] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-d6a82440] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-d6a82440] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-d6a82440]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-d6a82440] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-d6a82440] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-d6a82440] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-d6a82440] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-d6a82440] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-d6a82440] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-d6a82440] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-d6a82440] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-d6a82440] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-d6a82440] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-d6a82440]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-d6a82440] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-d6a82440] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-d6a82440] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-d6a82440] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-d6a82440] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-d6a82440]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-d6a82440] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-view-solution[data-v-d6a82440] {\n  width: 800px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  border-radius: 5px;\n  background-color: white;\n  color: #323232;\n}\n.case-view-solution .solution-title[data-v-d6a82440] {\n    font-size: 1.5em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n}\n", ""]);
 
 // exports
 
@@ -1926,7 +2819,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-a7997294] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-a7997294] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-a7997294] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-a7997294] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-a7997294] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-a7997294] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-a7997294] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-a7997294] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-a7997294] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-a7997294] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-a7997294] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-a7997294] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-a7997294] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-a7997294] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-a7997294] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-a7997294] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-a7997294], body[data-v-a7997294] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-a7997294] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-a7997294] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-a7997294] {\n  display: none;\n}\n.warning[data-v-a7997294] {\n  color: red;\n}\n.bold[data-v-a7997294] {\n  font-weight: bold;\n}\n.main-container[data-v-a7997294] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-a7997294] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-a7997294] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-a7997294] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-a7997294] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-a7997294]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-a7997294] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-a7997294]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-a7997294] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-a7997294] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-a7997294] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-a7997294] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-a7997294] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-a7997294] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-a7997294] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-a7997294] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-a7997294] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-a7997294] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-a7997294] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-a7997294] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-a7997294] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-a7997294] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-a7997294] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-a7997294]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-a7997294] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-a7997294] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-a7997294] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-a7997294]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-a7997294] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.case-view[data-v-a7997294] {\n  width: 800px;\n  max-width: 100%;\n  margin: auto;\n}\n.case-view .case-title[data-v-a7997294] {\n    font-size: 2em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n    border-bottom: 1px solid #ffaa00;\n}\n.case-view .case-desc[data-v-a7997294] {\n    font-size: 1.2em;\n    line-height: 1.5em;\n    white-space: pre-wrap;\n}\n.case-view .owner[data-v-a7997294] {\n    font-size: 1.2em;\n}\n.case-view .message-list .message[data-v-a7997294] {\n    margin: 10px;\n    border-bottom: 1px solid #dddddd;\n    padding: 0px;\n}\n.case-view .message-list .message .message-content[data-v-a7997294] {\n      padding-left: 10px;\n      white-space: pre-wrap;\n}\n.case-view .message-list .sub-info[data-v-a7997294] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n    font-size: 0.8em;\n    color: #888888;\n}\n.case-view .message-list .sub-info .info-item[data-v-a7997294] {\n      margin: 10px 5px;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-a7997294] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-a7997294] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-a7997294] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-a7997294] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-a7997294] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-a7997294] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-a7997294] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-a7997294] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-a7997294] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-a7997294] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-a7997294] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-a7997294] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-a7997294]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-a7997294] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-a7997294] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-a7997294] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-a7997294] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-a7997294] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-a7997294] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-a7997294] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-a7997294] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-a7997294] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-a7997294] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-a7997294] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-a7997294] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-a7997294], body[data-v-a7997294] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-a7997294] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-a7997294] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-a7997294] {\n  display: none;\n}\n.warning[data-v-a7997294] {\n  color: red;\n}\n.bold[data-v-a7997294] {\n  font-weight: bold;\n}\n.inline-block[data-v-a7997294] {\n  display: inline-block;\n}\n.main-container[data-v-a7997294] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-a7997294] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-a7997294] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-a7997294] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-a7997294] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-a7997294] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-a7997294]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-a7997294] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-a7997294]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-a7997294] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-a7997294]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-a7997294] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-a7997294] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-a7997294] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-a7997294] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-a7997294] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-a7997294] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-a7997294] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-a7997294] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-a7997294] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-a7997294] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-a7997294] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-a7997294]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-a7997294] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-a7997294] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-a7997294] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-a7997294] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-a7997294] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-a7997294] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-a7997294] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-a7997294] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-a7997294] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-a7997294] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-a7997294]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-a7997294] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-a7997294] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-a7997294] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-a7997294] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-a7997294] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-a7997294]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-a7997294] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.case-view[data-v-a7997294] {\n  width: 800px;\n  max-width: 100%;\n  margin: auto;\n}\n.case-view .case-title[data-v-a7997294] {\n    font-size: 2em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n    border-bottom: 1px solid #ffaa00;\n}\n.case-view .case-desc[data-v-a7997294] {\n    font-size: 1.2em;\n    line-height: 1.5em;\n    white-space: pre-wrap;\n}\n.case-view .owner[data-v-a7997294] {\n    font-size: 1.2em;\n}\n", ""]);
 
 // exports
 
@@ -1945,7 +2838,26 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-16f2f798] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-16f2f798] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-16f2f798] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-16f2f798] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-16f2f798] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-16f2f798] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-16f2f798] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-16f2f798] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-16f2f798] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-16f2f798] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-16f2f798] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-16f2f798] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-16f2f798] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-16f2f798] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-16f2f798] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-16f2f798] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-16f2f798], body[data-v-16f2f798] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-16f2f798] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-16f2f798] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-16f2f798] {\n  display: none;\n}\n.warning[data-v-16f2f798] {\n  color: red;\n}\n.bold[data-v-16f2f798] {\n  font-weight: bold;\n}\n.main-container[data-v-16f2f798] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-16f2f798] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-16f2f798] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-16f2f798] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-16f2f798] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-16f2f798]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-16f2f798] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-16f2f798]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-16f2f798] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-16f2f798] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-16f2f798] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-16f2f798] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-16f2f798] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-16f2f798] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-16f2f798] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-16f2f798] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-16f2f798] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-16f2f798] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-16f2f798] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-16f2f798] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-16f2f798] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-16f2f798] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-16f2f798] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-16f2f798]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-16f2f798] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-16f2f798] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-16f2f798] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-16f2f798]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-16f2f798] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.loginPanel[data-v-16f2f798] {\n  width: 300px;\n  max-width: 100%;\n  margin: auto;\n}\n.loginPanel .google-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #dc4e41;\n}\n.loginPanel .facebook-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #3b579d;\n}\n.loginPanel .seperator[data-v-16f2f798] {\n    padding: 10px;\n    margin-bottom: 10px;\n    border-bottom: 1px solid #dddddd;\n}\n.loginPanel .method-title[data-v-16f2f798] {\n    text-align: center;\n    font-size: 1.2em;\n}\n.loginPanel .relative-box[data-v-16f2f798] {\n    position: relative;\n}\n.loginPanel .forget-password[data-v-16f2f798] {\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    font-size: 0.8em;\n    color: #666666;\n    cursor: pointer;\n}\n.loginPanel input[data-v-16f2f798] {\n    padding: 5px;\n    width: 100%;\n}\n.loginPanel .login-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #646464;\n}\n.loginPanel .text-link[data-v-16f2f798] {\n    text-align: center;\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-16f2f798] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-16f2f798] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-16f2f798] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-16f2f798] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-16f2f798] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-16f2f798] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-16f2f798] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-16f2f798] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-16f2f798] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-16f2f798] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-16f2f798] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-16f2f798] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-16f2f798]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-16f2f798] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-16f2f798] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-16f2f798] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-16f2f798] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-16f2f798] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-16f2f798] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-16f2f798] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-16f2f798] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-16f2f798] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-16f2f798] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-16f2f798] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-16f2f798] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-16f2f798], body[data-v-16f2f798] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-16f2f798] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-16f2f798] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-16f2f798] {\n  display: none;\n}\n.warning[data-v-16f2f798] {\n  color: red;\n}\n.bold[data-v-16f2f798] {\n  font-weight: bold;\n}\n.inline-block[data-v-16f2f798] {\n  display: inline-block;\n}\n.main-container[data-v-16f2f798] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-16f2f798] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-16f2f798] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-16f2f798] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-16f2f798] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-16f2f798] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-16f2f798]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-16f2f798] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-16f2f798]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-16f2f798] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-16f2f798]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-16f2f798] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-16f2f798] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-16f2f798] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-16f2f798] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-16f2f798] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-16f2f798] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-16f2f798] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-16f2f798] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-16f2f798] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-16f2f798] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-16f2f798] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-16f2f798]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-16f2f798] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-16f2f798] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-16f2f798] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-16f2f798] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-16f2f798] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-16f2f798] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-16f2f798] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-16f2f798] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-16f2f798] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-16f2f798] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-16f2f798]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-16f2f798] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-16f2f798] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-16f2f798] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-16f2f798] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-16f2f798] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-16f2f798]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-16f2f798] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.loginPanel[data-v-16f2f798] {\n  width: 300px;\n  max-width: 100%;\n  margin: auto;\n}\n.loginPanel .google-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #dc4e41;\n}\n.loginPanel .facebook-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #3b579d;\n}\n.loginPanel .seperator[data-v-16f2f798] {\n    padding: 10px;\n    margin-bottom: 10px;\n    border-bottom: 1px solid #dddddd;\n}\n.loginPanel .method-title[data-v-16f2f798] {\n    text-align: center;\n    font-size: 1.2em;\n}\n.loginPanel .relative-box[data-v-16f2f798] {\n    position: relative;\n}\n.loginPanel .forget-password[data-v-16f2f798] {\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    font-size: 0.8em;\n    color: #666666;\n    cursor: pointer;\n}\n.loginPanel input[data-v-16f2f798] {\n    padding: 5px;\n    width: 100%;\n}\n.loginPanel .login-bt[data-v-16f2f798] {\n    padding: 10px;\n    margin: 10px 0px;\n    text-align: center;\n    cursor: pointer;\n    border-radius: 5px;\n    color: white;\n    background-color: #646464;\n}\n.loginPanel .text-link[data-v-16f2f798] {\n    text-align: center;\n    cursor: pointer;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-8d272bf4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-8d272bf4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-8d272bf4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-8d272bf4] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-8d272bf4] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-8d272bf4] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-8d272bf4] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-8d272bf4] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-8d272bf4] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-8d272bf4] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-8d272bf4] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-8d272bf4] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-8d272bf4] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-8d272bf4]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-8d272bf4] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-8d272bf4] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-8d272bf4] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-8d272bf4] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-8d272bf4] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-8d272bf4] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-8d272bf4] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-8d272bf4] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-8d272bf4] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-8d272bf4] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-8d272bf4] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-8d272bf4] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-8d272bf4], body[data-v-8d272bf4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-8d272bf4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-8d272bf4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-8d272bf4] {\n  display: none;\n}\n.warning[data-v-8d272bf4] {\n  color: red;\n}\n.bold[data-v-8d272bf4] {\n  font-weight: bold;\n}\n.inline-block[data-v-8d272bf4] {\n  display: inline-block;\n}\n.main-container[data-v-8d272bf4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-8d272bf4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-8d272bf4] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-8d272bf4] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-8d272bf4] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-8d272bf4] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-8d272bf4] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-8d272bf4]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-8d272bf4] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-8d272bf4]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-8d272bf4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-8d272bf4] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-8d272bf4] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-8d272bf4]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-8d272bf4] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-8d272bf4] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-8d272bf4] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-8d272bf4] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-8d272bf4] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-8d272bf4] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-8d272bf4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-8d272bf4] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-8d272bf4] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-8d272bf4] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-8d272bf4] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-8d272bf4] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-8d272bf4]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-8d272bf4] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-8d272bf4] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-8d272bf4] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-8d272bf4] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-8d272bf4] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-8d272bf4] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-8d272bf4] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-8d272bf4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-8d272bf4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-8d272bf4] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-8d272bf4]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-8d272bf4] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-8d272bf4] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-8d272bf4] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-8d272bf4] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-8d272bf4] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-8d272bf4]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-8d272bf4] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.solution-list[data-v-8d272bf4] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n  color: #333333;\n}\n.solution-list .list-item[data-v-8d272bf4] {\n    background-color: #eeeeee;\n    border-radius: 5px;\n    max-width: 100%;\n    margin: 10px 0px;\n    cursor: pointer;\n    box-shadow: 5px 5px 5px #333333;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.solution-list .list-item[data-v-8d272bf4] {\n        margin: 10px;\n}\n}\n.solution-list .list-item[data-v-8d272bf4]:hover {\n      box-shadow: 10px 10px 10px #888888;\n}\n.solution-list .list-item a[data-v-8d272bf4] {\n      text-decoration: none;\n      color: black;\n}\n.solution-list .list-item .domain-statistic[data-v-8d272bf4] {\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.solution-list .list-item .domain-statistic .domain-info[data-v-8d272bf4] {\n        position: relative;\n        display: flex;\n        justify-content: flex-start;\n        flex-wrap: wrap;\n        align-items: center;\n}\n.solution-list .list-item .domain-statistic .domain-info .domain-icon[data-v-8d272bf4] {\n          display: inline-block;\n          padding: 7px;\n          margin: 10px 5px 10px 10px;\n          border-radius: 3px;\n}\n.solution-list .list-item .domain-statistic .domain-info .domain-num[data-v-8d272bf4] {\n          display: inline-block;\n          font-size: 0.8em;\n          vertical-align: middle;\n}\n.solution-list .list-item .domain-statistic .domain-info .tip[data-v-8d272bf4] {\n          padding: 5px;\n          box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n          border-radius: 3px;\n          position: absolute;\n          top: 30px;\n          left: 10px;\n          width: 120px;\n          text-align: center;\n          visibility: hidden;\n          z-index: 1;\n}\n.solution-list .list-item .domain-statistic .domain-info:hover .tip[data-v-8d272bf4] {\n          visibility: visible;\n}\n.solution-list .list-item .desc[data-v-8d272bf4] {\n      white-space: pre-wrap;\n      color: #333333;\n      padding: 0px 20px 0px 10px;\n      width: 100%;\n      height: 4.5em;\n      line-height: 1.5em;\n      overflow: hidden;\n}\n", ""]);
 
 // exports
 
@@ -1964,7 +2876,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-45447dba] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-45447dba] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-45447dba] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-45447dba] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-45447dba] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-45447dba] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-45447dba] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-45447dba] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-45447dba] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-45447dba] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-45447dba] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-45447dba] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-45447dba] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-45447dba] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-45447dba] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-45447dba] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-45447dba]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-45447dba] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-45447dba]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-45447dba] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-45447dba] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-45447dba] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-45447dba] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-45447dba] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-45447dba] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-45447dba] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-45447dba] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-45447dba] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-45447dba] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-45447dba] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45447dba] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45447dba]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-45447dba] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-45447dba] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45447dba] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45447dba]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-45447dba] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      height: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 15px;\n    right: 10px;\n    height: 40px;\n    border-radius: 50px;\n    cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.topbar .menu-bt[data-v-45447dba] {\n        right: 20px;\n}\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  right: 0px;\n  top: 70px;\n  width: 100%;\n  padding: 0px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n  overflow-y: hidden;\n  max-height: 0px;\n  -webkit-transition: max-height 0.5s, padding 0.5s ease;\n  transition: max-height 0.5s, padding 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.menu-container[data-v-45447dba] {\n      width: 300px;\n      max-width: 100%;\n      border-radius: 0px 0px 0px 10px;\n}\n}\n.menu-container.open[data-v-45447dba] {\n    padding: 10px 20px;\n    max-height: 300px;\n}\n.menu-container li[data-v-45447dba] {\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      padding: 10px 0px;\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n.menu-container li[data-v-45447dba]:hover {\n      background-color: #eeeeee;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-45447dba] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-45447dba] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-45447dba] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-45447dba] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-45447dba] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-45447dba] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-45447dba] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-45447dba] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-45447dba] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-45447dba] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-45447dba] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-45447dba] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-45447dba]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-45447dba] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-45447dba] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-45447dba] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-45447dba] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-45447dba] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-45447dba] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-45447dba] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-45447dba] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-45447dba] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-45447dba] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-45447dba] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-45447dba] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-45447dba], body[data-v-45447dba] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-45447dba] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-45447dba] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-45447dba] {\n  display: none;\n}\n.warning[data-v-45447dba] {\n  color: red;\n}\n.bold[data-v-45447dba] {\n  font-weight: bold;\n}\n.inline-block[data-v-45447dba] {\n  display: inline-block;\n}\n.main-container[data-v-45447dba] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-45447dba] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-45447dba] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-45447dba] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-45447dba] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-45447dba] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-45447dba]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-45447dba] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-45447dba]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-45447dba] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-45447dba]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-45447dba] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-45447dba] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-45447dba] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-45447dba] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-45447dba] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-45447dba] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-45447dba] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-45447dba] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-45447dba] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-45447dba] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-45447dba] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-45447dba]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-45447dba] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-45447dba] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-45447dba] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-45447dba] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-45447dba] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-45447dba] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-45447dba] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45447dba] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-45447dba]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-45447dba] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-45447dba] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-45447dba] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45447dba] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-45447dba]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-45447dba] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.topbar[data-v-45447dba] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 70px;\n  padding: 10px;\n  box-shadow: 0px 2px 5px #888;\n  background-color: #eeeeee;\n  z-index: 10;\n}\n.topbar .logo[data-v-45447dba] {\n    position: absolute;\n    top: 10px;\n    left: 20px;\n    height: 50px;\n}\n.topbar .logo img[data-v-45447dba] {\n      height: 100%;\n      cursor: pointer;\n}\n.topbar .menu-bt[data-v-45447dba] {\n    display: block;\n    position: absolute;\n    top: 15px;\n    right: 10px;\n    height: 40px;\n    border-radius: 50px;\n    cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.topbar .menu-bt[data-v-45447dba] {\n        right: 20px;\n}\n}\n.topbar .menu-bt[data-v-45447dba]:hover {\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.topbar .bt-container[data-v-45447dba] {\n    height: 100%;\n    position: absolute;\n    top: 0px;\n    right: 80px;\n    display: none;\n}\n@media only screen and (min-width: 640px) {\n.topbar .bt-container[data-v-45447dba] {\n        display: flex;\n        justify-content: flex-end;\n        align-items: center;\n}\n}\n.topbar .bt-container .bt[data-v-45447dba] {\n      font-size: 1.2em;\n      display: inline-block;\n      padding: 5px 10px;\n      margin: 5px 10px;\n      text-align: center;\n      color: #333333;\n      cursor: pointer;\n}\n.topbar .bt-container .bt[data-v-45447dba]:hover {\n        color: #BE9063;\n        border-bottom: 2px solid #BE9063;\n}\n.menu-container[data-v-45447dba] {\n  position: fixed;\n  right: 0px;\n  top: 70px;\n  width: 100%;\n  padding: 0px 20px;\n  margin: 0px;\n  list-style-type: none;\n  box-shadow: 0px 2px 4px 0px #888;\n  background-color: #f8f8f8;\n  font-size: 1.25em;\n  color: #333333;\n  z-index: 9;\n  overflow-y: hidden;\n  max-height: 0px;\n  -webkit-transition: max-height 0.5s, padding 0.5s ease;\n  transition: max-height 0.5s, padding 0.5s ease;\n}\n@media only screen and (min-width: 640px) {\n.menu-container[data-v-45447dba] {\n      width: 300px;\n      max-width: 100%;\n      border-radius: 0px 0px 0px 10px;\n}\n}\n.menu-container.open[data-v-45447dba] {\n    padding: 10px 20px;\n    max-height: 300px;\n}\n.menu-container li[data-v-45447dba] {\n    border-bottom: 1px solid #BE9063;\n}\n.menu-container li a[data-v-45447dba] {\n      padding: 10px 0px;\n      display: block;\n      color: #333333;\n      text-decoration: none;\n}\n.menu-container li[data-v-45447dba]:last-of-type {\n      border: none;\n}\n.menu-container li[data-v-45447dba]:hover {\n      background-color: #eeeeee;\n}\n", ""]);
 
 // exports
 
@@ -1983,7 +2895,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-ef839ef4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-ef839ef4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-ef839ef4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.cat-D1[data-v-ef839ef4] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-ef839ef4] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-ef839ef4] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-ef839ef4] {\n  background-color: #C089E8;\n}\n.problem-cat[data-v-ef839ef4] {\n  background-color: #eeeeee;\n  padding: 0px 0px 10px 0px;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-ef839ef4] {\n    margin: 10px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-ef839ef4] {\n    padding: 10px;\n}\n.problem-cat .problem-item[data-v-ef839ef4] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-ef839ef4] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-ef839ef4] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-ef839ef4] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-ef839ef4] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-ef839ef4] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4]:hover {\n        background-color: #ffffff;\n}\nhtml[data-v-ef839ef4], body[data-v-ef839ef4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-ef839ef4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-ef839ef4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-ef839ef4] {\n  display: none;\n}\n.warning[data-v-ef839ef4] {\n  color: red;\n}\n.bold[data-v-ef839ef4] {\n  font-weight: bold;\n}\n.main-container[data-v-ef839ef4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-ef839ef4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .owner-info[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-ef839ef4] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-ef839ef4] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-ef839ef4] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 10px 20px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-ef839ef4]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-ef839ef4] {\n  color: #ff8888;\n  border: 1px solid #ff8888;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-ef839ef4]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4]:hover {\n      border-bottom: 2px solid #ff8888;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-ef839ef4] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-ef839ef4] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-ef839ef4] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-ef839ef4] {\n    top: 0px;\n}\n.care-tips .message-box[data-v-ef839ef4] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-ef839ef4] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4]:hover {\n        background-color: #888888;\n}\n.care-tips .input-panel[data-v-ef839ef4] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  z-index: 10;\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .panel-title[data-v-ef839ef4] {\n    font-size: 1.5em;\n    text-align: center;\n    margin: 20px;\n}\n.care-tips .input-panel .input-area[data-v-ef839ef4] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-ef839ef4] {\n      margin: 10px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-ef839ef4] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-ef839ef4] {\n      padding: 5px;\n      max-width: 100%;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-ef839ef4] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff8888;\n      border: 1px solid #ff8888;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-ef839ef4]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .tab-bar[data-v-ef839ef4] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  background-color: rgba(100, 100, 100, 0.9);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-ef839ef4] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-ef839ef4] {\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-ef839ef4]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-ef839ef4] {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.user-info-editor[data-v-ef839ef4] {\n  width: 600px;\n  max-width: 100%;\n  margin: auto;\n}\n.user-info-editor .info-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n      padding: 10px;\n      margin: 10px;\n      width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n          width: auto;\n}\n}\n.user-info-editor .info-label[data-v-ef839ef4] {\n    color: #888888;\n    margin: 5px 0px 0px 0px;\n}\n.user-info-editor .user-photo[data-v-ef839ef4] {\n    display: block;\n    width: 250px;\n    height: 250px;\n    max-width: 100%;\n    margin: 20px auto;\n    object-fit: cover;\n    border-radius: 50%;\n}\n.user-info-editor .photo-bt[data-v-ef839ef4] {\n    width: 100%;\n    border: 1px solid #888888;\n    border-radius: 5px;\n    padding: 10px;\n    margin: 5px 0px;\n    text-align: center;\n    cursor: pointer;\n}\n.user-info-editor .remark[data-v-ef839ef4] {\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.user-info-editor .remark .remark-check[data-v-ef839ef4] {\n      color: black;\n      display: inline-block;\n}\n.user-info-editor .remark input[type=\"checkbox\"][data-v-ef839ef4] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.user-info-editor .canNotEmpty[data-v-ef839ef4]:before {\n    color: red;\n    content: \"*\";\n}\n.user-info-editor input[data-v-ef839ef4] {\n    padding: 5px;\n    width: 100%;\n    border: 1px solid #dddddd;\n    font-size: 1.1em;\n}\n.user-info-editor select[data-v-ef839ef4] {\n    border: 1px solid #dddddd;\n    padding: 5px;\n    width: 100%;\n    font-size: 1.1em;\n}\n.user-info-editor textarea[data-v-ef839ef4] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\n.half-w[data-v-ef839ef4] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-ef839ef4] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-ef839ef4] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-ef839ef4] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-ef839ef4] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-ef839ef4] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-ef839ef4] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-ef839ef4] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-ef839ef4] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-ef839ef4] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-ef839ef4] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-ef839ef4] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-ef839ef4]:hover {\n        background-color: #ffffff;\n}\n.cat-D1[data-v-ef839ef4] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-ef839ef4] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-ef839ef4] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-ef839ef4] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-ef839ef4] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-ef839ef4] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-ef839ef4] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-ef839ef4] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-ef839ef4] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-ef839ef4] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-ef839ef4] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-ef839ef4] {\n  background-color: #FF8AE7;\n}\nhtml[data-v-ef839ef4], body[data-v-ef839ef4] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-ef839ef4] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-ef839ef4] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-ef839ef4] {\n  display: none;\n}\n.warning[data-v-ef839ef4] {\n  color: red;\n}\n.bold[data-v-ef839ef4] {\n  font-weight: bold;\n}\n.inline-block[data-v-ef839ef4] {\n  display: inline-block;\n}\n.main-container[data-v-ef839ef4] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 10px 10px 50px 10px;\n  color: #333333;\n}\n.main-container .title[data-v-ef839ef4] {\n    font-size: 1.5em;\n    text-align: center;\n    color: red;\n}\n.care-tips .separator[data-v-ef839ef4] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .owner-info[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #ffffff;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-ef839ef4] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-ef839ef4] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .input-bt[data-v-ef839ef4] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-ef839ef4]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-ef839ef4] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-ef839ef4]:hover {\n    color: #ff3333;\n    border: 1px solid #ff3333;\n}\n.care-tips .feedback-statistic[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px 10px;\n  color: #888888;\n}\n.care-tips .feedback-statistic .container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-ef839ef4]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-ef839ef4] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-ef839ef4] {\n    padding: 0px 10px;\n}\n.care-tips .inform-message[data-v-ef839ef4] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-ef839ef4] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-ef839ef4] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-ef839ef4] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-ef839ef4] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-ef839ef4] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-ef839ef4] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-ef839ef4] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-ef839ef4]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-ef839ef4] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .input-panel[data-v-ef839ef4] {\n  position: fixed;\n  top: 0px;\n  left: 0px;\n  width: 100%;\n  height: 100%;\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: hidden;\n}\n.care-tips .input-panel .input-area[data-v-ef839ef4] {\n    max-height: 100%;\n    overflow-y: auto;\n    position: relative;\n    background-color: #eeeeee;\n    color: #323232;\n    border-radius: 5px;\n    width: 800px;\n    max-width: 100%;\n    margin: auto;\n    padding: 10px;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n    -ms-transform: translateY(-50%);\n    transform: translateY(-50%);\n}\n.care-tips .input-panel .input-area .input-item[data-v-ef839ef4] {\n      margin: 5px;\n}\n.care-tips .input-panel .input-area .input-label[data-v-ef839ef4] {\n      font-size: 1.2em;\n      display: inline-block;\n}\n.care-tips .input-panel .input-area select[data-v-ef839ef4] {\n      border-radius: 3px;\n      max-width: 100%;\n      padding: 5px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area textarea[data-v-ef839ef4] {\n      margin: 10px 0px;\n      border-radius: 3px;\n      padding: 10px;\n      width: 100%;\n      height: 120px;\n      resize: none;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"number\"][data-v-ef839ef4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 80px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area input[type=\"text\"][data-v-ef839ef4] {\n      max-width: 100%;\n      padding: 5px;\n      border-radius: 3px;\n      max-width: 200px;\n      font-size: 1.1em;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-ef839ef4] {\n      position: absolute;\n      top: 10px;\n      right: 10px;\n      font-size: 1.2em;\n      cursor: pointer;\n      padding: 5px 10px;\n      color: #ff5555;\n      border: 1px solid #ff5555;\n      border-radius: 5px;\n}\n.care-tips .input-panel .input-area .close-bt[data-v-ef839ef4]:hover {\n        color: #ff3333;\n        border: 1px solid #ff3333;\n}\n.care-tips .slide-panel[data-v-ef839ef4] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.8);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-ef839ef4] {\n    left: 0px;\n}\n.care-tips .tab-bar[data-v-ef839ef4] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-ef839ef4] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-ef839ef4] {\n    text-align: center;\n    min-width: 90px;\n    cursor: pointer;\n    padding: 5px 10px;\n    background-color: #ffffff;\n    color: #555555;\n    border: 1px solid #555555;\n    border-radius: 5px;\n    margin: 0px 10px;\n}\n.care-tips .tab-bar .tab-bt[data-v-ef839ef4]:hover {\n      color: #888888;\n      border: 1px solid #888888;\n}\n.care-tips .tab-bar .tab-bt.on[data-v-ef839ef4] {\n      color: #ff5555;\n      border: 1px solid #ff5555;\n}\n.user-info-editor[data-v-ef839ef4] {\n  width: 600px;\n  max-width: 100%;\n  margin: auto;\n}\n.user-info-editor .info-container[data-v-ef839ef4] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n      padding: 10px;\n      margin: 10px;\n      width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.user-info-editor .info-container .info-box[data-v-ef839ef4] {\n          width: auto;\n}\n}\n.user-info-editor .info-label[data-v-ef839ef4] {\n    color: #888888;\n    margin: 5px 0px 0px 0px;\n}\n.user-info-editor .user-photo[data-v-ef839ef4] {\n    display: block;\n    width: 250px;\n    height: 250px;\n    max-width: 100%;\n    margin: 20px auto;\n    object-fit: cover;\n    border-radius: 50%;\n}\n.user-info-editor .photo-bt[data-v-ef839ef4] {\n    width: 100%;\n    border: 1px solid #888888;\n    border-radius: 5px;\n    padding: 10px;\n    margin: 5px 0px;\n    text-align: center;\n    cursor: pointer;\n}\n.user-info-editor .remark[data-v-ef839ef4] {\n    font-size: 1em;\n    color: red;\n    padding: 20px 10px;\n}\n.user-info-editor .remark .remark-check[data-v-ef839ef4] {\n      color: black;\n      display: inline-block;\n}\n.user-info-editor .remark input[type=\"checkbox\"][data-v-ef839ef4] {\n      position: relative;\n      top: 4px;\n      width: 20px;\n      height: 20px;\n}\n.user-info-editor .canNotEmpty[data-v-ef839ef4]:before {\n    color: red;\n    content: \"*\";\n}\n.user-info-editor input[data-v-ef839ef4] {\n    padding: 5px;\n    width: 100%;\n    border: 1px solid #dddddd;\n    font-size: 1.1em;\n}\n.user-info-editor select[data-v-ef839ef4] {\n    border: 1px solid #dddddd;\n    padding: 5px;\n    width: 100%;\n    font-size: 1.1em;\n}\n.user-info-editor textarea[data-v-ef839ef4] {\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n", ""]);
 
 // exports
 
@@ -2107,6 +3019,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-editor.vue?vue&type=style&index=0&id=84ab2184&lang=scss&scoped=true":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-editor.vue?vue&type=style&index=0&id=84ab2184&lang=scss&scoped=true ***!
@@ -2197,6 +3139,66 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true":
 /*!**************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=style&index=0&id=a7997294&lang=scss&scoped=true ***!
@@ -2236,6 +3238,36 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./login-panel.vue?vue&type=style&index=0&id=16f2f798&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/login-panel.vue?vue&type=style&index=0&id=16f2f798&lang=scss&scoped=true");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -3369,7 +4401,7 @@ var render = function() {
           _c("div", { staticClass: "price-summary" }, [
             _c("div", { staticClass: "sub-header" }, [_vm._v("補助金額")]),
             _vm._v(" "),
-            _vm.header.payment
+            _vm.header
               ? _c("div", [
                   _c("div", { staticClass: "price-limit" }, [
                     _vm._v(
@@ -3504,7 +4536,7 @@ var render = function() {
           _c("div", { staticClass: "price-summary" }, [
             _c("div", { staticClass: "sub-header" }, [_vm._v("自費金額")]),
             _vm._v(" "),
-            _vm.header.payment
+            _vm.header
               ? _c("div", [
                   _c("div", { staticClass: "price-limit" }, [
                     _vm._v(
@@ -4320,328 +5352,43 @@ var render = function() {
         staticClass: "input-panel"
       },
       [
-        _c("div", { staticClass: "input-area" }, [
-          _c("div", { staticClass: "category-option" }, [
-            _c("div", { staticClass: "input-label" }, [_vm._v("主類")]),
+        _c(
+          "div",
+          { staticClass: "input-area" },
+          [
+            _c("care-service-selection", {
+              ref: "serviceSelect",
+              attrs: { calcPrice: "1" }
+            }),
             _vm._v(" "),
             _c(
-              "select",
+              "div",
               {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.mainCategory,
-                    expression: "mainCategory"
-                  }
-                ],
+                staticClass: "input-bt",
                 on: {
-                  change: [
-                    function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.mainCategory = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function($event) {
-                      _vm.UpdateMainCategory()
-                    }
-                  ]
+                  click: function($event) {
+                    _vm.AddService()
+                  }
                 }
               },
-              _vm._l(_vm.header.service, function(s, i) {
-                return _c("option", { domProps: { value: i } }, [
-                  _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                ])
-              })
-            )
-          ]),
-          _vm._v(" "),
-          _vm.header.service &&
-          _vm.header.service[_vm.mainCategory].items.length > 1
-            ? _c("div", { staticClass: "category-option" }, [
-                _c("div", { staticClass: "input-label" }, [_vm._v("子類")]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.subCategory,
-                        expression: "subCategory"
-                      }
-                    ],
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.subCategory = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          _vm.UpdateSubCategory()
-                        }
-                      ]
-                    }
-                  },
-                  _vm._l(_vm.header.service[_vm.mainCategory].items, function(
-                    s,
-                    i
-                  ) {
-                    return _c("option", { domProps: { value: i } }, [
-                      _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                    ])
-                  })
-                )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.header.service && _vm.mainCategory != 7
-            ? _c("div", { staticClass: "category-option" }, [
-                _c("div", { staticClass: "input-label" }, [_vm._v("項目")]),
-                _vm._v(" "),
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.selectService,
-                        expression: "selectService"
-                      }
-                    ],
-                    on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.selectService = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function($event) {
-                          _vm.UpdateItemInfo()
-                        }
-                      ]
-                    }
-                  },
-                  _vm._l(
-                    _vm.header.service[_vm.mainCategory].items[_vm.subCategory]
-                      .items,
-                    function(s, i) {
-                      return _c("option", { domProps: { value: i } }, [
-                        _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                      ])
-                    }
-                  )
-                )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", [
-            _vm.mainCategory == 4 || _vm.mainCategory == 5
-              ? _c("span", { staticClass: "category-option" }, [
-                  _c("div", { staticClass: "input-label" }, [_vm._v("方式")]),
-                  _vm._v(" "),
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.isRent,
-                          expression: "isRent"
-                        }
-                      ],
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.isRent = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
-                    },
-                    [
-                      _c(
-                        "option",
-                        {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: _vm.itemInfo.payForBuy !== "不適用",
-                              expression: "itemInfo.payForBuy !== '不適用' "
-                            }
-                          ],
-                          attrs: { value: "0" }
-                        },
-                        [_vm._v("購買")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "option",
-                        {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: _vm.itemInfo.payForRent !== "不適用",
-                              expression: "itemInfo.payForRent !== '不適用' "
-                            }
-                          ],
-                          attrs: { value: "1" }
-                        },
-                        [_vm._v("租賃")]
-                      )
-                    ]
-                  )
-                ])
-              : _vm._e(),
+              [_vm._v("新增")]
+            ),
             _vm._v(" "),
-            _vm.mainCategory == 7
-              ? _c("span", { staticClass: "category-option" }, [
-                  _c("div", { staticClass: "input-label" }, [
-                    _vm._v("服務名稱")
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.customName,
-                        expression: "customName"
-                      }
-                    ],
-                    attrs: { type: "input" },
-                    domProps: { value: _vm.customName },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.customName = $event.target.value
-                      }
-                    }
-                  })
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.mainCategory == 3 ||
-            _vm.mainCategory == 4 ||
-            _vm.mainCategory == 5 ||
-            _vm.mainCategory == 7
-              ? _c("span", { staticClass: "category-option" }, [
-                  _c("div", { staticClass: "input-label" }, [_vm._v("價格")]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.customPrice,
-                        expression: "customPrice"
-                      }
-                    ],
-                    attrs: { type: "number", min: "1" },
-                    domProps: { value: _vm.customPrice },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.customPrice = $event.target.value
-                      }
-                    }
-                  })
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("span", { staticClass: "category-option" }, [
-              _c("div", { staticClass: "input-label" }, [_vm._v("數量")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.serviceCount,
-                    expression: "serviceCount"
-                  }
-                ],
-                attrs: { type: "number", min: "1", max: "100" },
-                domProps: { value: _vm.serviceCount },
+            _c(
+              "div",
+              {
+                staticClass: "input-bt",
                 on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.serviceCount = $event.target.value
+                  click: function($event) {
+                    _vm.openInputPanel = false
                   }
                 }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "input-bt",
-              on: {
-                click: function($event) {
-                  _vm.AddService()
-                }
-              }
-            },
-            [_vm._v("新增")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "input-bt",
-              on: {
-                click: function($event) {
-                  _vm.openInputPanel = false
-                }
-              }
-            },
-            [_vm._v("取消")]
-          )
-        ])
+              },
+              [_vm._v("取消")]
+            )
+          ],
+          1
+        )
       ]
     )
   ])
@@ -4668,6 +5415,329 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.serviceCode
+    ? _c("div", { staticClass: "care-service-selection" }, [
+        _c("div", { staticClass: "input-item" }, [
+          _c("div", { staticClass: "input-label" }, [_vm._v("主類")]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.mainCategory,
+                  expression: "mainCategory"
+                }
+              ],
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.mainCategory = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    _vm.UpdateMainCategory()
+                  }
+                ]
+              }
+            },
+            _vm._l(_vm.serviceCode.service, function(s, i) {
+              return _c("option", { domProps: { value: i } }, [
+                _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+              ])
+            })
+          )
+        ]),
+        _vm._v(" "),
+        _vm.serviceCode.service[_vm.mainCategory].items.length > 1
+          ? _c("div", { staticClass: "input-item" }, [
+              _c("div", { staticClass: "input-label" }, [_vm._v("子類")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.subCategory,
+                      expression: "subCategory"
+                    }
+                  ],
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.subCategory = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        _vm.UpdateSubCategory()
+                      }
+                    ]
+                  }
+                },
+                _vm._l(
+                  _vm.serviceCode.service[_vm.mainCategory].items,
+                  function(s, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                    ])
+                  }
+                )
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.mainCategory != 7
+          ? _c("div", { staticClass: "input-item" }, [
+              _c("div", { staticClass: "input-label" }, [_vm._v("項目")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selectService,
+                      expression: "selectService"
+                    }
+                  ],
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectService = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      function($event) {
+                        _vm.UpdateItemInfo()
+                      }
+                    ]
+                  }
+                },
+                _vm._l(
+                  _vm.serviceCode.service[_vm.mainCategory].items[
+                    _vm.subCategory
+                  ].items,
+                  function(s, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                    ])
+                  }
+                )
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.calcPrice == "1"
+          ? _c("div", [
+              _vm.mainCategory == 4 || _vm.mainCategory == 5
+                ? _c("div", { staticClass: "inline-block input-item" }, [
+                    _c("div", { staticClass: "input-label" }, [_vm._v("方式")]),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.isRent,
+                            expression: "isRent"
+                          }
+                        ],
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.isRent = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "option",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.itemInfo.payForBuy !== "不適用",
+                                expression: "itemInfo.payForBuy !== '不適用' "
+                              }
+                            ],
+                            attrs: { value: "0" }
+                          },
+                          [_vm._v("購買")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "option",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.itemInfo.payForRent !== "不適用",
+                                expression: "itemInfo.payForRent !== '不適用' "
+                              }
+                            ],
+                            attrs: { value: "1" }
+                          },
+                          [_vm._v("租賃")]
+                        )
+                      ]
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.mainCategory == 7
+                ? _c("div", { staticClass: "inline-block input-item" }, [
+                    _c("div", { staticClass: "input-label" }, [
+                      _vm._v("服務名稱")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.customName,
+                          expression: "customName"
+                        }
+                      ],
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.customName },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.customName = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.mainCategory == 3 ||
+              _vm.mainCategory == 4 ||
+              _vm.mainCategory == 5 ||
+              _vm.mainCategory == 7
+                ? _c("div", { staticClass: "inline-block input-item" }, [
+                    _c("div", { staticClass: "input-label" }, [_vm._v("價格")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.customPrice,
+                          expression: "customPrice"
+                        }
+                      ],
+                      attrs: { type: "number", min: "1" },
+                      domProps: { value: _vm.customPrice },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.customPrice = $event.target.value
+                        }
+                      }
+                    })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", { staticClass: "inline-block input-item" }, [
+                _c("div", { staticClass: "input-label" }, [_vm._v("數量")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.serviceCount,
+                      expression: "serviceCount"
+                    }
+                  ],
+                  attrs: { type: "number", min: "1", max: "100" },
+                  domProps: { value: _vm.serviceCount },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.serviceCount = $event.target.value
+                    }
+                  }
+                })
+              ])
+            ])
+          : _vm._e()
+      ])
+    : _vm._e()
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -5450,6 +6520,1055 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html":
+/*!*****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html ***!
+  \*****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "case-provide-solution" }, [
+    _c("div", { staticClass: "step-page" }, [
+      _c("div", { staticClass: "remark" }, [
+        _vm._v(
+          "(第" +
+            _vm._s(_vm.step + 1) +
+            "題/共" +
+            _vm._s(_vm.quest.length) +
+            "題)"
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "quest",
+        domProps: { innerHTML: _vm._s(_vm.quest[_vm.step]) }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "step-bt-container" }, [
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.action == "edit",
+                expression: "action=='edit'"
+              }
+            ],
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.ClearEditSolution(true)
+              }
+            }
+          },
+          [_vm._v("取消修改")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.step > 0,
+                expression: "step>0"
+              }
+            ],
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.PrevQuest()
+              }
+            }
+          },
+          [_vm._v("回上題")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.step < _vm.quest.length - 1,
+                expression: "step<quest.length-1"
+              }
+            ],
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.NextQuest()
+              }
+            }
+          },
+          [_vm._v("下一題")]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.step == _vm.quest.length - 1,
+                expression: "step==quest.length-1"
+              }
+            ],
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.SubmitSolution()
+              }
+            }
+          },
+          [_vm._v(_vm._s(_vm.action == "edit" ? "完成修改" : "完成解題"))]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "separator" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "input-bt",
+          on: {
+            click: function($event) {
+              _vm.openInputPanel = true
+            }
+          }
+        },
+        [_vm._v("新增項目")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "sol-container" }, [
+        _vm.step == 0 || _vm.step == 1
+          ? _c(
+              "div",
+              _vm._l(_vm.priority, function(p, i) {
+                return _c("div", { staticClass: "problem-cat" }, [
+                  _c("div", { staticClass: "problem-header" }, [
+                    _vm._v(_vm._s(p.name))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "problem-container" },
+                    _vm._l(_vm.solution[_vm.step][i], function(s, j) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass: "problem-item half-w",
+                          class: "cat-D" + (i + 1)
+                        },
+                        [
+                          _c("div", { staticClass: "problem-title" }, [
+                            _vm._v(
+                              _vm._s(_vm.intervention[s.intervention].name)
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "problem-body" }, [
+                            _c("div", {
+                              staticClass: "problem-desc",
+                              domProps: { innerHTML: _vm._s(s.desc) }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "item-bt-container" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "item-bt",
+                                  on: {
+                                    click: function($event) {
+                                      _vm.ModifyItem(i, j)
+                                    }
+                                  }
+                                },
+                                [_vm._v("修改")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "item-bt",
+                                  on: {
+                                    click: function($event) {
+                                      _vm.DeleteItem(i, j)
+                                    }
+                                  }
+                                },
+                                [_vm._v("刪除")]
+                              )
+                            ])
+                          ])
+                        ]
+                      )
+                    })
+                  )
+                ])
+              })
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.step == 2
+          ? _c("div", [
+              _c("div", { staticClass: "problem-cat" }, [
+                _c("div", { staticClass: "problem-header" }, [
+                  _vm._v("專業連結")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "problem-container" },
+                  _vm._l(_vm.solution[_vm.step][0], function(s, j) {
+                    return _c(
+                      "div",
+                      { staticClass: "problem-item half-w cat-D4" },
+                      [
+                        _c("div", { staticClass: "problem-title" }, [
+                          _vm._v(_vm._s(s.profession))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "problem-body" }, [
+                          _c("div", {
+                            staticClass: "problem-desc",
+                            domProps: { innerHTML: _vm._s(s.desc) }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "item-bt-container" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "item-bt",
+                                on: {
+                                  click: function($event) {
+                                    _vm.ModifyItem(0, j)
+                                  }
+                                }
+                              },
+                              [_vm._v("修改")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "item-bt",
+                                on: {
+                                  click: function($event) {
+                                    _vm.DeleteItem(0, j)
+                                  }
+                                }
+                              },
+                              [_vm._v("刪除")]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  })
+                )
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.step == 3
+          ? _c("div", [
+              _c("div", { staticClass: "problem-cat" }, [
+                _c("div", { staticClass: "problem-header" }, [
+                  _vm._v("服務項目")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "problem-container" },
+                  _vm._l(_vm.solution[_vm.step][0], function(s, j) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "problem-item half-w",
+                        class: "cat-" + s.category
+                      },
+                      [
+                        _c("div", { staticClass: "problem-title" }, [
+                          _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "problem-body" }, [
+                          _c("div", {
+                            staticClass: "problem-desc",
+                            domProps: { innerHTML: _vm._s(s.desc) }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "item-bt-container" }, [
+                            _c(
+                              "div",
+                              {
+                                staticClass: "item-bt",
+                                on: {
+                                  click: function($event) {
+                                    _vm.ModifyItem(0, j)
+                                  }
+                                }
+                              },
+                              [_vm._v("修改")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "item-bt",
+                                on: {
+                                  click: function($event) {
+                                    _vm.DeleteItem(0, j)
+                                  }
+                                }
+                              },
+                              [_vm._v("刪除")]
+                            )
+                          ])
+                        ])
+                      ]
+                    )
+                  })
+                )
+              ])
+            ])
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "separator" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "input-bt",
+          on: {
+            click: function($event) {
+              _vm.ViewCase()
+            }
+          }
+        },
+        [_vm._v("觀看案例")]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.openInputPanel,
+            expression: "openInputPanel"
+          }
+        ],
+        staticClass: "input-panel"
+      },
+      [
+        _c("div", { staticClass: "input-area" }, [
+          _c("div", {
+            staticClass: "quest",
+            domProps: { innerHTML: _vm._s(_vm.quest[_vm.step]) }
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.step == 0 || _vm.step == 1,
+                  expression: "step == 0 || step == 1"
+                }
+              ]
+            },
+            [
+              _c("div", { staticClass: "input-item" }, [
+                _c("div", { staticClass: "input-label" }, [_vm._v("優先順序")]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selectPriority,
+                        expression: "selectPriority"
+                      }
+                    ],
+                    attrs: { disabled: _vm.modify },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectPriority = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  _vm._l(_vm.priority, function(p, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(p.name))
+                    ])
+                  })
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "input-item" }, [
+                _c("div", { staticClass: "input-label" }, [_vm._v("措施")]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selectIntervention,
+                        expression: "selectIntervention"
+                      }
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectIntervention = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  _vm._l(_vm.intervention, function(v, i) {
+                    return _c("option", { domProps: { value: i } }, [
+                      _vm._v(_vm._s(v.name))
+                    ])
+                  })
+                )
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.step == 2,
+                  expression: "step == 2"
+                }
+              ]
+            },
+            [
+              _c("div", { staticClass: "input-item" }, [
+                _c("div", { staticClass: "input-label" }, [_vm._v("專業連結")]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.selectProfession,
+                        expression: "selectProfession"
+                      }
+                    ],
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.selectProfession = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  _vm._l(_vm.professions, function(p) {
+                    return _c("option", { domProps: { value: p } }, [
+                      _vm._v(_vm._s(p))
+                    ])
+                  })
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.selectProfession == "其他",
+                      expression: "selectProfession=='其他'"
+                    }
+                  ],
+                  staticClass: "input-item"
+                },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.customProfession,
+                        expression: "customProfession"
+                      }
+                    ],
+                    attrs: {
+                      type: "text",
+                      placeholder: "請輸入您要連結的專業"
+                    },
+                    domProps: { value: _vm.customProfession },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.customProfession = $event.target.value
+                      }
+                    }
+                  })
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.step == 3,
+                  expression: "step == 3"
+                }
+              ]
+            },
+            [_c("care-service-selection", { ref: "serviceSelect" })],
+            1
+          ),
+          _vm._v(" "),
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.inputDesc,
+                expression: "inputDesc"
+              }
+            ],
+            attrs: { placeholder: "請簡述您提供的措施" },
+            domProps: { value: _vm.inputDesc },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.inputDesc = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.modify,
+                  expression: "!modify"
+                }
+              ],
+              staticClass: "input-bt",
+              on: {
+                click: function($event) {
+                  _vm.AddItem()
+                }
+              }
+            },
+            [_vm._v("新增")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.modify,
+                  expression: "!modify"
+                }
+              ],
+              staticClass: "input-bt",
+              on: {
+                click: function($event) {
+                  _vm.openInputPanel = false
+                }
+              }
+            },
+            [_vm._v("取消")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.modify,
+                  expression: "modify"
+                }
+              ],
+              staticClass: "input-bt",
+              on: {
+                click: function($event) {
+                  _vm.DoModify()
+                }
+              }
+            },
+            [_vm._v("修改")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.modify,
+                  expression: "modify"
+                }
+              ],
+              staticClass: "input-bt",
+              on: {
+                click: function($event) {
+                  _vm.ClearModify()
+                }
+              }
+            },
+            [_vm._v("取消修改")]
+          )
+        ])
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "case-view-solution" },
+    [
+      _c(
+        "div",
+        {
+          staticClass: "input-bt",
+          on: {
+            click: function($event) {
+              _vm.BackToSolutionList()
+            }
+          }
+        },
+        [_vm._v("回解方列表")]
+      ),
+      _vm._v(" "),
+      _vm.solutionInfo
+        ? _c("div", { staticClass: "feedback-statistic" }, [
+            _c(
+              "div",
+              {
+                staticClass: "container clickable",
+                on: {
+                  click: function($event) {
+                    _vm.ToggleLike()
+                  }
+                }
+              },
+              [
+                _c("img", {
+                  staticClass: "feedback-icon",
+                  attrs: { src: "/static/image/like.png" }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "feedback-num" }, [
+                  _vm._v(_vm._s(_vm.solutionInfo.likeNum))
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "container" }, [
+              _vm._v("\r\n\t\t\t觀看次數"),
+              _c("div", { staticClass: "feedback-num" }, [
+                _vm._v(_vm._s(_vm.solutionInfo.viewNum))
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.isMySolution,
+                    expression: "isMySolution"
+                  }
+                ],
+                staticClass: "container"
+              },
+              [
+                _c(
+                  "div",
+                  {
+                    staticClass: "action-bt",
+                    on: {
+                      click: function($event) {
+                        _vm.ModifySolution()
+                      }
+                    }
+                  },
+                  [_vm._v("修改解方")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "action-bt",
+                    on: {
+                      click: function($event) {
+                        _vm.DeleteSolution()
+                      }
+                    }
+                  },
+                  [_vm._v("刪除解方")]
+                )
+              ]
+            )
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._l(_vm.quest, function(q, step) {
+        return _vm.solutionInfo
+          ? _c("div", [
+              _c("div", {
+                staticClass: "quest",
+                domProps: { innerHTML: _vm._s(q) }
+              }),
+              _vm._v(" "),
+              step == 0 || step == 1
+                ? _c(
+                    "div",
+                    _vm._l(_vm.priority, function(p, i) {
+                      return _c("div", { staticClass: "problem-cat" }, [
+                        _c("div", { staticClass: "problem-header" }, [
+                          _vm._v(_vm._s(p.name))
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "problem-container" },
+                          _vm._l(_vm.solutionInfo.info[step][i], function(
+                            s,
+                            j
+                          ) {
+                            return _c(
+                              "div",
+                              {
+                                staticClass: "problem-item half-w",
+                                class: "cat-D" + (i + 1)
+                              },
+                              [
+                                _c("div", { staticClass: "problem-title" }, [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.intervention[s.intervention].name
+                                    )
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "problem-body" }, [
+                                  _c("div", {
+                                    staticClass: "problem-desc",
+                                    domProps: { innerHTML: _vm._s(s.desc) }
+                                  })
+                                ])
+                              ]
+                            )
+                          })
+                        )
+                      ])
+                    })
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              step == 2
+                ? _c("div", [
+                    _c("div", { staticClass: "problem-cat" }, [
+                      _c("div", { staticClass: "problem-header" }, [
+                        _vm._v("專業連結")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "problem-container" },
+                        _vm._l(_vm.solutionInfo.info[step][0], function(s, j) {
+                          return _c(
+                            "div",
+                            { staticClass: "problem-item half-w cat-D4" },
+                            [
+                              _c("div", { staticClass: "problem-title" }, [
+                                _vm._v(_vm._s(s.profession))
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "problem-body" }, [
+                                _c("div", {
+                                  staticClass: "problem-desc",
+                                  domProps: { innerHTML: _vm._s(s.desc) }
+                                })
+                              ])
+                            ]
+                          )
+                        })
+                      )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              step == 3
+                ? _c("div", [
+                    _c("div", { staticClass: "problem-cat" }, [
+                      _c("div", { staticClass: "problem-header" }, [
+                        _vm._v("服務項目")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "problem-container" },
+                        _vm._l(_vm.solutionInfo.info[step][0], function(s, j) {
+                          return _c(
+                            "div",
+                            {
+                              staticClass: "problem-item half-w",
+                              class: "cat-" + s.category
+                            },
+                            [
+                              _c("div", { staticClass: "problem-title" }, [
+                                _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "problem-body" }, [
+                                _c("div", {
+                                  staticClass: "problem-desc",
+                                  domProps: { innerHTML: _vm._s(s.desc) }
+                                })
+                              ])
+                            ]
+                          )
+                        })
+                      )
+                    ])
+                  ])
+                : _vm._e()
+            ])
+          : _vm._e()
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "solution-title" }, [_vm._v("分享者簡介")]),
+      _vm._v(" "),
+      _vm.solutionInfo
+        ? _c("div", { staticClass: "owner" }, [
+            _c("div", { staticClass: "owner-info" }, [
+              _c("img", {
+                staticClass: "owner-icon",
+                attrs: { src: _vm.solutionInfo.user.icon }
+              }),
+              _vm._v(
+                "\r\n\t\t\t" +
+                  _vm._s(_vm.solutionInfo.user.profession) +
+                  " - " +
+                  _vm._s(_vm.solutionInfo.user.name) +
+                  "\r\n\t\t"
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "owner-desc" }, [
+              _vm._v(_vm._s(_vm.solutionInfo.user.desc))
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "solution-title" }, [_vm._v("留言回饋")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "message-box" }, [
+        _c("textarea", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.sendMessage,
+              expression: "sendMessage"
+            }
+          ],
+          attrs: { placeholder: "留言給分享者..." },
+          domProps: { value: _vm.sendMessage },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.sendMessage = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "bt-container" }, [
+          _c(
+            "div",
+            {
+              staticClass: "bt",
+              on: {
+                click: function($event) {
+                  _vm.SendMessage()
+                }
+              }
+            },
+            [_vm._v("送出")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.solutionInfo
+        ? _c(
+            "div",
+            { staticClass: "message-list" },
+            [
+              _c("a", { attrs: { name: "messageList" } }),
+              _vm._v(" "),
+              _vm._l(_vm.messageList, function(m, i) {
+                return _c("div", { staticClass: "message" }, [
+                  _c("div", { staticClass: "owner-info" }, [
+                    _c("img", {
+                      staticClass: "owner-icon",
+                      attrs: { src: m.user.icon }
+                    }),
+                    _vm._v(
+                      "\r\n\t\t\t\t" +
+                        _vm._s(m.user.profession) +
+                        " - " +
+                        _vm._s(m.user.name) +
+                        "\r\n\t\t\t"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "message-content" }, [
+                    _vm._v(_vm._s(m.message))
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "sub-info" }, [
+                    _c("div", { staticClass: "info-item" }, [
+                      _vm._v(_vm._s(m.time))
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.user && m.user.id == _vm.user.id,
+                            expression: "user && m.user.id == user.id"
+                          }
+                        ],
+                        staticClass: "action-bt",
+                        on: {
+                          click: function($event) {
+                            _vm.DeleteMessage(i)
+                          }
+                        }
+                      },
+                      [_vm._v("刪除")]
+                    )
+                  ])
+                ])
+              })
+            ],
+            2
+          )
+        : _vm._e()
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/case-view.vue?vue&type=template&id=a7997294&scoped=true&lang=html ***!
@@ -5588,6 +7707,32 @@ var render = function() {
           ])
         : _vm._e(),
       _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "input-bt",
+          on: {
+            click: function($event) {
+              _vm.ProvideSolution()
+            }
+          }
+        },
+        [_vm._v("我要解題")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "input-bt",
+          on: {
+            click: function($event) {
+              _vm.ViewSolution(_vm.solutionID)
+            }
+          }
+        },
+        [_vm._v("觀看解方")]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "case-title" }, [_vm._v("案例簡述")]),
       _vm._v(" "),
       _vm.caseInfo
@@ -5704,72 +7849,197 @@ var render = function() {
         ? _c(
             "div",
             { staticClass: "message-list" },
-            _vm._l(_vm.messageList, function(m, i) {
-              return _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value:
-                        m.caseVersion == _vm.caseInfo.info[_vm.vIndex].version,
-                      expression:
-                        "m.caseVersion == caseInfo.info[vIndex].version"
-                    }
-                  ],
-                  staticClass: "message"
-                },
-                [
-                  _c("div", { staticClass: "owner-info" }, [
-                    _c("img", {
-                      staticClass: "owner-icon",
-                      attrs: { src: m.user.icon }
-                    }),
-                    _vm._v(
-                      "\r\n\t\t\t\t" +
-                        _vm._s(m.user.profession) +
-                        " - " +
-                        _vm._s(m.user.name) +
-                        "\r\n\t\t\t"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "message-content" }, [
-                    _vm._v(_vm._s(m.message))
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "sub-info" }, [
-                    _c("div", { staticClass: "info-item" }, [
-                      _vm._v(_vm._s(m.time))
+            [
+              _c("a", { attrs: { name: "messageList" } }),
+              _vm._v(" "),
+              _vm._l(_vm.messageList, function(m, i) {
+                return _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value:
+                          m.caseVersion ==
+                          _vm.caseInfo.info[_vm.vIndex].version,
+                        expression:
+                          "m.caseVersion == caseInfo.info[vIndex].version"
+                      }
+                    ],
+                    staticClass: "message"
+                  },
+                  [
+                    _c("div", { staticClass: "owner-info" }, [
+                      _c("img", {
+                        staticClass: "owner-icon",
+                        attrs: { src: m.user.icon }
+                      }),
+                      _vm._v(
+                        "\r\n\t\t\t\t" +
+                          _vm._s(m.user.profession) +
+                          " - " +
+                          _vm._s(m.user.name) +
+                          "\r\n\t\t\t"
+                      )
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.user && m.user.id == _vm.user.id,
-                            expression: "user && m.user.id == user.id"
+                    _c("div", { staticClass: "message-content" }, [
+                      _vm._v(_vm._s(m.message))
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "sub-info" }, [
+                      _c("div", { staticClass: "info-item" }, [
+                        _vm._v(_vm._s(m.time))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.user && m.user.id == _vm.user.id,
+                              expression: "user && m.user.id == user.id"
+                            }
+                          ],
+                          staticClass: "action-bt",
+                          on: {
+                            click: function($event) {
+                              _vm.DeleteMessage(i)
+                            }
                           }
-                        ],
-                        staticClass: "action-bt",
-                        on: {
-                          click: function($event) {
-                            _vm.DeleteMessage(i)
-                          }
-                        }
-                      },
-                      [_vm._v("刪除")]
-                    )
-                  ])
-                ]
-              )
-            })
+                        },
+                        [_vm._v("刪除")]
+                      )
+                    ])
+                  ]
+                )
+              })
+            ],
+            2
           )
-        : _vm._e()
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.setupUserInfo,
+              expression: "setupUserInfo"
+            }
+          ],
+          staticClass: "input-panel"
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "input-area" },
+            [
+              _c("div", { staticClass: "panel-title" }, [
+                _vm._v("請先輸入您的個人資訊")
+              ]),
+              _vm._v(" "),
+              _c("user-info-editor", { ref: "userInfoEditor" })
+            ],
+            1
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "slide-panel",
+          class: { open: _vm.status == "ProvideSolution" }
+        },
+        [
+          _c("div", { staticClass: "panel-title" }, [
+            _vm._v("請依序回答下列問題")
+          ]),
+          _vm._v(" "),
+          _c("case-provide-solution", { ref: "caseProvideSolution" })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "slide-panel",
+          class: { open: _vm.status == "SolutionList" }
+        },
+        [
+          _c("div", { staticClass: "panel-title" }, [_vm._v("解方列表")]),
+          _vm._v(" "),
+          _c("solution-list", { ref: "solutionList" })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "slide-panel",
+          class: { open: _vm.status == "ViewSolution" }
+        },
+        [
+          _c("div", { staticClass: "panel-title" }, [_vm._v("觀看解方")]),
+          _vm._v(" "),
+          _c("case-view-solution", { ref: "caseViewSolution" })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "tab-bar" }, [
+        _c("div", { staticClass: "tab-bt-container" }, [
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.status == "ViewCase" },
+              on: {
+                click: function($event) {
+                  _vm.ViewCase()
+                }
+              }
+            },
+            [_vm._v("觀看案例")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.status == "ProvideSolution" },
+              on: {
+                click: function($event) {
+                  _vm.ProvideSolution()
+                }
+              }
+            },
+            [_vm._v("我要解題")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.status == "ViewSolution" },
+              on: {
+                click: function($event) {
+                  _vm.ViewSolution(_vm.solutionID)
+                }
+              }
+            },
+            [_vm._v("觀看解方")]
+          )
+        ])
+      ])
     ],
     2
   )
@@ -6246,6 +8516,132 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "solution-list" },
+    _vm._l(_vm.solutionList, function(s, i) {
+      return _c(
+        "div",
+        {
+          staticClass: "list-item half-w",
+          on: {
+            click: function($event) {
+              _vm.ViewSolution(s.id)
+            }
+          }
+        },
+        [
+          _c(
+            "div",
+            { ref: "userInfo" + i, refInFor: true, staticClass: "owner-info" },
+            [
+              _c("img", {
+                staticClass: "owner-icon",
+                attrs: { src: s.user.icon }
+              }),
+              _vm._v(
+                "\r\n\t\t\t" +
+                  _vm._s(s.user.profession) +
+                  " - " +
+                  _vm._s(s.user.name) +
+                  "\r\n\t\t"
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "domain-statistic" }, [
+            _c("div", { staticClass: "domain-info" }, [
+              _c("div", { staticClass: "domain-icon cat-D1" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "tip cat-D1" }, [
+                _vm._v("個案措施 " + _vm._s(s.S1Num || 0) + " 項")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "domain-num" }, [
+                _vm._v(_vm._s(s.S1Num || 0))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "domain-info" }, [
+              _c("div", { staticClass: "domain-icon cat-D2" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "tip cat-D2" }, [
+                _vm._v("家屬措施 " + _vm._s(s.S2Num || 0) + " 項")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "domain-num" }, [
+                _vm._v(_vm._s(s.S2Num || 0))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "domain-info" }, [
+              _c("div", { staticClass: "domain-icon cat-D3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "tip cat-D3" }, [
+                _vm._v("專業連結 " + _vm._s(s.S3Num || 0) + " 項")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "domain-num" }, [
+                _vm._v(_vm._s(s.S3Num || 0))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "domain-info" }, [
+              _c("div", { staticClass: "domain-icon cat-D4" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "tip cat-D4" }, [
+                _vm._v("照護服務 " + _vm._s(s.S4Num || 0) + " 項")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "domain-num" }, [
+                _vm._v(_vm._s(s.S4Num || 0))
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "desc" }, [_vm._v(_vm._s(s.desc))]),
+          _vm._v(" "),
+          _c("div", { staticClass: "feedback-statistic" }, [
+            _c("img", {
+              staticClass: "feedback-icon",
+              attrs: { src: "/static/image/like.png" }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "feedback-num" }, [
+              _vm._v(_vm._s(s.likeNum))
+            ]),
+            _vm._v("\r\n\t\t\t觀看次數"),
+            _c("div", { staticClass: "feedback-num" }, [
+              _vm._v(_vm._s(s.viewNum))
+            ])
+          ])
+        ]
+      )
+    })
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/topbar.vue?vue&type=template&id=45447dba&scoped=true&lang=html":
 /*!**************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/vue/topbar.vue?vue&type=template&id=45447dba&scoped=true&lang=html ***!
@@ -6387,8 +8783,8 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.selectService,
-                  expression: "selectService"
+                  value: _vm.selectProfession,
+                  expression: "selectProfession"
                 }
               ],
               on: {
@@ -6401,15 +8797,15 @@ var render = function() {
                       var val = "_value" in o ? o._value : o.value
                       return val
                     })
-                  _vm.selectService = $event.target.multiple
+                  _vm.selectProfession = $event.target.multiple
                     ? $$selectedVal
                     : $$selectedVal[0]
                 }
               }
             },
-            _vm._l(_vm.services, function(service) {
-              return _c("option", { domProps: { value: service } }, [
-                _vm._v(_vm._s(service))
+            _vm._l(_vm.professions, function(profession) {
+              return _c("option", { domProps: { value: profession } }, [
+                _vm._v(_vm._s(profession))
               ])
             })
           ),
@@ -6421,8 +8817,8 @@ var render = function() {
                 {
                   name: "show",
                   rawName: "v-show",
-                  value: _vm.selectService == "其他",
-                  expression: "selectService == '其他' "
+                  value: _vm.selectProfession == "其他",
+                  expression: "selectProfession == '其他' "
                 }
               ]
             },
@@ -6436,18 +8832,18 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.otherService,
-                    expression: "otherService"
+                    value: _vm.otherProfession,
+                    expression: "otherProfession"
                   }
                 ],
                 attrs: { type: "text" },
-                domProps: { value: _vm.otherService },
+                domProps: { value: _vm.otherProfession },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.otherService = $event.target.value
+                    _vm.otherProfession = $event.target.value
                   }
                 }
               })
@@ -6774,10 +9170,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../vue/login-panel.vue */ "./src/vue/login-panel.vue");
 /* harmony import */ var _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../vue/user-info-editor.vue */ "./src/vue/user-info-editor.vue");
 /* harmony import */ var _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../vue/case-editor.vue */ "./src/vue/case-editor.vue");
-/* harmony import */ var _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../vue/case-list-thumb.vue */ "./src/vue/case-list-thumb.vue");
-/* harmony import */ var _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vue/case-list.vue */ "./src/vue/case-list.vue");
-/* harmony import */ var _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../vue/case-view.vue */ "./src/vue/case-view.vue");
-
+/* harmony import */ var _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../vue/case-list.vue */ "./src/vue/case-list.vue");
+/* harmony import */ var _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../vue/case-view.vue */ "./src/vue/case-view.vue");
 
 
 
@@ -6791,7 +9185,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 new Vue({
 	el: '#careTips',
-	components: { topbar: _vue_topbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"], calculator: _vue_calculator_vue__WEBPACK_IMPORTED_MODULE_1__["default"], loginPanel: _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__["default"], userInfoEditor: _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__["default"], caseEditor: _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__["default"], caseListThumb: _vue_case_list_thumb_vue__WEBPACK_IMPORTED_MODULE_5__["default"], caseList: _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_6__["default"], caseView: _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_7__["default"] },
+	components: { topbar: _vue_topbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"], calculator: _vue_calculator_vue__WEBPACK_IMPORTED_MODULE_1__["default"], loginPanel: _vue_login_panel_vue__WEBPACK_IMPORTED_MODULE_2__["default"], userInfoEditor: _vue_user_info_editor_vue__WEBPACK_IMPORTED_MODULE_3__["default"], caseEditor: _vue_case_editor_vue__WEBPACK_IMPORTED_MODULE_4__["default"], caseList: _vue_case_list_vue__WEBPACK_IMPORTED_MODULE_5__["default"], caseView: _vue_case_view_vue__WEBPACK_IMPORTED_MODULE_6__["default"] },
 	data: {
 		user: null,
 		message: "",
@@ -7463,6 +9857,7 @@ util.GetUrlParameter = function () {
 };
 
 util.GoToAnchor = function (name, offset, callback) {
+	if (!offset) offset = -80;
 	var anchor = $('[name="' + name + '"]');
 	if (anchor.length == 0) {
 		anchor = $('a[id="' + name + '"]');
@@ -7585,6 +9980,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_calculator_vue_vue_type_template_id_34f6f61e_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_calculator_vue_vue_type_template_id_34f6f61e_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/vue/care-service-selection.vue":
+/*!********************************************!*\
+  !*** ./src/vue/care-service-selection.vue ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html */ "./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html");
+/* harmony import */ var _care_service_selection_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./care-service-selection.vue?vue&type=script&lang=js */ "./src/vue/care-service-selection.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true */ "./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _care_service_selection_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "35388ed4",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src\\vue\\care-service-selection.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/vue/care-service-selection.vue?vue&type=script&lang=js":
+/*!********************************************************************!*\
+  !*** ./src/vue/care-service-selection.vue?vue&type=script&lang=js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./care-service-selection.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true":
+/*!*****************************************************************************************************!*\
+  !*** ./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true ***!
+  \*****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/style-loader!../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=style&index=0&id=35388ed4&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_style_index_0_id_35388ed4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html":
+/*!************************************************************************************************!*\
+  !*** ./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/care-service-selection.vue?vue&type=template&id=35388ed4&scoped=true&lang=html");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_care_service_selection_vue_vue_type_template_id_35388ed4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -7851,6 +10333,180 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/vue/case-provide-solution.vue":
+/*!*******************************************!*\
+  !*** ./src/vue/case-provide-solution.vue ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html */ "./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html");
+/* harmony import */ var _case_provide_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./case-provide-solution.vue?vue&type=script&lang=js */ "./src/vue/case-provide-solution.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true */ "./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _case_provide_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "45c585b6",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src\\vue\\case-provide-solution.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/vue/case-provide-solution.vue?vue&type=script&lang=js":
+/*!*******************************************************************!*\
+  !*** ./src/vue/case-provide-solution.vue?vue&type=script&lang=js ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./case-provide-solution.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true":
+/*!****************************************************************************************************!*\
+  !*** ./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/style-loader!../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=style&index=0&id=45c585b6&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_style_index_0_id_45c585b6_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html":
+/*!***********************************************************************************************!*\
+  !*** ./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html ***!
+  \***********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-provide-solution.vue?vue&type=template&id=45c585b6&scoped=true&lang=html");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_provide_solution_vue_vue_type_template_id_45c585b6_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/vue/case-view-solution.vue":
+/*!****************************************!*\
+  !*** ./src/vue/case-view-solution.vue ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html */ "./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html");
+/* harmony import */ var _case_view_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./case-view-solution.vue?vue&type=script&lang=js */ "./src/vue/case-view-solution.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true */ "./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _case_view_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "d6a82440",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src\\vue\\case-view-solution.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/vue/case-view-solution.vue?vue&type=script&lang=js":
+/*!****************************************************************!*\
+  !*** ./src/vue/case-view-solution.vue?vue&type=script&lang=js ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./case-view-solution.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true":
+/*!*************************************************************************************************!*\
+  !*** ./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/style-loader!../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=style&index=0&id=d6a82440&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_style_index_0_id_d6a82440_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html":
+/*!********************************************************************************************!*\
+  !*** ./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/case-view-solution.vue?vue&type=template&id=d6a82440&scoped=true&lang=html");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_case_view_solution_vue_vue_type_template_id_d6a82440_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./src/vue/case-view.vue":
 /*!*******************************!*\
   !*** ./src/vue/case-view.vue ***!
@@ -8020,6 +10676,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_login_panel_vue_vue_type_template_id_16f2f798_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_login_panel_vue_vue_type_template_id_16f2f798_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/vue/solution-list.vue":
+/*!***********************************!*\
+  !*** ./src/vue/solution-list.vue ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html */ "./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html");
+/* harmony import */ var _solution_list_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./solution-list.vue?vue&type=script&lang=js */ "./src/vue/solution-list.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true */ "./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _solution_list_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "8d272bf4",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src\\vue\\solution-list.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/vue/solution-list.vue?vue&type=script&lang=js":
+/*!***********************************************************!*\
+  !*** ./src/vue/solution-list.vue?vue&type=script&lang=js ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib!../../node_modules/vue-loader/lib??vue-loader-options!./solution-list.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true":
+/*!********************************************************************************************!*\
+  !*** ./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/style-loader!../../node_modules/css-loader!../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../node_modules/sass-loader/lib/loader.js!../../node_modules/vue-loader/lib??vue-loader-options!./solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/sass-loader/lib/loader.js!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=style&index=0&id=8d272bf4&lang=scss&scoped=true");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_sass_loader_lib_loader_js_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_style_index_0_id_8d272bf4_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html":
+/*!***************************************************************************************!*\
+  !*** ./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./src/vue/solution-list.vue?vue&type=template&id=8d272bf4&scoped=true&lang=html");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_solution_list_vue_vue_type_template_id_8d272bf4_scoped_true_lang_html__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

@@ -58,7 +58,7 @@ careCase.ListCase = function(param){
 	if(param.keyword){
 		var pattern = '%'+param.keyword+'%';
 		query.$or.push({'desc': {$like: pattern}});
-		query.$or.push({'problem': {$like: pattern}});
+		query.$or.push({'info': {$like: pattern}});
 	}
 	var includeArr = [];
 	includeArr.push({model: DB.User, attributes: ["id","name","icon","profession"]});
