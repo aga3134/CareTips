@@ -39,11 +39,13 @@
 	</div>
 	<div class="case-title">分享者簡介</div>
 	<div class="owner" v-if="caseInfo">
-		<div class="owner-info">
-			<img class="owner-icon" v-bind:src="caseInfo.user.icon">
-			{{caseInfo.user.profession}} - {{caseInfo.user.name}}
-		</div>
-		<div class="owner-desc">{{caseInfo.user.desc}}</div>
+		<a v-bind:href="'/user?user='+caseInfo.user.id">
+			<div class="owner-info">
+				<img class="owner-icon" v-bind:src="caseInfo.user.icon">
+				{{caseInfo.user.profession}} - {{caseInfo.user.name}}
+			</div>
+			<div class="owner-desc">{{caseInfo.user.desc}}</div>
+		</a>
 	</div>
 	<div class="case-title">留言回饋</div>
 	<div class="message-box">
@@ -67,7 +69,7 @@
 		</div>
 	</div>
 
-	<div class="input-panel" v-show="setupUserInfo">
+	<div class="slide-panel" v-bind:class="{open: status == 'InputUserInfo'}">
 		<div class="input-area">
 			<div class="panel-title">請先輸入您的個人資訊</div>
 			<user-info-editor ref="userInfoEditor"></user-info-editor>
@@ -76,7 +78,7 @@
 
 	<div class="slide-panel" v-bind:class="{open: status == 'ProvideSolution'}">
 		<div class="panel-title">請依序回答下列問題</div>
-		<case-provide-solution ref="caseProvideSolution"></case-provide-solution>
+		<solution-editor ref="solutionEditor"></solution-editor>
 	</div>
 
 	<div class="slide-panel" v-bind:class="{open: status == 'SolutionList'}">
@@ -86,14 +88,14 @@
 
 	<div class="slide-panel" v-bind:class="{open: status == 'ViewSolution'}">
 		<div class="panel-title">觀看解方</div>
-		<case-view-solution ref="caseViewSolution"></case-view-solution>
+		<solution-view ref="caseViewSolution"></solution-view>
 	</div>
 
 	<div class="tab-bar">
 		<div class="tab-bt-container">
 			<div class="tab-bt" v-bind:class="{on: status=='ViewCase'}" v-on:click="ViewCase();">觀看案例</div>
 			<div class="tab-bt" v-bind:class="{on: status=='ProvideSolution'}" v-on:click="ProvideSolution();">我要解題</div>
-			<div class="tab-bt" v-bind:class="{on: status=='ViewSolution'}" v-on:click="ViewSolution(solutionID);">觀看解方</div>
+			<div class="tab-bt" v-bind:class="{on: status=='ViewSolution' || status=='SolutionList'}" v-on:click="ViewSolution(solutionID);">觀看解方</div>
 		</div>
 	</div>
 	
@@ -102,8 +104,8 @@
 
 <script>
 import userInfoEditor from "../vue/user-info-editor.vue"
-import caseProvideSolution from "../vue/case-provide-solution.vue"
-import caseViewSolution from "../vue/case-view-solution.vue"
+import solutionEditor from "../vue/solution-editor.vue"
+import solutionView from "../vue/solution-view.vue"
 import solutionList from "../vue/solution-list.vue"
 var g_Util = require("../js/util");
 
@@ -119,20 +121,20 @@ export default {
 			problem: {"D1":[], "D2":[], "D3":[], "D4":[]},
 			sendMessage: "",
 			messageList: [],
-			setupUserInfo: false,
 			status: "ViewCase",
 			solutionID: null
 		};
 	},
 	components: {
     	'user-info-editor': userInfoEditor,
-    	'case-provide-solution': caseProvideSolution,
-    	'case-view-solution': caseViewSolution,
+    	'solution-editor': solutionEditor,
+    	'solution-view': solutionView,
     	'solution-list': solutionList
 	},
 	created: function(){
 		var urlParam = g_Util.GetUrlParameter();
 		var caseID = urlParam.case;
+		var solutionID = urlParam.solution;
 		if(!caseID) window.location.href="/?message=無此案例";
 
 		$.get("/case/view?case="+caseID, function(result){
@@ -146,6 +148,7 @@ export default {
 				this.isMyCase = (this.user.id == this.caseInfo.ownerID);
 			}
 			this.UpdateVersion();
+			if(solutionID) this.ViewSolution(solutionID);
 			
 			$.get("/static/omaha.json",function(data){
 				this.omaha = data;
@@ -168,13 +171,6 @@ export default {
 			this.user = user;
 			if(this.caseInfo){
 				this.isMyCase = (user.id == this.caseInfo.ownerID);
-			}
-			if(!user.profession){
-				this.setupUserInfo = true;
-				this.$refs.userInfoEditor.submitCallback = function(result){
-					this.setupUserInfo = false;
-				}.bind(this);
-				this.$refs.userInfoEditor.SetUser(user);
 			}
 			if(this.$refs.caseViewSolution){
 				this.$refs.caseViewSolution.SetUser(user);
@@ -267,8 +263,15 @@ export default {
 				var intentUrl = encodeURIComponent("/case?case="+this.caseInfo.id);
 				return window.location.href="/auth/login?intentUrl="+intentUrl;
 			}
+			if(!this.user.profession){
+				this.status = "InputUserInfo";
+				this.$refs.userInfoEditor.submitCallback = function(result){
+					this.ProvideSolution(solutionID);
+				}.bind(this);
+				return this.$refs.userInfoEditor.SetUser(this.user);
+			}
 			if(solutionID){
-				this.$refs.caseProvideSolution.EditSolution(solutionID);
+				this.$refs.solutionEditor.EditSolution(solutionID);
 			}
 			this.status = "ProvideSolution";
 		},
@@ -280,7 +283,10 @@ export default {
 			}
 			else{
 				this.status = "SolutionList";
-				this.$refs.solutionList.UpdateList();
+				var param = {};
+				param.caseID = this.caseInfo.id;
+				this.$refs.solutionList.ClearList();
+				this.$refs.solutionList.LoadMoreList(param);
 			}
 			
 		}

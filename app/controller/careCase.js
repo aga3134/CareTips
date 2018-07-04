@@ -2,7 +2,7 @@ var DB = require("../db/db");
 var util = require("./util");
 
 var careCase = {};
-var numPerPage = 6;
+var numPerPage = 4;
 
 careCase.CreateCase = function(param){
 	var newCase = {};

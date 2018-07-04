@@ -93,6 +93,75 @@
 .cat-O {
   background-color: #FF8AE7; }
 
+.list-item {
+  background-color: #eeeeee;
+  border-radius: 5px;
+  max-width: 100%;
+  margin: 10px 0px;
+  cursor: pointer; }
+  @media only screen and (min-width: 640px) {
+    .list-item {
+      margin: 10px; } }
+  .list-item a {
+    text-decoration: none;
+    color: black; }
+  .list-item .domain-statistic {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center; }
+    .list-item .domain-statistic .domain-info {
+      position: relative;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      align-items: center; }
+      .list-item .domain-statistic .domain-info .domain-icon {
+        display: inline-block;
+        padding: 7px;
+        margin: 10px 5px 10px 10px;
+        border-radius: 3px; }
+      .list-item .domain-statistic .domain-info .domain-num {
+        display: inline-block;
+        font-size: 0.8em;
+        vertical-align: middle; }
+      .list-item .domain-statistic .domain-info .tip {
+        padding: 5px;
+        box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);
+        border-radius: 3px;
+        position: absolute;
+        top: 40px;
+        left: 10px;
+        width: 120px;
+        text-align: center;
+        visibility: hidden;
+        z-index: 1; }
+      .list-item .domain-statistic .domain-info:hover .tip {
+        visibility: visible; }
+  .list-item .desc {
+    white-space: pre-wrap;
+    color: #333333;
+    padding: 0px 20px 0px 10px;
+    width: 100%;
+    height: 4.5em;
+    line-height: 1.5em;
+    overflow: hidden; }
+
+.load-more {
+  width: 500px;
+  max-width: 100%;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 20px auto;
+  border: 1px solid #888888;
+  color: #888888;
+  background-color: #ffffff;
+  cursor: pointer;
+  text-align: center; }
+  .load-more:hover {
+    border: 1px solid #333333;
+    color: #333333; }
+
 html, body {
   height: 100%;
   margin: 0;
@@ -126,21 +195,41 @@ html, body {
   margin: 80px auto 20px auto;
   padding: 10px 10px 50px 10px;
   color: #333333; }
-  .main-container .title {
-    font-size: 1.5em;
-    text-align: center;
-    color: red; }
+
+.care-tips .title {
+  margin: 20px 10px 10px 10px;
+  font-size: 1.5em;
+  text-align: left;
+  color: #323232; }
 
 .care-tips .separator {
   margin: 30px;
   border-bottom: 1px solid #999999; }
+
+.care-tips .shadow-light {
+  box-shadow: 5px 5px 5px #888888;
+  -webkit-transition: box-shadow 0.5s ease;
+  transition: box-shadow 0.5s ease; }
+  .care-tips .shadow-light:hover {
+    box-shadow: 10px 10px 10px #888888; }
+
+.care-tips .shadow-dark {
+  box-shadow: 5px 5px 5px #333333;
+  -webkit-transition: box-shadow 0.5s ease;
+  transition: box-shadow 0.5s ease; }
+  .care-tips .shadow-dark:hover {
+    box-shadow: 10px 10px 10px #333333; }
+
+.care-tips .owner a {
+  text-decoration: none;
+  color: #323232; }
 
 .care-tips .owner-info {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
   align-items: center;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid #eeeeee;
   border-radius: 5px 5px 0px 0px;
   padding: 10px; }
   .care-tips .owner-info .owner-icon {
@@ -269,72 +358,73 @@ html, body {
 
 .care-tips .input-panel {
   position: fixed;
-  top: 0px;
+  top: 70px;
   left: 0px;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 130px);
   padding: 10px;
   background-color: rgba(50, 50, 50, 0.8);
   overflow-x: hidden;
-  overflow-y: hidden; }
-  .care-tips .input-panel .input-area {
-    max-height: 100%;
-    overflow-y: auto;
-    position: relative;
-    background-color: #eeeeee;
-    color: #323232;
-    border-radius: 5px;
-    width: 800px;
+  overflow-y: auto; }
+
+.care-tips .input-area {
+  max-height: 100%;
+  overflow-y: auto;
+  position: relative;
+  background-color: #eeeeee;
+  color: #323232;
+  border-radius: 5px;
+  width: 800px;
+  max-width: 100%;
+  margin: auto;
+  padding: 10px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+  .care-tips .input-area .input-item {
+    margin: 5px; }
+  .care-tips .input-area .input-label {
+    font-size: 1.2em;
+    display: inline-block; }
+  .care-tips .input-area select {
+    border-radius: 3px;
     max-width: 100%;
-    margin: auto;
+    padding: 5px;
+    font-size: 1.1em; }
+  .care-tips .input-area textarea {
+    margin: 10px 0px;
+    border-radius: 3px;
     padding: 10px;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%); }
-    .care-tips .input-panel .input-area .input-item {
-      margin: 5px; }
-    .care-tips .input-panel .input-area .input-label {
-      font-size: 1.2em;
-      display: inline-block; }
-    .care-tips .input-panel .input-area select {
-      border-radius: 3px;
-      max-width: 100%;
-      padding: 5px;
-      font-size: 1.1em; }
-    .care-tips .input-panel .input-area textarea {
-      margin: 10px 0px;
-      border-radius: 3px;
-      padding: 10px;
-      width: 100%;
-      height: 120px;
-      resize: none;
-      font-size: 1.1em; }
-    .care-tips .input-panel .input-area input[type="number"] {
-      max-width: 100%;
-      padding: 5px;
-      border-radius: 3px;
-      max-width: 80px;
-      font-size: 1.1em; }
-    .care-tips .input-panel .input-area input[type="text"] {
-      max-width: 100%;
-      padding: 5px;
-      border-radius: 3px;
-      max-width: 200px;
-      font-size: 1.1em; }
-    .care-tips .input-panel .input-area .close-bt {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 1.2em;
-      cursor: pointer;
-      padding: 5px 10px;
-      color: #ff5555;
-      border: 1px solid #ff5555;
-      border-radius: 5px; }
-      .care-tips .input-panel .input-area .close-bt:hover {
-        color: #ff3333;
-        border: 1px solid #ff3333; }
+    width: 100%;
+    height: 120px;
+    resize: none;
+    font-size: 1.1em; }
+  .care-tips .input-area input[type="number"] {
+    max-width: 100%;
+    padding: 5px;
+    border-radius: 3px;
+    max-width: 80px;
+    font-size: 1.1em; }
+  .care-tips .input-area input[type="text"] {
+    max-width: 100%;
+    padding: 5px;
+    border-radius: 3px;
+    max-width: 200px;
+    font-size: 1.1em; }
+  .care-tips .input-area .close-bt {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #ff5555;
+    border: 1px solid #ff5555;
+    border-radius: 5px; }
+    .care-tips .input-area .close-bt:hover {
+      color: #ff3333;
+      border: 1px solid #ff3333; }
 
 .care-tips .slide-panel {
   position: fixed;

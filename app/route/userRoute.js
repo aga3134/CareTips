@@ -3,14 +3,24 @@ var router = express.Router();
 var Config = require("../../config.json");
 var util = require("../controller/util");
 var upload = require("../controller/upload");
-var DB = require("../db/db");
+var User = require("../controller/user");
+var ejs = require("ejs");
 
 //router registers to /user
+var meta = {};
+meta.version = Config.version;
+meta.hostname = Config.hostname;
 
 router.get('/', util.CheckLogin, function(req, res) {
 	var userID = req.query.user;
 	if(req.user.id == userID) res.redirect("/account");
 
+	meta.title = "照服秘笈";
+	meta.path = req.originalUrl;
+	meta.desc = Config.desc;
+	ejs.renderFile("view/content/user.ejs").then(function(content){
+		res.render("template.ejs",{meta: meta, content: content});
+	});
 });
 
 //=================ajax api====================
@@ -35,26 +45,32 @@ router.get('/me', function(req, res) {
 });
 
 //其他人的帳號資料
-router.get('/info', function(req, res) {
-	if(!req.user) return res.status(200).json({"message": "please login"});
-
-	var userID = req.query.user;
+router.get('/info', util.CheckLogin, function(req, res) {
+	var param = {};
+	param.userID = req.query.user;
+	param.succFunc = function(result){
+		res.status(200).json({"status": "ok", "data": result});
+	};
+	param.failFunc = function(result){
+		console.log(result);
+		res.status(200).json({status: "fail", message: result.err});
+	};
+	User.GetUserInfo(param);
 });
 
 
 router.post('/edit', util.CheckLogin, function(req, res) {
-	var modify = {};
-	modify.name = req.body.data.name;
-	modify.profession = req.body.data.profession;
-	modify.county = req.body.data.county;
-	modify.company = req.body.data.company;
-	modify.contactEmail = req.body.data.contactEmail;
-	modify.tel = req.body.data.tel;
-	modify.desc = req.body.data.desc;
-
-	DB.User.update(modify, {where: {"id": req.user.id}}).then(function() {
-	    res.status(200).json({"status": "ok", "data": modify});
-	});
+	var param = {};
+	param.userID = req.user.id;
+	param.body = req.body.data;
+	param.succFunc = function(result){
+		res.status(200).json({"status": "ok", "data": result});
+	};
+	param.failFunc = function(result){
+		console.log(result);
+		res.status(200).json({status: "fail", message: result.err});
+	};
+	User.EditUserInfo(param);
 });
 
 
@@ -66,13 +82,18 @@ router.post('/upload-image', util.CheckLogin, upload.UploadImageToMem, function(
 	param.newName = "photo."+ext;
 	param.thumb = {name:"icon."+ext,w:64,h:64};
 	param.succFunc = function(result){
-		var randomStr = "?rand="+Math.floor(Math.random()*100); 
-		var modify = {};
-		modify.photo = result.newName+randomStr;
-		modify.icon = result.thumbName+randomStr;
-		DB.User.update(modify, {where: {"id": req.user.id}}).then(function() {
-			res.status(200).json({status: "ok", photo: modify.photo, icon:modify.icon});
-		});
+		var photoInfo = {};
+		photoInfo.userID = req.user.id;
+		photoInfo.photo = result.newName;
+		photoInfo.icon = result.thumbName;
+		photoInfo.succFunc = function(result){
+			res.status(200).json({status: "ok", "data": result});
+		};
+		photoInfo.failFunc = function(result){
+			console.log(result);
+			res.status(200).json({status: "fail", message: result.err});
+		};
+		User.ChangeUserPhoto(photoInfo);
 	};
 	param.failFunc = function(result){
 		console.log(result);

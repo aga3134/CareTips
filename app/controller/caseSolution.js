@@ -2,7 +2,7 @@ var DB = require("../db/db");
 var util = require("./util");
 
 var caseSolution = {};
-var numPerPage = 6;
+var numPerPage = 4;
 
 caseSolution.CreateSolution = function(param){
 	var newSolution = {};
@@ -44,6 +44,7 @@ caseSolution.ViewSolution = function(param){
 
 caseSolution.ListSolution = function(param){
 	var query = {};
+	if(param.caseID) query.caseID = param.caseID;
 	if(param.ownerID) query.ownerID = param.ownerID;
 	if(param.keyword){
 		var pattern = '%'+param.keyword+'%';

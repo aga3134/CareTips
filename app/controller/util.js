@@ -27,7 +27,7 @@ util.CheckLogin = function (req, res, next) {
 	if (req.isAuthenticated()) return next();
 	var isAjax = req.xhr;
 	if(isAjax) res.send({"status":"fail","message":"please login"});
-	else res.redirect("/auth/login?intentUrl="+req.originalUrl);
+	else res.redirect("/auth/login?intentUrl="+encodeURIComponent(req.originalUrl));
 };
 
 util.FailRedirect = function(req, res, redirect, message){

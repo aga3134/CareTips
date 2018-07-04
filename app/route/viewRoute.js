@@ -17,14 +17,6 @@ router.get('/', function(req, res) {
 	});
 });
 
-router.get('/about', function(req, res) {
-	meta.title = "關於 照服秘笈";
-	meta.path = req.originalUrl;
-	meta.desc = Config.desc;
-	var content = "";
-	res.render("template.ejs",{meta: meta, content: content});
-});
-
 router.get('/calculator', function(req, res) {
 	meta.title = "照服計算機";
 	meta.path = req.originalUrl;

@@ -121,7 +121,7 @@ auth.Signup = function(req, res, next){
 				//直接login
 				req.login(user, function(err) {
 					if(err) return next(err);
-					return res.redirect(util.GetIntentUrl(req));
+					return res.redirect(util.RetrieveIntentUrl(req));
 				});
 			});
 		}

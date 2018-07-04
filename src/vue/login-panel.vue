@@ -64,8 +64,8 @@ export default {
 			passwordConfirm: "",
 			token: "",
 			mode: "login",
-			pwLoginAction: "/auth/login-by/password",
-			pwSignupAction: "/auth/signup-by/password"
+			pwLoginAction: "/auth/login-by-password",
+			pwSignupAction: "/auth/signup-by-password"
 		};
 	},
 	created: function(){

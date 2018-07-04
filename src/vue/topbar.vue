@@ -32,7 +32,6 @@ export default {
 						{name:"照服計算機",link:"/calculator",login: 0},
 						{name:"專業連結",link:"/link",login: 0},
 						{name:"我的帳號",link:"/account",login: 1},
-						{name:"關於本站",link:"/about",login: 0},
 						{name:"登入",link:"/auth/login",login: -1},
 						{name:"登出",link:"/auth/logout",login: 1}],
 			activeItem: [],
@@ -64,10 +63,10 @@ export default {
 				this.activeItem.push(item);
 			}
 		},
-		ChangeUserPhoto: function(response){
-			this.user.photo = response.photo;
-			this.user.icon = response.icon;
-			this.menuImg = response.icon;
+		ChangeUserPhoto: function(photoInfo){
+			this.user.photo = photoInfo.photo;
+			this.user.icon = photoInfo.icon;
+			this.menuImg = photoInfo.icon;
 		}
 	}
 }

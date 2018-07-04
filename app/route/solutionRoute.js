@@ -10,8 +10,8 @@ var caseSolution = require("../controller/caseSolution");
 router.get('/list', function(req, res) {
 	var param = {};
 	param.keyword = req.query.keyword;
-	param.fetchPage = req.query.fetchPage || 0;
-	param.owner = req.query.owner;
+	param.fetchPage = req.query.page || 0;
+	param.ownerID = req.query.owner;
 	param.caseID = req.query.case;
 	param.caseVersion = req.query.caseVersion;
 	param.succFunc = function(result){

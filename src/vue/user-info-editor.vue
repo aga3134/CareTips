@@ -7,7 +7,7 @@
 				<div class="photo-bt" v-on:click="ChangePhoto();">變更圖片</div>
 				<input type="file" ref="uploadBt" v-on:change="UploadPhoto" hidden>
 			</div>
-			<div class="info-box">
+			<div class="info-box grow">
 				<div class="info-label canNotEmpty">姓名</div>
 				<input type="text" v-model="user.name">
 				<div class="info-label canNotEmpty">服務專業</div>
@@ -18,20 +18,32 @@
 					<div class="info-label canNotEmpty">請填寫服務專業</div>
 					<input type="text" v-model="otherProfession">
 				</div>
+				<div class="info-label">自我介紹</div>
+				<textarea v-model="user.desc"></textarea>
+			</div>
+		</div>
+		<div class="title">聯絡資訊</div>
+		<div class="info-container">
+			<div class="info-box">
 				<div class="info-label">服務縣市</div>
 				<select v-model="user.county">
 					<option v-for="county in counties" v-bind:value="county">{{county}}</option>
 				</select>
+			</div>
+			<div class="info-box">
 				<div class="info-label">公司或組織名稱</div>
 				<input type="text" v-model="user.company">
+			</div>
+			<div class="info-box">
 				<div class="info-label">服務聯絡信箱</div>
 				<input type="text" v-model="user.contactEmail">
+			</div>
+			<div class="info-box">
 				<div class="info-label">服務聯絡電話</div>
 				<input type="text" v-model="user.tel">
 			</div>
 		</div>
-		<div class="info-label">自我介紹</div>
-		<textarea v-model="user.desc"></textarea>
+		
 		<div class="remark">
 			*為協助跨專業交流與連結，您所填寫的資訊皆可被其他人搜尋到。如有隱私疑慮，請將該欄位留白。
 			<div class="remark-check">
@@ -52,14 +64,14 @@ export default {
 			user: {},
 			selectProfession:"",
 			otherProfession:"",
-			professions: ["照專/個管","照顧服務","物理治療","職能治療","居家護理","居家醫療","居家藥師","家事服務","藝術治療","園藝治療","語言治療","輔具評估與器材","交通服務","其他"],
-			counties: ["臺北市","新北市","基隆市","桃園市","新竹縣","新竹市","苗栗縣","臺中市","彰化縣","南投縣","雲林縣","嘉義縣","嘉義市","臺南市","高雄市","屏東縣","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"],
+			professions: [],
+			counties: [],
 			submitCallback: null,
 			finalCheck: false
 		};
 	},
 	created: function(){
-		$.get("/static/profession.json", function(data){
+		$.get("/static/solution.json", function(data){
 			this.professions = data.profession;
 			this.counties = data.county;
 		}.bind(this));
@@ -85,10 +97,11 @@ export default {
 				data: formData,
 				processData: false,
 				contentType: false,
-				success: function(response) {
-					this.user.photo = response.photo;
-					this.user.icon = response.icon;
-					this.$root.ChangeUserPhoto(response);
+				success: function(result) {
+					if(result.status != "ok") return alert("更新圖片失敗");
+					this.user.photo = result.data.photo;
+					this.user.icon = result.data.icon;
+					this.$root.ChangeUserPhoto(result.data);
 				}.bind(this),
 				error: function(jqXHR, textStatus, errorMessage) {
 					console.log(errorMessage);
@@ -141,18 +154,27 @@ export default {
 	width: 600px;
 	max-width: 100%;
 	margin: auto;
+	.cat-title{
+		margin: 20px 10px 10px 10px;
+		font-size: 1.5em;
+		text-align: left;
+		color: rgb(50,50,50);
+	}
 	.info-container{
 		display: flex;
-		justify-content: center;
-		align-items: center;
+		justify-content: flex-start;
+		align-items: flex-end;
 		flex-wrap: wrap;
 		.info-box{
-			padding: 10px;
-			margin: 10px;
+			padding: 0px 5px;
+			margin: 0px 5px;
 			width: 100%;
 			@include pad-width(){
 				width: auto;
 			}
+		}
+		.grow{
+			flex-grow: 1;
 		}
 	}
 	.info-label{
@@ -171,6 +193,7 @@ export default {
 	.photo-bt{
 		width: 100%;
 		border: 1px solid #888888;
+		background-color: #dddddd;
 		border-radius: 5px;
 		padding: 10px;
 		margin: 5px 0px;
@@ -197,12 +220,14 @@ export default {
 		content: "*";
 	}
 	input{
+		border-radius: 5px;
 		padding: 5px;
 		width: 100%;
 		border: 1px solid #dddddd;
 		font-size: 1.1em;
 	}
 	select{
+		border-radius: 5px;
 		border: 1px solid #dddddd;
 		padding: 5px;
 		width: 100%;

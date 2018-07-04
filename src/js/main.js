@@ -1,17 +1,19 @@
-
+import mainPage from "../vue/main-page.vue"
 import topbar from "../vue/topbar.vue"
-import calculator from "../vue/calculator.vue"
+import careCalculator from "../vue/care-calculator.vue"
 import loginPanel from "../vue/login-panel.vue"
-import userInfoEditor from "../vue/user-info-editor.vue"
 import caseEditor from "../vue/case-editor.vue"
 import caseList from "../vue/case-list.vue"
 import caseView from "../vue/case-view.vue"
+import userAccount from "../vue/user-account.vue"
+import userView from "../vue/user-view.vue"
 
 var g_Util = require('../js/util');
 
 new Vue({
 	el: '#careTips',
-	components:{topbar,calculator,loginPanel,userInfoEditor,caseEditor,caseList,caseView},
+	components:{mainPage,topbar,careCalculator,loginPanel,caseEditor,caseList,caseView,
+		userAccount,userView},
 	data:{
 		user: null,
 		message: "",
@@ -23,7 +25,7 @@ new Vue({
 			if(data.user){
 				this.user = data.user;
 				if(this.$refs.topbar) this.$refs.topbar.SetUser(data.user);
-				if(this.$refs.userInfoEditor) this.$refs.userInfoEditor.SetUser(data.user);
+				if(this.$refs.userAccount) this.$refs.userAccount.SetUser(data.user);
 				if(this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
 				if(this.$refs.caseEditor) this.$refs.caseEditor.SetUser(data.user);
 			}
@@ -40,8 +42,8 @@ new Vue({
 		CloseMenu: function(){
 			if(this.$refs.topbar) this.$refs.topbar.CloseMenu();
 		},
-		ChangeUserPhoto: function(response){
-			if(this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(response);
+		ChangeUserPhoto: function(photoInfo){
+			if(this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(photoInfo);
 		},
 		ShowMessage: function(msg){
 			this.showMessage = true;

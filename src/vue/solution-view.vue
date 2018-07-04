@@ -1,5 +1,5 @@
 <template lang="html">
-<div class="case-view-solution">
+<div class="solution-view">
 	<div class="input-bt" v-on:click="BackToSolutionList();">回解方列表</div>
 	<div class="feedback-statistic" v-if="solutionInfo">
 		<div class="container clickable" v-on:click="ToggleLike();">
@@ -223,7 +223,7 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/main.scss";
 
-.case-view-solution{
+.solution-view{
 	width: 800px;
 	max-width: 100%;
 	margin: auto;

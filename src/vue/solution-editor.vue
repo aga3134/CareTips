@@ -1,5 +1,5 @@
 <template lang="html">
-<div class="case-provide-solution">
+<div class="solution-editor">
 	<div class="step-page">
 		<div class="remark">(第{{step+1}}題/共{{quest.length}}題)</div>
 		<div class="quest" v-html="quest[step]"></div>
@@ -321,7 +321,7 @@ export default {
 <style lang="scss" scoped>
 @import "../scss/main.scss";
 
-.case-provide-solution{
+.solution-editor{
 	width: 100%;
 	height: 100%;
 	.step-page{

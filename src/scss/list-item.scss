@@ -1,0 +1,85 @@
+
+.list-item{
+	background-color: #eeeeee;
+	border-radius: 5px;
+	max-width: 100%;
+	margin: 10px 0px;
+	@include pad-width(){
+		margin: 10px;
+	}
+	cursor: pointer;
+	a{
+		text-decoration: none;
+		color: black;
+	}
+	
+	.domain-statistic{
+		display: flex;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		align-items: center;
+		.domain-info{
+			position: relative;
+			display: flex;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+			align-items: center;
+			.domain-icon{
+				display: inline-block;
+				padding: 7px;
+				margin: 10px 5px 10px 10px;
+				border-radius: 3px;
+			}
+			.domain-num{
+				display: inline-block;
+				font-size: 0.8em;
+				vertical-align: middle;
+			}
+			.tip{
+				padding: 5px;
+				box-shadow: 5px 5px 5px rgba(50,50,50,0.8);
+				border-radius: 3px;
+				position: absolute;
+				top: 40px;
+				left: 10px;
+				width: 120px;
+				text-align: center;
+				visibility: hidden;
+				z-index: 1;
+			}
+			&:hover{
+				.tip{
+					visibility: visible;
+				}
+			}
+		}
+		
+	}
+	.desc{
+		white-space: pre-wrap;
+		color: #333333;
+		padding: 0px 20px 0px 10px;
+		width: 100%;
+		height: 4.5em;
+		line-height: 1.5em;
+		overflow: hidden;
+	}
+	
+}
+
+.load-more{
+	width: 500px;
+	max-width: 100%;
+	padding: 10px 20px;
+	border-radius: 5px; 
+	margin: 20px auto;
+	border: 1px solid #888888;
+	color: #888888;
+	background-color: #ffffff;
+	cursor: pointer;
+	text-align: center;
+	&:hover{
+		border: 1px solid #333333;
+		color: #333333;
+	}
+}
