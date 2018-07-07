@@ -5,15 +5,16 @@ import loginPanel from "../vue/login-panel.vue"
 import caseEditor from "../vue/case-editor.vue"
 import caseList from "../vue/case-list.vue"
 import caseView from "../vue/case-view.vue"
-import userAccount from "../vue/user-account.vue"
 import userView from "../vue/user-view.vue"
+import profession from "../vue/profession.vue"
+
 
 var g_Util = require('../js/util');
 
 new Vue({
 	el: '#careTips',
 	components:{mainPage,topbar,careCalculator,loginPanel,caseEditor,caseList,caseView,
-		userAccount,userView},
+		userView,profession},
 	data:{
 		user: null,
 		message: "",
@@ -25,7 +26,7 @@ new Vue({
 			if(data.user){
 				this.user = data.user;
 				if(this.$refs.topbar) this.$refs.topbar.SetUser(data.user);
-				if(this.$refs.userAccount) this.$refs.userAccount.SetUser(data.user);
+				if(this.$refs.userView) this.$refs.userView.SetUser(data.user);
 				if(this.$refs.caseView) this.$refs.caseView.SetUser(data.user);
 				if(this.$refs.caseEditor) this.$refs.caseEditor.SetUser(data.user);
 			}
@@ -44,6 +45,7 @@ new Vue({
 		},
 		ChangeUserPhoto: function(photoInfo){
 			if(this.$refs.topbar) this.$refs.topbar.ChangeUserPhoto(photoInfo);
+			if(this.$refs.userView) this.$refs.userView.ChangeUserPhoto(photoInfo);
 		},
 		ShowMessage: function(msg){
 			this.showMessage = true;

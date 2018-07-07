@@ -66,6 +66,7 @@ router.get('/delete', util.CheckLogin, util.CheckMyCase, function(req, res) {
 router.get('/list', function(req, res) {
 	var param = {};
 	param.keyword = req.query.keyword;
+	param.sort = req.query.sort;
 	param.fetchPage = req.query.page || 0;
 	param.ownerID = req.query.owner;
 	param.succFunc = function(result){

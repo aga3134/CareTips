@@ -3,13 +3,8 @@ $bt-bg-color: #555555;
 $bt-hover-color: #888888;
 $action-fg-color: #ff5555;
 $action-bg-color: #ffffff;
-$action-hover-color: #ff3333;
+$action-hover-color: #ff8888;
 $trans-time: 0.5s;
-
-@import "./responsive.scss";
-@import "./omaha.scss";
-@import "./color-code.scss";
-@import "./list-item.scss";
 
 //===================General======================
 html, body {
@@ -45,7 +40,20 @@ html, body {
 	display: inline-block;
 }
 
+a{
+	text-decoration: none;
+	color: #ff3333;
+	&:hover{
+		color: #ff8800;
+	}
+}
+
 //===================CareTips======================
+@import "./responsive.scss";
+@import "./omaha.scss";
+@import "./color-code.scss";
+@import "./list-item.scss";
+
 .main-container{
 	width: 100%;
 	margin: 80px auto 20px auto;
@@ -61,6 +69,26 @@ html, body {
 		color: rgb(50,50,50);
 	}
 
+	.category-title{
+		font-size: 1.5em;
+		padding: 5px;
+		margin: 20px auto 0px auto;
+		text-align: center;
+		.bottom-line{
+			margin: auto;
+			width: 150px;
+			padding: 5px;
+			border-bottom: 1px solid #888888;
+		}
+	}
+	.category-separator{
+		width: 800px;
+		max-width: 100%;
+		padding: 20px;
+		margin: auto;
+		border-bottom: 1px solid #dddddd;
+	}
+	
 	.separator{
 		margin: 30px;
 		border-bottom: 1px solid #999999;
@@ -85,6 +113,9 @@ html, body {
 		a{
 			text-decoration: none;
 			color: rgb(50,50,50);
+			&:hover{
+				color: #888888;
+			}
 		}
 	}
 	.owner-info{
@@ -106,7 +137,6 @@ html, body {
 		white-space: pre-wrap;
 		padding: 10px;
 	}
-
 	.input-bt{
 		display: inline-block;
 		color: $bt-fg-color;
@@ -252,9 +282,24 @@ html, body {
 		width: 100%;
 		height: calc(100% - 130px);
 		padding: 10px;
-		background-color: rgba(50,50,50,0.8);
+		background-color: rgba(50,50,50,0.5);
 		overflow-x: hidden;
 		overflow-y: auto;
+	}
+	.close-bt{
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		font-size: 1.2em;
+		cursor: pointer;
+		padding: 5px 10px;
+		color: $action-fg-color;
+		border: 1px solid $action-fg-color;
+		border-radius: 5px;
+		&:hover{
+			color: $action-hover-color;
+			border: 1px solid $action-hover-color;
+		}
 	}
 
 	.input-area{
@@ -308,21 +353,6 @@ html, body {
 			max-width: 200px;
 			font-size: 1.1em;
 		}
-		.close-bt{
-			position: absolute;
-			top: 10px;
-			right: 10px;
-			font-size: 1.2em;
-			cursor: pointer;
-			padding: 5px 10px;
-			color: $action-fg-color;
-			border: 1px solid $action-fg-color;
-			border-radius: 5px;
-			&:hover{
-				color: $action-hover-color;
-				border: 1px solid $action-hover-color;
-			}
-		}
 	}
 
 	.slide-panel{
@@ -330,17 +360,60 @@ html, body {
 		top: 0px;
 		left: 100%;
 		width: 100%;
+		max-width: 100%;
 		height: calc(100% - 60px);
 		padding: 10px;
 		z-index: 10;
 		color: white;
-		background-color: rgba(50,50,50,0.8);
+		background-color: rgba(50,50,50,0.5);
 		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-transition: left $trans-time ease;
-    	transition: left $trans-time ease;
+		transition: left $trans-time ease;
 		&.open{
 			left: 0px;
+		}
+	}
+
+	.side-panel{
+		position: fixed;
+		top: 0px;
+		left: -400px;
+		width: 300px;
+		max-width: 100%;
+		height: 100%;
+		padding: 10px;
+		z-index: 11;
+		color: #333333;
+		background-color: rgba(240,240,240,0.9);
+		border-radius: 0px 5px 5px 0px;
+		box-shadow: 3px 3px 5px #888888;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-transition: left $trans-time ease;
+		transition: left $trans-time ease;
+		&.open{
+			left: 0px;
+		}
+		.search-container{
+			width: 400px;
+			max-width: 100%;
+			margin: auto;
+			.search-item{
+				margin: 5px;
+				font-size: 1.1em;
+				input{
+					padding: 5px;
+					width: 100%;
+				}
+				select{
+					padding: 5px;
+					width: 100%;
+				}
+				.search-label{
+					padding: 5px;
+				}
+			}
 		}
 	}
 
@@ -363,7 +436,7 @@ html, body {
 		}
 		.tab-bt{
 			text-align: center;
-			min-width: 90px;
+			min-width: 110px;
 			cursor: pointer;
 			padding: 5px 10px;
 			background-color: $bt-fg-color;

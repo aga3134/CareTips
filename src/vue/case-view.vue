@@ -13,6 +13,9 @@
 			<div class="feedback-num">{{caseInfo.likeNum}}</div>
 		</div>
 		<div class="container">
+			解方數<div class="feedback-num">{{caseInfo.solNum}}</div>
+		</div>
+		<div class="container">
 			觀看次數<div class="feedback-num">{{caseInfo.viewNum}}</div>
 		</div>
 		<div class="container" v-show="isMyCase">
@@ -39,7 +42,7 @@
 	</div>
 	<div class="case-title">分享者簡介</div>
 	<div class="owner" v-if="caseInfo">
-		<a v-bind:href="'/user?user='+caseInfo.user.id">
+		<a v-bind:href="'/user?target='+caseInfo.user.id">
 			<div class="owner-info">
 				<img class="owner-icon" v-bind:src="caseInfo.user.icon">
 				{{caseInfo.user.profession}} - {{caseInfo.user.name}}

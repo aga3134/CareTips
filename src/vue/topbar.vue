@@ -30,10 +30,9 @@ export default {
 			itemInBar: 2,
 			itemList: [{name:"新增案例",link:"/case/create",login: 0},
 						{name:"照服計算機",link:"/calculator",login: 0},
-						{name:"專業連結",link:"/link",login: 0},
-						{name:"我的帳號",link:"/account",login: 1},
-						{name:"登入",link:"/auth/login",login: -1},
-						{name:"登出",link:"/auth/logout",login: 1}],
+						{name:"專業連結",link:"/profession",login: 0},
+						{name:"我的帳號",link:"",login: 1},
+						{name:"登入",link:"/auth/login",login: -1}],
 			activeItem: [],
 			user: {}
 		};
@@ -44,6 +43,7 @@ export default {
 	methods: {
 		SetUser: function(user){
 			this.user = user;
+			this.itemList[3].link = "/user?target="+user.id;
 			this.menuImg = user.icon;
 			this.isLogin = true;
 			this.UpdateMenu();

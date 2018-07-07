@@ -26,21 +26,13 @@ router.get('/calculator', function(req, res) {
 	});
 });
 
-router.get('/account', util.CheckLogin, function(req, res) {
-	meta.title = "照服秘笈 - 我的帳號";
-	meta.path = req.originalUrl;
-	meta.desc = Config.desc;
-	ejs.renderFile("view/content/account.ejs").then(function(content){
-		res.render("template.ejs",{meta: meta, content: content});
-	});
-});
-
 router.get('/profession', util.CheckLogin, function(req, res) {
 	meta.title = "照服秘笈 - 專業連結";
 	meta.path = req.originalUrl;
 	meta.desc = Config.desc;
-	var content = "";
-	res.render("template.ejs",{meta: meta, content: content});
+	ejs.renderFile("view/content/profession.ejs").then(function(content){
+		res.render("template.ejs",{meta: meta, content: content});
+	});
 });
 
 module.exports = router;

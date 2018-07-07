@@ -35,6 +35,10 @@
 				<input type="text" v-model="user.company">
 			</div>
 			<div class="info-box">
+				<div class="info-label">公司或組織網址</div>
+				<input type="text" v-model="user.companyUrl">
+			</div>
+			<div class="info-box">
 				<div class="info-label">服務聯絡信箱</div>
 				<input type="text" v-model="user.contactEmail">
 			</div>
@@ -140,6 +144,7 @@ export default {
 				if(this.submitCallback) this.submitCallback(result);
 				else{
 					alert(result.status == "ok"?"修改成功":"修改失敗");
+					if(this.$parent.UpdateUserInfo) this.$parent.UpdateUserInfo(this.user);
 				}
 			}.bind(this));
 		}

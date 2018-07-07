@@ -13,7 +13,6 @@ meta.hostname = Config.hostname;
 
 router.get('/', util.CheckLogin, function(req, res) {
 	var userID = req.query.user;
-	if(req.user.id == userID) res.redirect("/account");
 
 	meta.title = "照服秘笈";
 	meta.path = req.originalUrl;
@@ -34,6 +33,7 @@ router.get('/me', function(req, res) {
 		user.profession = req.user.profession;
 		user.county = req.user.county;
 		user.company = req.user.company;
+		user.companyUrl = req.user.companyUrl;
 		user.contactEmail = req.user.contactEmail;
 		user.tel = req.user.tel;
 		user.desc = req.user.desc;
@@ -103,7 +103,20 @@ router.post('/upload-image', util.CheckLogin, upload.UploadImageToMem, function(
 });
 
 router.get('/list', util.CheckLogin, function(req, res) {
+	var param = {};
+	param.keyword = req.query.keyword;
+	param.profession = req.query.profession;
+	param.county = req.query.county;
+	param.sort = req.query.sort;
+	param.fetchPage = req.query.page || 0;
 
+	param.succFunc = function(result){
+		res.status(200).json({"status":"ok","data": result});
+	};
+	param.failFunc = function(result){
+		res.status(200).json({"status": "fail","message": result.err});
+	};
+	User.ListUser(param);
 });
 
 module.exports = router;

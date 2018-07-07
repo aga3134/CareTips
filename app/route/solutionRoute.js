@@ -69,6 +69,7 @@ router.post('/edit', util.CheckMySolution, function(req, res) {
 router.get('/delete', util.CheckMySolution, function(req, res){
 	var param = {};
 	param.solutionID = req.query.solution;
+	param.caseID = req.query.case;
 	param.ownerID = req.user.id;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result.id});

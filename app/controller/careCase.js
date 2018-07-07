@@ -57,6 +57,7 @@ careCase.ListCase = function(param){
 	if(param.ownerID) query.ownerID = param.ownerID;
 	if(param.keyword){
 		var pattern = '%'+param.keyword+'%';
+		query.$or = [];
 		query.$or.push({'desc': {$like: pattern}});
 		query.$or.push({'info': {$like: pattern}});
 	}
@@ -64,7 +65,15 @@ careCase.ListCase = function(param){
 	includeArr.push({model: DB.User, attributes: ["id","name","icon","profession"]});
 
 	var sort = [];
-	sort.push(['createdAt', 'DESC']);
+	if(param.sort){
+		switch(param.sort){
+			case "newest": sort.push(['createdAt', 'DESC']); break;
+			case "oldest": sort.push(['createdAt']); break;
+			case "solNum": sort.push(['solNum', 'DESC']); break;
+			case "viewNum": sort.push(['viewNum', 'DESC']); break;
+			default: sort.push(['createdAt', 'DESC']); break;
+		}
+	}
 
 	var offset = numPerPage*param.fetchPage;
 

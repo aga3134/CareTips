@@ -59,11 +59,13 @@
 	</div>
 	<div class="solution-title">分享者簡介</div>
 	<div class="owner" v-if="solutionInfo">
-		<div class="owner-info">
-			<img class="owner-icon" v-bind:src="solutionInfo.user.icon">
-			{{solutionInfo.user.profession}} - {{solutionInfo.user.name}}
-		</div>
-		<div class="owner-desc">{{solutionInfo.user.desc}}</div>
+		<a v-bind:href="'/user?target='+solutionInfo.user.id">
+			<div class="owner-info">
+				<img class="owner-icon" v-bind:src="solutionInfo.user.icon">
+				{{solutionInfo.user.profession}} - {{solutionInfo.user.name}}
+			</div>
+			<div class="owner-desc">{{solutionInfo.user.desc}}</div>
+		</a>
 	</div>
 	<div class="solution-title">留言回饋</div>
 	<div class="message-box">
@@ -129,8 +131,16 @@ export default {
 		},
 		DeleteSolution: function(){
 			if(confirm("確定刪除解方?")){
-				$.get("/solution/delete?solution="+this.solutionInfo.id, function(result){
-					if(result.status != "ok") return alert("無法刪除解方");
+				$.get("/solution/delete?solution="+this.solutionInfo.id+"&case="+this.solutionInfo.caseID, function(result){
+					if(result.status != "ok"){
+						switch(result.message){
+							case "msgNum not zero": alert("無法刪除已有留言的解方"); break;
+							case "likeNum not zero": alert("無法刪除已被按讚的解方"); break;
+							default: alert("無法刪除解方"); break;
+						}
+						return;
+					}
+
 					alert("解方已刪除");
 					this.BackToSolutionList();
 				}.bind(this));

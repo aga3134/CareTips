@@ -13,6 +13,7 @@ caseSolution.CreateSolution = function(param){
 
 	DB.CaseSolution.create(newSolution).then(function(result) {
 		DB.User.increment('solNum', {where: {id: newSolution.ownerID}});
+		DB.CareCase.increment('solNum', {where: {id: newSolution.caseID}});
 		param.succFunc(result);
 	}).catch(function(err){
 		console.log(err);
@@ -90,10 +91,11 @@ caseSolution.DeleteSolution = function(param){
 	.then(function(caseSolution) {
 		if(caseSolution.msgNum > 0) return param.failFunc({"err":"msgNum not zero"});
 		if(caseSolution.likeNum > 0) return param.failFunc({"err":"likeNum not zero"});
-		console.log(param);
-		DB.CaseSolution.destroy({where: {id: param.solutionID, ownerID: param.ownerID}})
+
+		DB.CaseSolution.destroy({where: {id: param.solutionID, caseID: param.caseID, ownerID: param.ownerID}})
 		.then(function(result) {
 			DB.User.decrement('solNum', {where: {id: param.ownerID}});
+			DB.CareCase.decrement('solNum', {where: {id: param.caseID}});
 			param.succFunc(result);
 		}).catch(function(err){
 			console.log(err);

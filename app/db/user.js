@@ -30,6 +30,7 @@ module.exports = function(sequelize, DataTypes) {
 		profession: DataTypes.STRING,
 		county: DataTypes.STRING,
 		company: DataTypes.STRING,
+		companyUrl: DataTypes.STRING,
 		contactEmail: DataTypes.STRING,
 		tel: DataTypes.STRING,
 		desc: DataTypes.TEXT,
