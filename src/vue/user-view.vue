@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	
-	<div class="title">聯絡資訊</div>
+	<div class="sub-title">聯絡資訊</div>
 	<div class="contact-box">
 		<ul>
 			<li>
@@ -51,10 +51,10 @@
 	</div>
 	
 	<div class="separator"></div>
-	<div class="title">案例列表</div>
-	<case-list ref="caseList"></case-list>
-	<div class="title">解方列表</div>
-	<solution-list ref="solutionList"></solution-list>
+	<div class="sub-title">案例列表</div>
+	<case-list ref="caseList" emptyAction="0"></case-list>
+	<div class="sub-title">解方列表</div>
+	<solution-list ref="solutionList" emptyAction="0"></solution-list>
 
 	<div class="tab-bar" v-show="isMyAccount">
 		<div class="tab-bt-container">
@@ -148,13 +148,15 @@ export default {
 @import "../scss/main.scss";
 
 .user-view{
-	width: 800px;
+	width: 1024px;
 	max-width: 100%;
+	padding: 10px;
 	margin: auto;
 	font-size: 1.1em;
 	.user-box{
 		border-radius: 5px;
-		width: 100%;
+		width: 800px;
+		max-width: 100%;
 		padding: 10px;
 		margin: auto;
 		display: flex;

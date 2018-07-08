@@ -1,8 +1,9 @@
 var DB = require("../db/db");
 var util = require("./util");
+var solOption = require("../../static/solution.json");
 
 var careCase = {};
-var numPerPage = 4;
+var numPerPage = 6;
 
 careCase.CreateCase = function(param){
 	var newCase = {};
@@ -62,7 +63,14 @@ careCase.ListCase = function(param){
 		query.$or.push({'info': {$like: pattern}});
 	}
 	var includeArr = [];
-	includeArr.push({model: DB.User, attributes: ["id","name","icon","profession"]});
+	var incUser = {model: DB.User, attributes: ["id","name","icon","profession"]};
+	if(param.profession){
+		if(param.profession == "其他"){
+			incUser.where = {profession: {[DB.Op.notIn]: solOption.profession}};
+		}
+		else incUser.where = {profession: param.profession};
+	}
+	includeArr.push(incUser);
 
 	var sort = [];
 	if(param.sort){
@@ -70,6 +78,7 @@ careCase.ListCase = function(param){
 			case "newest": sort.push(['createdAt', 'DESC']); break;
 			case "oldest": sort.push(['createdAt']); break;
 			case "solNum": sort.push(['solNum', 'DESC']); break;
+			case "likeNum": sort.push(['likeNum', 'DESC']); break;
 			case "viewNum": sort.push(['viewNum', 'DESC']); break;
 			default: sort.push(['createdAt', 'DESC']); break;
 		}

@@ -1,7 +1,12 @@
 <template lang="html">
 <div>
+	<div class="no-result-box" v-show="caseList.length==0">
+		目前暫無符合條件的案例
+		<div v-if="emptyAction==0" class="center-bt">查無資料</div>
+		<div v-else class="center-bt" v-on:click="CreateCase();">新增案例</div>
+	</div>
 	<div class="case-list">
-		<div class="list-item half-w shadow-light" v-for="(c,i) in caseList">
+		<div class="list-item one-third-w shadow-light" v-for="(c,i) in caseList">
 			<a v-bind:href="'/case?case='+c.id">
 				<div class="owner-info" v-bind:style="{'background-color':c.user.headColor}">
 					<img class="owner-icon" v-bind:src="c.user.icon">
@@ -46,7 +51,7 @@
 var g_Util = require('../js/util');
 
 export default {
-	props: ["init"],
+	props: ["init","emptyAction"],
 	data: function () {
 		return {
 			caseList: [],
@@ -78,13 +83,15 @@ export default {
 			this.page = 0;
 			this.caseList = [];
 			this.preLoad = [];
+			this.noMore = false;
 		},
 		PreLoadList: function(next){
 			if(!this.param) return;
 			var urlStr = "/case/list?page="+this.page;
 			if(this.param.ownerID) urlStr += "&owner="+this.param.ownerID;
 			if(this.param.keyword) urlStr += "&keyword="+this.param.keyword;
-			if(this.param.sort) urlStr += "&sort="+this.param.sort;
+			if(this.param.profession) urlStr += "&profession="+this.param.profession;
+			urlStr += "&sort="+this.param.sort||"newest";
 			$.get(urlStr, function(result){
 				this.preLoad = result.data;
 				if(result.status != "ok") return alert("讀取案例列表失敗");
@@ -103,6 +110,9 @@ export default {
 			this.caseList.push.apply(this.caseList,this.preLoad);
 			this.PreLoadList();
 			this.InitHeadColor();
+		},
+		CreateCase: function(){
+			window.location.href="/case/create";
 		}
 	}
 }
@@ -112,12 +122,12 @@ export default {
 @import "../scss/main.scss";
 
 .case-list{
-	width: 1024px;
+	width: 1200px;
 	max-width: 100%;
 	margin: auto;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
 }
 </style>

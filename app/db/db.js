@@ -6,7 +6,8 @@ var db = {};
 db.Init = function(){
 	db.sequelize = new Sequelize(Config.mysqlAuth.dbName, Config.mysqlAuth.username, Config.mysqlAuth.password,
 		{host: Config.mysqlAuth.host, port: '3306', logging: false, dialect: "mysql"});
-	
+	db.Op = Sequelize.Op;
+
 	db.User = db.sequelize.import("./user.js");
 	db.CareCase = db.sequelize.import("./careCase.js");
 	db.CaseMessage = db.sequelize.import("./caseMessage.js");

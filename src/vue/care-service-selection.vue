@@ -2,7 +2,7 @@
 <div class="care-service-selection" v-if="serviceCode">
 	<div class="input-item">
 		<div class="input-label">主類</div>
-		<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
+		<select v-model="mainCategory" v-on:change="UpdateMainCategory();" v-bind:disabled="fixMainCategory">
 			<option v-for="(s,i) in serviceCode.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
 		</select>
 	</div>
@@ -57,7 +57,8 @@ export default {
 			subCategory: 0,
 			selectService: 0,
 			itemInfo: null,
-			serviceCount: 1
+			serviceCount: 1,
+			fixMainCategory: false
 		};
 	},
 	created: function(){

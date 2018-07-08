@@ -22,7 +22,7 @@
 				<textarea v-model="user.desc"></textarea>
 			</div>
 		</div>
-		<div class="title">聯絡資訊</div>
+		<div class="sub-title">聯絡資訊</div>
 		<div class="info-container">
 			<div class="info-box">
 				<div class="info-label">服務縣市</div>
@@ -159,12 +159,6 @@ export default {
 	width: 600px;
 	max-width: 100%;
 	margin: auto;
-	.cat-title{
-		margin: 20px 10px 10px 10px;
-		font-size: 1.5em;
-		text-align: left;
-		color: rgb(50,50,50);
-	}
 	.info-container{
 		display: flex;
 		justify-content: flex-start;

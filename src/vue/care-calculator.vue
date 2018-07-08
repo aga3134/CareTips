@@ -201,92 +201,102 @@
 	</div>
 	<div class="service-list">
 		<div class="comp-header">服務套餐</div>
-		<div class="remark">*照服計算機 之計算方式依 <a href="https://www.health.ntpc.gov.tw/archive/health_ntpc/6/file/107%E5%B9%B4%E5%BA%A6%E7%B5%A6%E4%BB%98%E5%8F%8A%E6%94%AF%E4%BB%98%E5%9F%BA%E6%BA%96.pdf" target="_blank">107年度給付及支付基準</a> 設定，詳細說明請見該連結。</div>
+		<div class="service-container">
+			<div class="remark">*照服計算機 之計算方式依 <a href="https://www.health.ntpc.gov.tw/archive/health_ntpc/6/file/107%E5%B9%B4%E5%BA%A6%E7%B5%A6%E4%BB%98%E5%8F%8A%E6%94%AF%E4%BB%98%E5%9F%BA%E6%BA%96.pdf" target="_blank">107年度給付及支付基準</a> 設定，詳細說明請見該連結。</div>
 
-		<div class="service-item cat-A half-w" v-for="(item,i) in items['A']" >
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('A',i);">刪除</div>
+			<div class="service-item cat-A half-w" v-for="(item,i) in items['A']" >
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('A',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('A',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-B half-w" v-for="(item,i) in items['B']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('B',i);">刪除</div>
+			<div class="service-item cat-B half-w" v-for="(item,i) in items['B']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('B',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('B',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-C half-w" v-for="(item,i) in items['C']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('C',i);">刪除</div>
+			<div class="service-item cat-C half-w" v-for="(item,i) in items['C']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('C',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('C',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-D half-w" v-for="(item,i) in items['D']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" >縣市核定價格: {{item.price}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('D',i);">刪除</div>
+			<div class="service-item cat-D half-w" v-for="(item,i) in items['D']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" >縣市核定價格: {{item.price}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('D',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('D',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-E half-w" v-for="(item,i) in items['E']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="item.isRent == 0">購買價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 0">購買給付上限: {{item.payForBuy}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 1">租賃價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 1">租賃給付上限: {{item.payForRent}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('E',i);">刪除</div>
+			<div class="service-item cat-E half-w" v-for="(item,i) in items['E']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="item.isRent == 0">購買價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 0">購買給付上限: {{item.payForBuy}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 1">租賃價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 1">租賃給付上限: {{item.payForRent}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('E',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('E',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-F half-w" v-for="(item,i) in items['F']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="item.isRent == 0">購買價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 0">購買給付上限: {{item.payForBuy}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 1">租賃價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="item.isRent == 1">租賃給付上限: {{item.payForRent}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('F',i);">刪除</div>
+			<div class="service-item cat-F half-w" v-for="(item,i) in items['F']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="item.isRent == 0">購買價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 0">購買給付上限: {{item.payForBuy}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 1">租賃價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="item.isRent == 1">租賃給付上限: {{item.payForRent}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('F',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('F',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-G half-w" v-for="(item,i) in items['G']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
-			<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('G',i);">刪除</div>
+			<div class="service-item cat-G half-w" v-for="(item,i) in items['G']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr" v-show="remoteArea == false">一般價格: {{item.price}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">原民區或離島價格: {{item.priceRemote}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr" v-show="remoteArea == false">總價: {{item.price*item.num}} 元</div>
+				<div class="item-attr" v-show="remoteArea == true">總價: {{item.priceRemote*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('G',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('G',i);">刪除</div>
+				</div>
 			</div>
-		</div>
-		<div class="service-item cat-O half-w" v-for="(item,i) in items['O']">
-			<div class="item-title">{{item.code}} {{item.name}}</div>
-			<div class="item-attr">價格: {{item.price}} 元</div>
-			<div class="item-attr">數量: {{item.num}}</div>
-			<div class="item-attr">總價: {{item.price*item.num}} 元</div>
-			<div class="item-bt-container">
-				<div class="item-bt" v-on:click="DeleteItem('O',i);">刪除</div>
+			<div class="service-item cat-O half-w" v-for="(item,i) in items['O']">
+				<div class="item-title">{{item.code}} {{item.name}}</div>
+				<div class="item-attr">價格: {{item.price}} 元</div>
+				<div class="item-attr">數量: {{item.num}}</div>
+				<div class="item-attr">總價: {{item.price*item.num}} 元</div>
+				<div class="item-bt-container">
+					<div class="item-bt" v-on:click="ModifyItem('O',i);">修改</div>
+					<div class="item-bt" v-on:click="DeleteItem('O',i);">刪除</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -302,8 +312,10 @@
 	<div class="input-panel" v-show="openInputPanel">
 		<div class="input-area">
 			<care-service-selection calcPrice="1" ref="serviceSelect"></care-service-selection>
-			<div class="input-bt" v-on:click="AddService();">新增</div>
-			<div class="input-bt" v-on:click="openInputPanel = false;">取消</div>
+			<div class="input-bt" v-show="!modify"  v-on:click="AddService();">新增</div>
+			<div class="input-bt" v-show="!modify"  v-on:click="openInputPanel = false;">取消</div>
+			<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
+			<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消修改</div>
 		</div>
 	</div>
 
@@ -349,14 +361,31 @@ export default {
 			items: {
 				"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 			},
-			openInputPanel: false
+			openInputPanel: false,
+			modify: false,
+			modifyCategory: "",
+			modifyIndex: -1
 		};
 	},
 	components: {
     	'care-service-selection': careServiceSelection
 	},
 	created: function(){
-		
+		var urlParam = g_Util.GetUrlParameter();
+		var solutionID = urlParam.solution;
+		if(solutionID){
+			$.get("/solution/view?solution="+solutionID, function(result){
+				if(result.status != "ok") return alert("無法讀取解方");
+				var service = JSON.parse(result.data.info)[3][0];
+				for(var i=0;i<service.length;i++){
+					var item = service[i];
+					this.items[item.category].push(item);
+				}
+				//console.log(this.items);
+				this.UpdatePrice();
+				
+			}.bind(this));
+		}
 	},
 	methods: {
 		UpdatePrice: function(){
@@ -640,6 +669,27 @@ export default {
 			this.openInputPanel = false;
 			this.$root.ShowMessage("加入服務 "+item.code);
 		},
+		ModifyItem: function(code,index){
+			this.modify = true;
+			this.modifyCategory = code;
+			this.modifyIndex = index;
+			var item = this.items[code][index];
+			this.$refs.serviceSelect.SetSelectItem(item);
+			this.$refs.serviceSelect.fixMainCategory = true;
+			this.openInputPanel = true;
+		},
+		DoModify: function(){
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			this.items[this.modifyCategory][this.modifyIndex] = item;
+			this.ClearModify();
+		},
+		ClearModify: function(){
+			this.modify = false;
+			this.modifyCategory = "";
+			this.modifyIndex = -1;
+			this.$refs.serviceSelect.fixMainCategory = false;
+			this.openInputPanel = false;
+		},
 		DeleteItem: function(code, index){
 			if(confirm("確定刪除?")){
 				var arr = this.items[code];
@@ -654,6 +704,7 @@ export default {
 					"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "O": []
 				};
 				this.UpdatePrice();
+				this.ClearModify();
 			}
 		},
 		ToggleDetail: function(){
@@ -680,7 +731,13 @@ $link-color: #FF6666;
 $link-hover-color: #FF3333;
 
 .care-calculator{
-	width: 100%;
+	width: 1024px;
+	max-width: 100%;
+	padding: 0px;
+	@include pad-width(){
+		padding: 10px;
+	}
+	margin: auto;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -790,12 +847,15 @@ $link-hover-color: #FF3333;
 	}
 	.service-list{
 		background-color: #eeeeee;
-		padding-bottom: 100px;
+		padding-bottom: 10px;
 		margin-bottom: 10px;
 		.remark{
 			font-size: 1em;
 			text-align: center;
 			margin: 10px;
+		}
+		.service-container{
+			padding: 5px;
 		}
 		.service-item{
 			border-radius: 3px;

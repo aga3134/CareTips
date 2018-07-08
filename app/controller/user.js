@@ -1,5 +1,6 @@
 var DB = require("../db/db");
 var util = require("./util");
+var solOption = require("../../static/solution.json");
 
 var user = {};
 var numPerPage = 6;
@@ -59,7 +60,10 @@ user.ListUser = function(param){
 		query.$or.push({'name': {$like: pattern}});
 	}
 	if(param.profession){
-		query.profession = param.profession;
+		if(param.profession == "其他"){
+			query.profession = {[DB.Op.notIn]: solOption.profession};
+		}
+		else query.profession = param.profession;
 	}
 	if(param.county){
 		query.county = param.county;

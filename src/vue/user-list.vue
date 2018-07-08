@@ -1,7 +1,11 @@
 <template lang="html">
 <div>
+	<div class="no-result-box" v-show="userList.length==0">
+		目前暫無符合條件的專家
+		<div class="center-bt" v-on:click="ResetCondition();">重設條件</div>
+	</div>
 	<div class="user-list">
-		<div class="list-item half-w shadow-light" v-for="(u,i) in userList">
+		<div class="list-item one-third-w shadow-light" v-for="(u,i) in userList">
 			<a v-bind:href="'/user?target='+u.id">
 				<div class="owner-info" v-bind:style="{'background-color':u.headColor}">
 					<img class="owner-icon" v-bind:src="u.icon">
@@ -21,8 +25,7 @@
 				</div>
 				<div class="desc">{{u.desc}}</div>
 				<div class="feedback-statistic">
-					<div class="feedback-num">{{u.county}}</div>
-					<div class="feedback-num">{{u.company}}</div>
+					<div class="feedback-num">{{u.county}} - {{u.company}}</div>
 				</div>
 			</a>
 		</div>
@@ -47,7 +50,9 @@ export default {
 	},
 	created: function(){
 		if(this.init == "1"){
-			this.LoadMoreList();
+			var urlParam = g_Util.GetUrlParameter();
+			var profession = urlParam.profession;
+			this.LoadMoreList({profession:profession});
 		}
 	},
 	methods: {
@@ -67,6 +72,7 @@ export default {
 			this.page = 0;
 			this.userList = [];
 			this.preLoad = [];
+			this.noMore = false;
 		},
 		PreLoadList: function(next){
 			if(!this.param) return;
@@ -74,7 +80,7 @@ export default {
 			if(this.param.profession) urlStr += "&profession="+this.param.profession;
 			if(this.param.county) urlStr += "&county="+this.param.county;
 			if(this.param.keyword) urlStr += "&keyword="+this.param.keyword;
-			if(this.param.sort) urlStr += "&sort="+this.param.sort;
+			urlStr += "&sort="+this.param.sort||"newest";
 			$.get(urlStr, function(result){
 				this.preLoad = result.data;
 				if(result.status != "ok") return alert("讀取專家列表失敗");
@@ -93,6 +99,9 @@ export default {
 			this.userList.push.apply(this.userList,this.preLoad);
 			this.PreLoadList();
 			this.InitHeadColor();
+		},
+		ResetCondition: function(){
+			if(this.$parent.ResetCondition) this.$parent.ResetCondition();
 		}
 	}
 }
@@ -102,12 +111,12 @@ export default {
 @import "../scss/main.scss";
 
 .user-list{
-	width: 1024px;
+	width: 1200px;
 	max-width: 100%;
 	margin: auto;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
 }
 </style>

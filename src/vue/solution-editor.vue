@@ -16,7 +16,7 @@
 				<div class="problem-cat" v-for="(p,i) in priority">
 					<div class="problem-header">{{p.name}}</div>
 					<div class="problem-container">
-						<div class="problem-item half-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solution[step][i]">
+						<div class="problem-item one-third-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solution[step][i]">
 							<div class="problem-title">{{intervention[s.intervention].name}}</div>
 							<div class="problem-body">
 								<div class="problem-desc" v-html="s.desc"></div>
@@ -33,7 +33,7 @@
 				<div class="problem-cat">
 					<div class="problem-header">專業連結</div>
 					<div class="problem-container">
-						<div class="problem-item half-w cat-D4" v-for="(s,j) in solution[step][0]">
+						<div class="problem-item one-third-w cat-D4" v-for="(s,j) in solution[step][0]">
 							<div class="problem-title">{{s.profession}}</div>
 							<div class="problem-body">
 								<div class="problem-desc" v-html="s.desc"></div>
@@ -50,7 +50,7 @@
 				<div class="problem-cat">
 					<div class="problem-header">服務項目</div>
 					<div class="problem-container">
-						<div class="problem-item half-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solution[step][0]">
+						<div class="problem-item one-third-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solution[step][0]">
 							<div class="problem-title">{{s.code}} {{s.name}}</div>
 							<div class="problem-body">
 								<div class="problem-desc" v-html="s.desc"></div>
@@ -327,7 +327,7 @@ export default {
 	.step-page{
 		background-color: #eeeeee;
 		color: rgb(50,50,50);
-		width: 800px;
+		width: 1024px;
 		max-width: 100%;
 		padding: 10px;
 		border-radius: 5px;

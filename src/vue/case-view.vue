@@ -32,7 +32,7 @@
 	<div class="problem-cat" v-for="cat in ['D1','D2','D3','D4']">
 		<div class="problem-header" v-if="omaha!=null">{{omaha[cat].name}} ({{problem[cat].length}}項)</div>
 		<div class="problem-container">
-			<div class="problem-item half-w" v-bind:class="'cat-'+cat" v-for="(p,i) in problem[cat]">
+			<div class="problem-item one-third-w" v-bind:class="'cat-'+cat" v-for="(p,i) in problem[cat]">
 				<div class="problem-title">{{p.name}}</div>
 				<div class="problem-body">
 					<div class="problem-desc" v-html="p.desc"></div>
@@ -84,9 +84,15 @@
 		<solution-editor ref="solutionEditor"></solution-editor>
 	</div>
 
-	<div class="slide-panel" v-bind:class="{open: status == 'SolutionList'}">
+	<div class="slide-panel" v-bind:class="{open: status == 'SolutionList'}"  v-on:click="openSearchPanel=false;">
 		<div class="panel-title">解方列表</div>
-		<solution-list ref="solutionList"></solution-list>
+		<div class="bt-container">
+			<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+			<div class="input-bt" v-on:click.stop="openSearchPanel=true;">搜尋解方</div>
+		</div>
+		<div>
+			<solution-list ref="solutionList"></solution-list>
+		</div>
 	</div>
 
 	<div class="slide-panel" v-bind:class="{open: status == 'ViewSolution'}">
@@ -102,6 +108,44 @@
 		</div>
 	</div>
 	
+	<div class="side-panel" v-bind:class="{open: openSearchPanel}">
+		<div class="mid-title">
+			搜尋條件
+			<div class="bottom-line"></div>
+		</div>
+		<div class="search-container">
+			<div class="search-item">
+				<div class="search-label">排序</div>
+				<select v-model="selectSort" v-on:change="SearchSolution();">
+					<option value="newest">由新到舊</option>
+					<option value="oldest">由舊到新</option>
+					<option value="likeNum">最多讚</option>
+					<option value="viewNum">最多觀看</option>
+				</select>
+			</div>
+			<div class="search-item">
+				<div class="search-label">解題者專業</div>
+				<select v-model="selectProfession" v-on:change="SearchSolution();">
+					<option value="全部">全部</option>
+					<option v-for="profession in professions" v-bind:value="profession">{{profession}}</option>
+				</select>
+			</div>
+			<div class="search-item" v-if="caseInfo">
+				<div class="search-label">案例版本</div>
+				<select v-model="selectVersion" v-on:change="SearchSolution();">
+					<option value="全部">全部</option>
+					<option v-for="c in caseInfo.info" v-bind:value="c.version">{{c.version}}</option>
+				</select>
+			</div>
+			<div class="search-item">
+				<div class="search-label">關鍵字</div>
+				<input type="text" v-model="keyword" placeholder="請輸入搜尋關鍵字" v-on:change="SearchSolution();" v-on:keyup.13="SearchSolution();">
+			</div>
+		</div>
+		<div class="input-bt" v-on:click="openSearchPanel = false;">確定</div>
+		<div class="input-bt" v-on:click="ResetCondition();">重設</div>
+	</div>
+
 </div>
 </template>
 
@@ -125,7 +169,13 @@ export default {
 			sendMessage: "",
 			messageList: [],
 			status: "ViewCase",
-			solutionID: null
+			solutionID: null,
+			professions: [],
+			openSearchPanel: false,
+			selectProfession:"全部",
+			selectSort: "newest",
+			selectVersion: "全部",
+			keyword:""
 		};
 	},
 	components: {
@@ -155,6 +205,10 @@ export default {
 			
 			$.get("/static/omaha.json",function(data){
 				this.omaha = data;
+			}.bind(this));
+
+			$.get("/static/solution.json",function(data){
+				this.professions = data.profession;
 			}.bind(this));
 		}.bind(this));
 
@@ -260,6 +314,7 @@ export default {
 		},
 		ViewCase: function(){
 			this.status = "ViewCase";
+			this.openSearchPanel = false;
 		},
 		ProvideSolution: function(solutionID){
 			if(!this.user){
@@ -277,6 +332,7 @@ export default {
 				this.$refs.solutionEditor.EditSolution(solutionID);
 			}
 			this.status = "ProvideSolution";
+			this.openSearchPanel = false;
 		},
 		ViewSolution: function(solutionID){
 			this.solutionID = solutionID;
@@ -286,12 +342,34 @@ export default {
 			}
 			else{
 				this.status = "SolutionList";
-				var param = {};
-				param.caseID = this.caseInfo.id;
-				this.$refs.solutionList.ClearList();
-				this.$refs.solutionList.LoadMoreList(param);
+				this.SearchSolution();
 			}
+			this.openSearchPanel = false;
+		},
+		SearchSolution: function(){
+			var param = {};
+			param.caseID = this.caseInfo.id;
+			if(this.keyword != ""){
+				param.keyword = this.keyword;
+			}
+			if(this.selectProfession != "全部"){
+				param.profession = this.selectProfession;
+			}
+			param.sort = this.selectSort;
+			if(this.selectVersion != "全部"){
+				param.caseVersion = this.selectVersion;
+			}
+			this.$refs.solutionList.ClearList();
+			this.$refs.solutionList.LoadMoreList(param);
 			
+			var curCaseVersion = this.caseInfo.info[this.vIndex].version;
+			this.$refs.solutionList.SetCurCaseVersion(curCaseVersion);
+		},
+		ResetCondition: function(){
+			this.keyword = "";
+			this.selectSort = "newest";
+			this.selectProfession = "全部";
+			this.SearchSolution();
 		}
 	}
 }
@@ -301,10 +379,10 @@ export default {
 @import "../scss/main.scss";
 
 .case-view{
-	width: 800px;
+	width: 1024px;
 	max-width: 100%;
 	margin: auto;
-
+	padding: 10px;
 	.case-title{
 		font-size: 2em;
 		padding: 10px 0px;
@@ -320,6 +398,16 @@ export default {
 
 	.owner{
 		font-size: 1.2em;
+	}
+	.bt-container{
+		width: 1200px;
+		max-width: 100%;
+		padding: 0px 10px;
+		margin: auto;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-wrap: wrap;
 	}
 }
 </style>

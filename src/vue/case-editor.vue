@@ -3,7 +3,7 @@
 	<div class="case-editor">
 		<div class="case-info">
 			<a name="caseDesc"></a>
-			<div class="cat-header">案例簡述</div>
+			<div class="cat-header">新增案例</div>
 			<textarea v-model="caseInfo.desc" placeholder="請簡單描述案例之生活背景與問題摘要"></textarea>
 		</div>
 		<div class="case-info">
@@ -14,7 +14,7 @@
 				<div class="problem-cat" v-for="cat in ['D1','D2','D3','D4']">
 					<div class="problem-header" v-if="omaha!=null">{{omaha[cat].name}} ({{caseInfo.problem[cat].length}}項)</div>
 					<div class="problem-container">
-						<div class="problem-item half-w" v-bind:class="'cat-'+cat" v-for="(p,i) in caseInfo.problem[cat]">
+						<div class="problem-item one-third-w" v-bind:class="'cat-'+cat" v-for="(p,i) in caseInfo.problem[cat]">
 							<div class="problem-title">{{p.name}}</div>
 							<div class="problem-body">
 								<div class="problem-desc" v-html="p.desc"></div>
@@ -273,7 +273,7 @@ $link-hover-color: #FF3333;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
-
+	padding: 10px;
 	a{
 		text-decoration: none;
 		color: $link-color;

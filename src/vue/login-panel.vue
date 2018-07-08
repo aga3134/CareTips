@@ -115,7 +115,7 @@ export default {
 			else if(!this.ValidateEmail(this.email))  return alert("請輸入正確的電子信箱");
 
 			$.post("/auth/forget-password", {email: this.email}, function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.status == "ok"){
 					alert("修改密碼的連結已寄至您的信箱，請點擊連結並更新密碼");
 				}
@@ -126,13 +126,19 @@ export default {
 			else if(this.password != this.passwordConfirm) return alert("請確認密碼一致");
 
 			$.post("/auth/reset-password", {password: this.password, token: this.token}, function(data){
-				console.log(data);
+				//console.log(data);
 				if(data.status == "ok"){
-					if(data.status == "ok"){
-						alert("密碼已更新，請重新登入");
-						window.location.href="/auth/login";
+					alert("密碼已更新，請重新登入");
+				}
+				else{
+					//console.log(data.message);
+					switch(data.message){
+						case "invalid token": alert("連結已失效"); break;
+						default: alert("密碼更新失敗"); break;
 					}
 				}
+				window.location.href="/auth/login";
+				
 			});
 		}
 	}

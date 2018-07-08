@@ -1,7 +1,12 @@
 <template lang="html">
 <div>
+	<div class="no-result-box" v-show="solutionList.length==0">
+		目前暫無符合條件的解方
+		<div v-if="emptyAction==0" class="center-bt">查無資料</div>
+		<div v-else class="center-bt" v-on:click="CreateSolution();">新增解方</div>
+	</div>
 	<div class="solution-list">
-		<div class="list-item half-w shadow-dark" v-for="(s,i) in solutionList" v-on:click="ViewSolution(s.caseID,s.id);">
+		<div class="list-item one-third-w shadow-dark" v-for="(s,i) in solutionList" v-on:click="ViewSolution(s.caseID,s.id);">
 			<div class="owner-info" v-bind:style="{'background-color':s.user.headColor}">
 				<img class="owner-icon" v-bind:src="s.user.icon">
 				{{s.user.profession}} - {{s.user.name}}
@@ -32,7 +37,15 @@
 			<div class="feedback-statistic">
 				<img class="feedback-icon" src="/static/image/like.png">
 				<div class="feedback-num">{{s.likeNum}}</div>
-				觀看次數<div class="feedback-num">{{s.viewNum}}</div>
+				<div class="feedback-num">觀看次數 {{s.viewNum}}</div>
+				<div v-bind:class="{warning: curCaseVersion != s.caseVersion}">
+					<div class="feedback-num">
+						案例版本 {{s.caseVersion}}
+						<div v-if="curCaseVersion != s.caseVersion" class="tip">
+							此解方針對版本{{s.caseVersion}}，與目前案例版本{{curCaseVersion}}不同
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -45,14 +58,15 @@
 var g_Util = require('../js/util');
 
 export default {
-	props: ["init"],
+	props: ["init","emptyAction"],
 	data: function () {
 		return {
 			solutionList: [],
 			preLoad: [],
 			page: 0,
 			param: {},
-			noMore: false
+			noMore: false,
+			curCaseVersion: null
 		};
 	},
 	created: function(){
@@ -70,6 +84,9 @@ export default {
 				this.solutionList[i].user.headColor = colorArr(index);
 			}
 		},
+		SetCurCaseVersion: function(curCaseVersion){
+			this.curCaseVersion = curCaseVersion;
+		},
 		SetParam: function(param){
 			this.param = param;
 		},
@@ -77,12 +94,17 @@ export default {
 			this.page = 0;
 			this.solutionList = [];
 			this.preLoad = [];
+			this.noMore = false;
 		},
 		PreLoadList: function(next){
 			if(!this.param) return;
 			var urlStr = "/solution/list?page="+this.page;
 			if(this.param.caseID) urlStr += "&case="+this.param.caseID;
 			if(this.param.ownerID) urlStr += "&owner="+this.param.ownerID;
+			if(this.param.profession) urlStr += "&profession="+this.param.profession;
+			if(this.param.keyword) urlStr += "&keyword="+this.param.keyword;
+			if(this.param.caseVersion) urlStr += "&caseVersion="+this.param.caseVersion;
+			urlStr += "&sort="+this.param.sort||"newest";
 			$.get(urlStr, function(result){
 				this.preLoad = result.data;
 				if(result.status != "ok") return alert("讀取案例列表失敗");
@@ -123,6 +145,9 @@ export default {
 		ViewSolution: function(caseID, solutionID){
 			if(this.$parent.ViewSolution) return this.$parent.ViewSolution(solutionID);
 			else window.location.href="/case?case="+caseID+"&solution="+solutionID;
+		},
+		CreateSolution: function(){
+			if(this.$parent.ProvideSolution) return this.$parent.ProvideSolution();
 		}
 
 	}
@@ -133,12 +158,12 @@ export default {
 @import "../scss/main.scss";
 
 .solution-list{
-	width: 1024px;
+	width: 1200px;
 	max-width: 100%;
 	margin: auto;
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
 	color: #333333;
 }

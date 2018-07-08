@@ -1,6 +1,7 @@
 <template lang="html">
 <div class="solution-view">
-	<div class="input-bt" v-on:click="BackToSolutionList();">回解方列表</div>
+	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
 	<div class="feedback-statistic" v-if="solutionInfo">
 		<div class="container clickable" v-on:click="ToggleLike();">
 			<img class="feedback-icon" src="/static/image/like.png">
@@ -8,6 +9,7 @@
 		</div>
 		<div class="container">
 			觀看次數<div class="feedback-num">{{solutionInfo.viewNum}}</div>
+			案例版本<div class="feedback-num">{{solutionInfo.caseVersion}}</div>
 		</div>
 		<div class="container" v-show="isMySolution">
 			<div class="action-bt" v-on:click="ModifySolution();">修改解方</div>
@@ -21,7 +23,7 @@
 			<div class="problem-cat" v-for="(p,i) in priority">
 				<div class="problem-header">{{p.name}}</div>
 				<div class="problem-container">
-					<div class="problem-item half-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solutionInfo.info[step][i]">
+					<div class="problem-item one-third-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solutionInfo.info[step][i]">
 						<div class="problem-title">{{intervention[s.intervention].name}}</div>
 						<div class="problem-body">
 							<div class="problem-desc" v-html="s.desc"></div>
@@ -34,10 +36,13 @@
 			<div class="problem-cat">
 				<div class="problem-header">專業連結</div>
 				<div class="problem-container">
-					<div class="problem-item half-w cat-D4" v-for="(s,j) in solutionInfo.info[step][0]">
+					<div class="problem-item one-third-w cat-D4" v-for="(s,j) in solutionInfo.info[step][0]">
 						<div class="problem-title">{{s.profession}}</div>
 						<div class="problem-body">
 							<div class="problem-desc" v-html="s.desc"></div>
+							<div class="item-bt-container">
+								<div class="item-bt" v-on:click="SearchProfession(s.profession);">找人</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -45,9 +50,12 @@
 		</div>
 		<div v-if="step==3">
 			<div class="problem-cat">
-				<div class="problem-header">服務項目</div>
+				<div class="problem-header">
+					服務項目
+					<div class="input-bt" v-on:click="CalculateService();">價格試算</div>
+				</div>
 				<div class="problem-container">
-					<div class="problem-item half-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solutionInfo.info[step][0]">
+					<div class="problem-item one-third-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solutionInfo.info[step][0]">
 						<div class="problem-title">{{s.code}} {{s.name}}</div>
 						<div class="problem-body">
 							<div class="problem-desc" v-html="s.desc"></div>
@@ -125,6 +133,9 @@ export default {
 		},
 		BackToSolutionList: function(){
 			this.$parent.ViewSolution();
+		},
+		ViewCase: function(){
+			this.$parent.ViewCase();
 		},
 		ModifySolution: function(){
 			this.$parent.ProvideSolution(this.solutionInfo.id);
@@ -226,6 +237,12 @@ export default {
 				}.bind(this));
 			}
 		},
+		SearchProfession: function(profession){
+			window.open("/profession?profession="+profession);
+		},
+		CalculateService: function(){
+			window.open("/calculator?solution="+this.solutionInfo.id);
+		}
 	}
 }
 </script>
@@ -234,7 +251,7 @@ export default {
 @import "../scss/main.scss";
 
 .solution-view{
-	width: 800px;
+	width: 1024px;
 	max-width: 100%;
 	margin: auto;
 	padding: 10px;
