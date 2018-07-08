@@ -58,7 +58,7 @@
 				<div class="box-title" v-show="modify">修改問題</div>
 				<div class="input-item">
 					<div class="input-label">面向</div>
-					<select v-model="selectDomain" v-bind:disabled="modify">
+					<select v-model="selectDomain" v-bind:disabled="modify" v-on:change="ChangeDomain();">
 						<option value="D1">{{omaha.D1.name}}</option>
 						<option value="D2">{{omaha.D2.name}}</option>
 						<option value="D3">{{omaha.D3.name}}</option>
@@ -67,7 +67,7 @@
 				</div>
 				<div class="input-item">
 					<div class="input-label">問題</div>
-					<select v-model="selectProblem">
+					<select v-model="selectProblem" v-on:change="ChangeProblem();">
 						<option v-for="(p,i) in omaha[selectDomain].problem" v-bind:value="i">{{p.cht}}</option>
 					</select>
 				</div>
@@ -158,6 +158,13 @@ export default {
 				}.bind(this);
 				this.$refs.userInfoEditor.SetUser(user);
 			}
+		},
+		ChangeDomain: function(){
+			this.selectProblem = 0;
+			this.selectSign = 0;
+		},
+		ChangeProblem: function(){
+			this.selectSign = 0;
 		},
 		AddProblem: function(){
 			var domainID = this.selectDomain;

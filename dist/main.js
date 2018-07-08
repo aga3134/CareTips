@@ -1159,6 +1159,13 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				this.$refs.userInfoEditor.SetUser(user);
 			}
 		},
+		ChangeDomain: function () {
+			this.selectProblem = 0;
+			this.selectSign = 0;
+		},
+		ChangeProblem: function () {
+			this.selectSign = 0;
+		},
 		AddProblem: function () {
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
@@ -7257,19 +7264,24 @@ var render = function() {
                       ],
                       attrs: { disabled: _vm.modify },
                       on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.selectDomain = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.selectDomain = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          function($event) {
+                            _vm.ChangeDomain()
+                          }
+                        ]
                       }
                     },
                     [
@@ -7307,19 +7319,24 @@ var render = function() {
                         }
                       ],
                       on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.selectProblem = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.selectProblem = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          function($event) {
+                            _vm.ChangeProblem()
+                          }
+                        ]
                       }
                     },
                     _vm._l(_vm.omaha[_vm.selectDomain].problem, function(p, i) {
@@ -10618,7 +10635,12 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
-                { class: { warning: _vm.curCaseVersion != s.caseVersion } },
+                {
+                  class: {
+                    warning:
+                      _vm.curCaseVersion && _vm.curCaseVersion != s.caseVersion
+                  }
+                },
                 [
                   _c("div", { staticClass: "feedback-num" }, [
                     _vm._v(
@@ -10626,7 +10648,7 @@ var render = function() {
                         _vm._s(s.caseVersion) +
                         "\r\n\t\t\t\t\t\t"
                     ),
-                    _vm.curCaseVersion != s.caseVersion
+                    _vm.curCaseVersion && _vm.curCaseVersion != s.caseVersion
                       ? _c("div", { staticClass: "tip" }, [
                           _vm._v(
                             "\r\n\t\t\t\t\t\t\t此解方針對版本" +

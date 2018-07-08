@@ -38,10 +38,10 @@
 				<img class="feedback-icon" src="/static/image/like.png">
 				<div class="feedback-num">{{s.likeNum}}</div>
 				<div class="feedback-num">觀看次數 {{s.viewNum}}</div>
-				<div v-bind:class="{warning: curCaseVersion != s.caseVersion}">
+				<div v-bind:class="{warning: curCaseVersion && curCaseVersion != s.caseVersion}">
 					<div class="feedback-num">
 						案例版本 {{s.caseVersion}}
-						<div v-if="curCaseVersion != s.caseVersion" class="tip">
+						<div v-if="curCaseVersion && curCaseVersion != s.caseVersion" class="tip">
 							此解方針對版本{{s.caseVersion}}，與目前案例版本{{curCaseVersion}}不同
 						</div>
 					</div>
