@@ -152,6 +152,21 @@ careCase.DeleteCase = function(param){
 	});
 };
 
+careCase.RandomCase = function(param){
+	var query = {};
+	var sort = ['solNum'];	//從解方數最少的案例隨機挑選
+	var limit = param.limit||100;
+
+	DB.CareCase.findAll({where: query, limit: limit, order: sort})
+	.then(function(result) {
+		var randIndex = util.RandomInt(result.length-1);
+		param.succFunc({id: result[randIndex].id});
+	}).catch(function(err){
+		console.log(err);
+		param.failFunc({"err":"random case fail"});
+	});
+};
+
 //============================message==============================
 careCase.CreateMessage = function(param){
 	var newMsg = {};

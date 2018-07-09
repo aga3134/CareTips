@@ -308,16 +308,17 @@
 			<div class="tab-bt" v-on:click="ClearService();">全部重設</div>
 		</div>
 	</div>
-
-	<div class="input-panel" v-show="openInputPanel">
-		<div class="input-area">
-			<care-service-selection calcPrice="1" ref="serviceSelect"></care-service-selection>
-			<div class="input-bt" v-show="!modify"  v-on:click="AddService();">新增</div>
-			<div class="input-bt" v-show="!modify"  v-on:click="openInputPanel = false;">取消</div>
-			<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
-			<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消修改</div>
+	<transition name="fade">
+		<div class="input-panel" v-show="openInputPanel">
+			<div class="input-area">
+				<care-service-selection calcPrice="1" ref="serviceSelect"></care-service-selection>
+				<div class="input-bt" v-show="!modify"  v-on:click="AddService();">新增</div>
+				<div class="input-bt" v-show="!modify"  v-on:click="openInputPanel = false;">取消</div>
+				<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
+				<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消修改</div>
+			</div>
 		</div>
-	</div>
+	</transition>
 
 </div>
 </template>
@@ -682,6 +683,7 @@ export default {
 			var item = this.$refs.serviceSelect.GetSelectItem();
 			this.items[this.modifyCategory][this.modifyIndex] = item;
 			this.ClearModify();
+			this.UpdatePrice();
 		},
 		ClearModify: function(){
 			this.modify = false;

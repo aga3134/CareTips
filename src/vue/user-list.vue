@@ -5,30 +5,32 @@
 		<div class="center-bt" v-on:click="ResetCondition();">重設條件</div>
 	</div>
 	<div class="user-list">
-		<div class="list-item one-third-w shadow-light" v-for="(u,i) in userList">
-			<a v-bind:href="'/user?target='+u.id">
-				<div class="owner-info" v-bind:style="{'background-color':u.headColor}">
-					<img class="owner-icon" v-bind:src="u.icon">
-					{{u.profession}} - {{u.name}}
-				</div>
-				<div class="domain-statistic">
-					<div class="domain-info">
-						<div class="domain-icon cat-D1"></div>
-						<div class="tip cat-D1">案例數 {{u.caseNum}}</div>
-						<div class="domain-num">{{u.caseNum}}</div>
+		<transition-group name="create" style="width:100%;">
+			<div class="list-item one-third-w shadow-light" v-for="(u,i) in userList" v-bind:key="u.id">
+				<a v-bind:href="'/user?target='+u.id">
+					<div class="owner-info" v-bind:style="{'background-color':u.headColor}">
+						<img class="owner-icon" v-bind:src="u.icon">
+						{{u.profession}} - {{u.name}}
 					</div>
-					<div class="domain-info">
-						<div class="domain-icon cat-D2"></div>
-						<div class="tip cat-D2">解方數 {{u.solNum}}</div>
-						<div class="domain-num">{{u.solNum}}</div>
+					<div class="domain-statistic">
+						<div class="domain-info">
+							<div class="domain-icon cat-D1"></div>
+							<div class="tip cat-D1">案例數 {{u.caseNum}}</div>
+							<div class="domain-num">{{u.caseNum}}</div>
+						</div>
+						<div class="domain-info">
+							<div class="domain-icon cat-D2"></div>
+							<div class="tip cat-D2">解方數 {{u.solNum}}</div>
+							<div class="domain-num">{{u.solNum}}</div>
+						</div>
 					</div>
-				</div>
-				<div class="desc">{{u.desc}}</div>
-				<div class="feedback-statistic">
-					<div class="feedback-num">{{u.county}} - {{u.company}}</div>
-				</div>
-			</a>
-		</div>
+					<div class="desc">{{u.desc}}</div>
+					<div class="feedback-statistic">
+						<div class="feedback-num">{{u.county}} - {{u.company}}</div>
+					</div>
+				</a>
+			</div>
+		</transition-group>
 	</div>
 	<div class="load-more" v-show="noMore==false" v-on:click="LoadMoreList();">更多專家 &#9660;</div>
 </div>

@@ -6,42 +6,44 @@
 		<div v-else class="center-bt" v-on:click="CreateCase();">新增案例</div>
 	</div>
 	<div class="case-list">
-		<div class="list-item one-third-w shadow-light" v-for="(c,i) in caseList">
-			<a v-bind:href="'/case?case='+c.id">
-				<div class="owner-info" v-bind:style="{'background-color':c.user.headColor}">
-					<img class="owner-icon" v-bind:src="c.user.icon">
-					{{c.user.profession}} - {{c.user.name}}
-				</div>
-				<div class="domain-statistic">
-					<div class="domain-info">
-						<div class="domain-icon cat-D1"></div>
-						<div class="tip cat-D1">環境問題 {{c.D1Num}} 項</div>
-						<div class="domain-num">{{c.D1Num}}</div>
+		<transition-group name="create" style="width:100%;">
+			<div class="list-item one-third-w shadow-light" v-for="(c,i) in caseList" v-bind:key="c.id">
+				<a v-bind:href="'/case?case='+c.id">
+					<div class="owner-info" v-bind:style="{'background-color':c.user.headColor}">
+						<img class="owner-icon" v-bind:src="c.user.icon">
+						{{c.user.profession}} - {{c.user.name}}
 					</div>
-					<div class="domain-info">
-						<div class="domain-icon cat-D2"></div>
-						<div class="tip cat-D2">心理問題 {{c.D2Num}} 項</div>
-						<div class="domain-num">{{c.D2Num}}</div>
+					<div class="domain-statistic">
+						<div class="domain-info">
+							<div class="domain-icon cat-D1"></div>
+							<div class="tip cat-D1">環境問題 {{c.D1Num}} 項</div>
+							<div class="domain-num">{{c.D1Num}}</div>
+						</div>
+						<div class="domain-info">
+							<div class="domain-icon cat-D2"></div>
+							<div class="tip cat-D2">心理問題 {{c.D2Num}} 項</div>
+							<div class="domain-num">{{c.D2Num}}</div>
+						</div>
+						<div class="domain-info">
+							<div class="domain-icon cat-D3"></div>
+							<div class="tip cat-D3">生理問題 {{c.D3Num}} 項</div>
+							<div class="domain-num">{{c.D3Num}}</div>
+						</div>
+						<div class="domain-info">
+							<div class="domain-icon cat-D4"></div>
+							<div class="tip cat-D4">行為問題 {{c.D4Num}} 項</div>
+							<div class="domain-num">{{c.D4Num}}</div>
+						</div>
 					</div>
-					<div class="domain-info">
-						<div class="domain-icon cat-D3"></div>
-						<div class="tip cat-D3">生理問題 {{c.D3Num}} 項</div>
-						<div class="domain-num">{{c.D3Num}}</div>
+					<div class="desc">{{c.desc}}</div>
+					<div class="feedback-statistic">
+						<img class="feedback-icon" src="/static/image/like.png">
+						<div class="feedback-num">{{c.likeNum}}</div>
+						觀看次數<div class="feedback-num">{{c.viewNum}}</div>
 					</div>
-					<div class="domain-info">
-						<div class="domain-icon cat-D4"></div>
-						<div class="tip cat-D4">行為問題 {{c.D4Num}} 項</div>
-						<div class="domain-num">{{c.D4Num}}</div>
-					</div>
-				</div>
-				<div class="desc">{{c.desc}}</div>
-				<div class="feedback-statistic">
-					<img class="feedback-icon" src="/static/image/like.png">
-					<div class="feedback-num">{{c.likeNum}}</div>
-					觀看次數<div class="feedback-num">{{c.viewNum}}</div>
-				</div>
-			</a>
-		</div>
+				</a>
+			</div>
+		</transition-group>
 	</div>
 	<div class="load-more" v-show="noMore==false" v-on:click="LoadMoreList();">更多案例 &#9660;</div>
 </div>

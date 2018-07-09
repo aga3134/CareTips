@@ -51,49 +51,53 @@
 			</div>
 		</div>
 		
-		<div class="input-panel" v-show="openInput">
-			<div class="input-area" v-if="omaha != null">
-				<div class="close-bt" v-on:click="openInput = false;">X</div>
-				<div class="box-title" v-show="!modify">新增問題</div>
-				<div class="box-title" v-show="modify">修改問題</div>
-				<div class="input-item">
-					<div class="input-label">面向</div>
-					<select v-model="selectDomain" v-bind:disabled="modify" v-on:change="ChangeDomain();">
-						<option value="D1">{{omaha.D1.name}}</option>
-						<option value="D2">{{omaha.D2.name}}</option>
-						<option value="D3">{{omaha.D3.name}}</option>
-						<option value="D4">{{omaha.D4.name}}</option>
-					</select>
+		<transition name="fade">
+			<div class="input-panel" v-show="openInput">
+				<div class="input-area" v-if="omaha != null">
+					<div class="close-bt" v-on:click="openInput = false;">X</div>
+					<div class="box-title" v-show="!modify">新增問題</div>
+					<div class="box-title" v-show="modify">修改問題</div>
+					<div class="input-item">
+						<div class="input-label">面向</div>
+						<select v-model="selectDomain" v-bind:disabled="modify" v-on:change="ChangeDomain();">
+							<option value="D1">{{omaha.D1.name}}</option>
+							<option value="D2">{{omaha.D2.name}}</option>
+							<option value="D3">{{omaha.D3.name}}</option>
+							<option value="D4">{{omaha.D4.name}}</option>
+						</select>
+					</div>
+					<div class="input-item">
+						<div class="input-label">問題</div>
+						<select v-model="selectProblem" v-on:change="ChangeProblem();">
+							<option v-for="(p,i) in omaha[selectDomain].problem" v-bind:value="i">{{p.cht}}</option>
+						</select>
+					</div>
+					<div class="input-item">
+						<div class="input-label">徵兆</div>
+						<select v-model="selectSign">
+							<option v-for="(s,i) in omaha[selectDomain].problem[selectProblem].sign" v-bind:value="i">{{s.cht}}</option>
+						</select>
+					</div>
+					<div class="input-item">
+						<div class="input-label">問題狀況</div>
+						<textarea v-model="problemDesc" placeholder="請簡單描述問題狀況"></textarea>
+					</div>
+					<div class="input-bt" v-show="!modify" v-on:click="AddProblem();">新增</div>
+					<div class="input-bt" v-show="!modify" v-on:click="openInput = false;">取消</div>
+					<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
+					<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消</div>
 				</div>
-				<div class="input-item">
-					<div class="input-label">問題</div>
-					<select v-model="selectProblem" v-on:change="ChangeProblem();">
-						<option v-for="(p,i) in omaha[selectDomain].problem" v-bind:value="i">{{p.cht}}</option>
-					</select>
-				</div>
-				<div class="input-item">
-					<div class="input-label">徵兆</div>
-					<select v-model="selectSign">
-						<option v-for="(s,i) in omaha[selectDomain].problem[selectProblem].sign" v-bind:value="i">{{s.cht}}</option>
-					</select>
-				</div>
-				<div class="input-item">
-					<div class="input-label">問題狀況</div>
-					<textarea v-model="problemDesc" placeholder="請簡單描述問題狀況"></textarea>
-				</div>
-				<div class="input-bt" v-show="!modify" v-on:click="AddProblem();">新增</div>
-				<div class="input-bt" v-show="!modify" v-on:click="openInput = false;">取消</div>
-				<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
-				<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消</div>
 			</div>
-		</div>
+		</transition>
 
-		<div class="input-panel" v-show="setupUserInfo">
-			<div class="input-area">
-				<div class="panel-title">請先輸入您的個人資訊</div>
-				<user-info-editor ref="userInfoEditor"></user-info-editor>
+		<transition name="fade">
+			<div class="input-panel" v-show="setupUserInfo">
+				<div class="input-area">
+					<div class="panel-title">請先輸入您的個人資訊</div>
+					<user-info-editor ref="userInfoEditor"></user-info-editor>
+				</div>
 			</div>
-		</div>
+		</transition>
 	</div>
 </div>
 </template>

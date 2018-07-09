@@ -1,5 +1,6 @@
 <template lang="html">
 <div class="solution-view">
+	<div class="panel-title">觀看解方</div>
 	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
 	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
 	<div class="feedback-statistic" v-if="solutionInfo">
@@ -83,7 +84,7 @@
 		</div>
 	</div>
 	<div class="message-list" v-if="solutionInfo">
-		<a name="messageList"></a>
+		<a name="solMessageList"></a>
 		<div class="message" v-for="(m,i) in messageList">
 			<div class="owner-info">
 				<img class="owner-icon" v-bind:src="m.user.icon">
@@ -194,7 +195,7 @@ export default {
 				result.data.user = this.user;
 				this.messageList.splice(0,0,result.data);
 				this.sendMessage = "";
-				g_Util.GoToAnchor("messageList");
+				//g_Util.GoToAnchor("solMessageList");
 				this.$root.ShowMessage("新增留言成功");
 
 			}.bind(this));

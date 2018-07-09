@@ -22,6 +22,7 @@
 			<div class="action-bt" v-on:click="ModifyCase();">修改案例</div>
 			<div class="action-bt" v-on:click="DeleteCase();">刪除案例</div>
 		</div>
+		<div class="action-bt" v-on:click="RandomCase();">隨機解題</div>
 	</div>
 	<div class="input-bt" v-on:click="ProvideSolution();">我要解題</div>
 	<div class="input-bt" v-on:click="ViewSolution(solutionID);">觀看解方</div>
@@ -84,21 +85,26 @@
 		<solution-editor ref="solutionEditor"></solution-editor>
 	</div>
 
-	<div class="slide-panel" v-bind:class="{open: status == 'SolutionList'}"  v-on:click="openSearchPanel=false;">
-		<div class="panel-title">解方列表</div>
-		<div class="bt-container">
-			<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
-			<div class="input-bt" v-on:click.stop="openSearchPanel=true;">搜尋解方</div>
+	<transition name="fade">
+		<div class="input-panel" v-show="status == 'SolutionList'"  v-on:click="openSearchPanel=false;">
+			<div class="input-area">
+				<div class="panel-title">解方列表</div>
+				<div class="bt-container">
+					<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+					<div class="input-bt" v-on:click.stop="openSearchPanel=true;">搜尋解方</div>
+				</div>
+				<div>
+					<solution-list ref="solutionList"></solution-list>
+				</div>
+			</div>
 		</div>
-		<div>
-			<solution-list ref="solutionList"></solution-list>
-		</div>
-	</div>
+	</transition>
 
-	<div class="slide-panel" v-bind:class="{open: status == 'ViewSolution'}">
-		<div class="panel-title">觀看解方</div>
-		<solution-view ref="caseViewSolution"></solution-view>
-	</div>
+	<transition name="fade">
+		<div class="input-panel" v-show="status == 'ViewSolution'">
+			<solution-view ref="caseViewSolution"></solution-view>
+		</div>
+	</transition>
 
 	<div class="tab-bar">
 		<div class="tab-bt-container">
@@ -192,6 +198,10 @@ export default {
 
 		$.get("/case/view?case="+caseID, function(result){
 			if(result.status != "ok") return window.location.href="/?message=無法讀取案例";
+			//udate desc
+			$("meta[name='description']").attr("content",result.data.desc);
+			$("meta[property='og:description']").attr("content",result.data.desc);
+
 			this.caseInfo = result.data;
 			this.caseInfo.info = JSON.parse(this.caseInfo.info);
 			this.vIndex = this.caseInfo.info.length-1;
@@ -254,6 +264,9 @@ export default {
 			if(confirm("確定刪除案例?")){
 				window.location.href="/case/delete?case="+this.caseInfo.id;
 			}
+		},
+		RandomCase: function(){
+			window.location.href="/case/random";
 		},
 		SendMessage: function(){
 			var body = {};

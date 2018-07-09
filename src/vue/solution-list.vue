@@ -6,48 +6,50 @@
 		<div v-else class="center-bt" v-on:click="CreateSolution();">新增解方</div>
 	</div>
 	<div class="solution-list">
-		<div class="list-item one-third-w shadow-dark" v-for="(s,i) in solutionList" v-on:click="ViewSolution(s.caseID,s.id);">
-			<div class="owner-info" v-bind:style="{'background-color':s.user.headColor}">
-				<img class="owner-icon" v-bind:src="s.user.icon">
-				{{s.user.profession}} - {{s.user.name}}
-			</div>
-			<div class="domain-statistic">
-				<div class="domain-info">
-					<div class="domain-icon cat-D1"></div>
-					<div class="tip cat-D1">個案措施 {{s.S1Num||0}} 項</div>
-					<div class="domain-num">{{s.S1Num||0}}</div>
+		<transition-group name="create" style="width:100%;">
+			<div class="list-item one-third-w shadow-dark" v-for="(s,i) in solutionList" v-on:click="ViewSolution(s.caseID,s.id);" v-bind:key="s.id">
+				<div class="owner-info" v-bind:style="{'background-color':s.user.headColor}">
+					<img class="owner-icon" v-bind:src="s.user.icon">
+					{{s.user.profession}} - {{s.user.name}}
 				</div>
-				<div class="domain-info">
-					<div class="domain-icon cat-D2"></div>
-					<div class="tip cat-D2">家屬措施 {{s.S2Num||0}} 項</div>
-					<div class="domain-num">{{s.S2Num||0}}</div>
+				<div class="domain-statistic">
+					<div class="domain-info">
+						<div class="domain-icon cat-D1"></div>
+						<div class="tip cat-D1">個案措施 {{s.S1Num||0}} 項</div>
+						<div class="domain-num">{{s.S1Num||0}}</div>
+					</div>
+					<div class="domain-info">
+						<div class="domain-icon cat-D2"></div>
+						<div class="tip cat-D2">家屬措施 {{s.S2Num||0}} 項</div>
+						<div class="domain-num">{{s.S2Num||0}}</div>
+					</div>
+					<div class="domain-info">
+						<div class="domain-icon cat-D3"></div>
+						<div class="tip cat-D3">專業連結 {{s.S3Num||0}} 項</div>
+						<div class="domain-num">{{s.S3Num||0}}</div>
+					</div>
+					<div class="domain-info">
+						<div class="domain-icon cat-D4"></div>
+						<div class="tip cat-D4">照護服務 {{s.S4Num||0}} 項</div>
+						<div class="domain-num">{{s.S4Num||0}}</div>
+					</div>
 				</div>
-				<div class="domain-info">
-					<div class="domain-icon cat-D3"></div>
-					<div class="tip cat-D3">專業連結 {{s.S3Num||0}} 項</div>
-					<div class="domain-num">{{s.S3Num||0}}</div>
-				</div>
-				<div class="domain-info">
-					<div class="domain-icon cat-D4"></div>
-					<div class="tip cat-D4">照護服務 {{s.S4Num||0}} 項</div>
-					<div class="domain-num">{{s.S4Num||0}}</div>
-				</div>
-			</div>
-			<div class="desc">{{s.desc}}</div>
-			<div class="feedback-statistic">
-				<img class="feedback-icon" src="/static/image/like.png">
-				<div class="feedback-num">{{s.likeNum}}</div>
-				<div class="feedback-num">觀看次數 {{s.viewNum}}</div>
-				<div v-bind:class="{warning: curCaseVersion && curCaseVersion != s.caseVersion}">
-					<div class="feedback-num">
-						案例版本 {{s.caseVersion}}
-						<div v-if="curCaseVersion && curCaseVersion != s.caseVersion" class="tip">
-							此解方針對版本{{s.caseVersion}}，與目前案例版本{{curCaseVersion}}不同
+				<div class="desc">{{s.desc}}</div>
+				<div class="feedback-statistic">
+					<img class="feedback-icon" src="/static/image/like.png">
+					<div class="feedback-num">{{s.likeNum}}</div>
+					<div class="feedback-num">觀看次數 {{s.viewNum}}</div>
+					<div v-bind:class="{warning: curCaseVersion && curCaseVersion != s.caseVersion}">
+						<div class="feedback-num">
+							案例版本 {{s.caseVersion}}
+							<div v-if="curCaseVersion && curCaseVersion != s.caseVersion" class="tip">
+								此解方針對版本{{s.caseVersion}}，與目前案例版本{{curCaseVersion}}不同
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</transition-group>
 	</div>
 	<div class="load-more" v-show="noMore==false" v-on:click="LoadMoreList();">更多解方 &#9660;</div>
 </div>

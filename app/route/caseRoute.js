@@ -62,6 +62,17 @@ router.get('/delete', util.CheckLogin, util.CheckMyCase, function(req, res) {
 	careCase.DeleteCase(param);
 });
 
+router.get('/random', function(req, res) {
+	var param = {};
+	param.succFunc = function(result){
+		res.redirect("/case?case="+result.id);
+	};
+	param.failFunc = function(result){
+		res.redirect("/?message="+encodeURIComponent("讀取隨機案例失敗"));
+	}
+	careCase.RandomCase(param);
+});
+
 //=================ajax api====================
 router.get('/list', function(req, res) {
 	var param = {};

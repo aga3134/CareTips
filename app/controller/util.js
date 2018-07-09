@@ -21,7 +21,11 @@ util.RetrieveIntentUrl = function(req){
 		else return "/";
 	}
 	else return "/";
-}
+};
+
+util.RandomInt = function(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+};
 
 util.CheckLogin = function (req, res, next) {
 	if (req.isAuthenticated()) return next();

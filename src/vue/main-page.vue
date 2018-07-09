@@ -5,6 +5,7 @@
 		<div class="bt-bar">
 			<div class="action-bt" v-on:click.stop="openSearchPanel=true;">搜尋案例</div>
 			<div class="action-bt" v-on:click="GoToLink('/case/create');">新增案例</div>
+			<div class="action-bt" v-on:click="GoToLink('/case/random');">隨機解題</div>
 		</div>
 		<div class="category-title">
 			案例列表
@@ -76,6 +77,7 @@
 		<div class="tab-bt-container">
 			<div class="tab-bt" v-on:click.stop="openSearchPanel=true;">搜尋案例</div>
 			<div class="tab-bt" v-on:click="GoToLink('/case/create');">新增案例</div>
+			<div class="tab-bt" v-on:click="GoToLink('/case/random');">隨機解題</div>
 		</div>
 	</div>
 

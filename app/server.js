@@ -41,7 +41,7 @@ app.use(session({
     store: sessionStore,
     resave: true,
     saveUninitialized: true,
-    cookie: { path: '/', httpOnly: true, maxAge: 1000*60*60*24*100}	//session保留100天
+    cookie: { path: '/', httpOnly: true, sameSite:true,maxAge: 1000*60*60*24*100}	//session保留100天
 }));
 
 app.use(bodyParser.urlencoded({extended: true}));
