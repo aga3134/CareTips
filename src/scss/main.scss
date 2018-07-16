@@ -381,17 +381,22 @@ a{
 		width: 1024px;
 		max-width: 100%;
 		margin: auto;
-		padding: 10px;
+		padding: 50px 10px;
 		top: 50%;
 		-webkit-transform: translateY(-50%);
 		-ms-transform: translateY(-50%);
 		transform: translateY(-50%);
 		.input-item{
 			margin: 5px;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			flex-wrap: wrap;
 		}
 		.input-label{
 			font-size: 1.2em;
 			display: inline-block;
+			margin: 5px;
 		}
 		select{
 			border-radius: 3px;
@@ -419,8 +424,48 @@ a{
 			max-width: 100%;
 			padding: 5px;
 			border-radius: 3px;
-			max-width: 200px;
 			font-size: 1.1em;
+		}
+		.filter-icon{
+			width: 30px;
+			height: 30px;
+			margin: 5px;
+			padding: 2px;
+			cursor: pointer;
+			&:hover{
+				padding: 0px;
+			}
+		}
+		.filter-list{
+			padding: 10px;
+			.filter-category{
+				padding: 10px;
+				color: #888888;
+				.cat-label{
+					font-size: 1.5em;
+					font-weight: bold;
+				}
+			}
+			.filter-problem{
+				color: #333333;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				flex-wrap: wrap;
+				padding: 5px;
+				.problem-label{
+					font-size: 1.2em;
+					font-weight: bold;
+				}
+			}
+			.filter-item{
+				margin: 5px;
+				padding: 5px;
+				cursor: pointer;
+				&:hover{
+					border-bottom: 1px solid #BE9063;
+				}
+			}
 		}
 	}
 

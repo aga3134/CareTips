@@ -77,6 +77,7 @@
 						<select v-model="selectSign">
 							<option v-for="(s,i) in omaha[selectDomain].problem[selectProblem].sign" v-bind:value="i">{{s.cht}}</option>
 						</select>
+						<img class="filter-icon" src="/static/image/search-icon.png" v-on:click="OpenFilterPanel();">
 					</div>
 					<div class="input-item">
 						<div class="input-label">問題狀況</div>
@@ -86,6 +87,29 @@
 					<div class="input-bt" v-show="!modify" v-on:click="openInput = false;">取消</div>
 					<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
 					<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消</div>
+				</div>
+			</div>
+		</transition>
+
+		<transition name="fade">
+			<div class="input-panel" v-show="openFilterPanel">
+				<div class="input-area">
+					<div class="close-bt" v-on:click="openFilterPanel=false;">X</div>
+					<div class="input-item">
+						<div class="input-label">篩選</div>
+						<input type="text" v-model="filterInput" v-on:keyup="UpdateFilterList();">
+					</div>
+					<div class="filter-list">
+						<div v-for="cat in filterList" class="filter-category" v-if="cat.num>0">
+							<div class="cat-label">{{cat.name}}</div>
+							<div v-for="(p,i) in cat.problem" class="filter-problem" v-if="p.sign.length>0">
+								<div class="problem-label">{{p.cht}}</div>
+								<div class="filter-item" v-for="(s,j) in p.sign" v-on:click="SelectFilterItem(cat.id,s.pID,s.sID);">
+									{{s.cht}}
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</transition>
@@ -126,7 +150,10 @@ export default {
 			modifyCategory: "",
 			modifyIndex: -1,
 			setupUserInfo: false,
-			user: null
+			user: null,
+			openFilterPanel: false,
+			filterInput: "",
+			filterList: {}
 		};
 	},
 	created: function(){
@@ -226,6 +253,35 @@ export default {
 			this.modifyIndex = -1;
 			this.problemDesc = "";
 			this.openInput = false;
+		},
+		OpenFilterPanel: function(){
+			this.openFilterPanel = true;
+			this.UpdateFilterList();
+		},
+		UpdateFilterList: function(){
+			this.filterList = {};
+			for(var key in this.omaha){
+				var category = {"id":key,"name":this.omaha[key].name,"problem":[],"num":0};
+				for(var i=0;i<this.omaha[key].problem.length;i++){
+					var problem = this.omaha[key].problem[i];
+					var item = {"cht":problem.cht,"sign":[]};
+					for(var j=0;j<problem.sign.length;j++){
+						var sign = problem.sign[j];
+						if(sign.cht.includes(this.filterInput)){
+							item.sign.push({"cht":sign.cht,"pID":i,"sID":j});
+						}
+					}
+					category.problem.push(item);
+					category.num += item.sign.length;
+				}
+				this.filterList[key] = category;
+			}
+		},
+		SelectFilterItem: function(cat,i,j){
+			this.selectDomain = cat;
+			this.selectProblem = i;
+			this.selectSign = j;
+			this.openFilterPanel = false;
 		},
 		SubmitCase: function(){
 			var scrollOffset = -80;
