@@ -1,14 +1,13 @@
 <template lang="html">
-<div class="solution-editor">
+<div class="solution-editor" v-on:click.self="ViewCase();">
 	<div class="step-page">
-		<div class="remark">(第{{step+1}}題/共{{quest.length}}題)</div>
-		<div class="quest" v-html="quest[step]"></div>
 		<div class="step-bt-container">
-			<div class="input-bt" v-show="action=='edit'" v-on:click="ClearEditSolution(true);">取消修改</div>
-			<div class="input-bt" v-show="step>0" v-on:click="PrevQuest();">回上題</div>
-			<div class="input-bt" v-show="step<quest.length-1" v-on:click="NextQuest();">下一題</div>
-			<div class="input-bt" v-show="step==quest.length-1" v-on:click="SubmitSolution();">{{action=="edit"?"完成修改":"完成解題"}}</div>
+			<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
+			<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
+			<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
+			<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
 		</div>
+		<div class="quest" v-html="quest[step]"></div>
 		<div class="separator"></div>
 		<div class="input-bt" v-on:click="openInputPanel=true;">新增項目</div>
 		<div class="sol-container">
@@ -24,6 +23,7 @@
 									<div class="item-bt" v-on:click="ModifyItem(i,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(i,j);">刪除</div>
 								</div>
+								<div class="target-info">針對問題 - {{s.targetName}}</div>
 							</div>
 						</div>
 					</div>
@@ -41,6 +41,7 @@
 									<div class="item-bt" v-on:click="ModifyItem(0,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(0,j);">刪除</div>
 								</div>
+								<div class="target-info">針對問題 - {{s.targetName}}</div>
 							</div>
 						</div>
 					</div>
@@ -58,56 +59,79 @@
 									<div class="item-bt" v-on:click="ModifyItem(0,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(0,j);">刪除</div>
 								</div>
+								<div class="target-info">針對問題 - {{s.targetName}}</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<div class="separator"></div>
-		<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
-	</div>
-
-	<div class="input-panel" v-show="openInputPanel">
-		<div class="input-area">
-			<div class="quest" v-html="quest[step]"></div>
-			<div v-show="step == 0 || step == 1">
-				<div class="input-item">
-					<div class="input-label">優先順序</div>
-					<select v-model="selectPriority" v-bind:disabled="modify">
-						<option v-for="(p,i) in priority" v-bind:value="i">{{p.name}}</option>
-					</select>
-				</div>
-				<div class="input-item">
-					<div class="input-label">措施</div>
-					<select v-model="selectIntervention">
-						<option v-for="(v,i) in intervention" v-bind:value="i">{{v.name}}</option>
-					</select>
-				</div>
-			</div>
-			<div v-show="step == 2">
-				<div class="input-item">
-					<div class="input-label">專業連結</div>
-					<select v-model="selectProfession">
-						<option v-for="p in professions" v-bind:value="p">{{p}}</option>
-					</select>
-					
-				</div>
-				<div class="input-item" v-show="selectProfession=='其他'">
-					<input type="text" v-model="customProfession" placeholder="請輸入您要連結的專業">
-				</div>
-			</div>
-			<div v-show="step == 3">
-				<care-service-selection ref="serviceSelect"></care-service-selection>
-			</div>
-
-			<textarea v-model="inputDesc" placeholder="請簡述您提供的措施"></textarea>
-			<div class="input-bt" v-show="!modify" v-on:click="AddItem();">新增</div>
-			<div class="input-bt" v-show="!modify" v-on:click="openInputPanel = false;">取消</div>
-			<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
-			<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消修改</div>
+		<div class="step-bt-container">
+			<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
+			<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
+			<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
+			<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
 		</div>
+
+		<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+		<div class="input-bt" v-show="action=='edit'" v-on:click="ClearEditSolution(true);">取消修改</div>
+		<div class="input-bt" v-on:click="SubmitSolution();">{{action=="edit"?"完成修改":"完成解題"}}</div>
 	</div>
+
+	<transition name="fade">
+		<div class="input-panel full" v-show="openInputPanel">
+			<div class="input-area">
+				<div class="quest" v-html="quest[step]"></div>
+				<div class="input-item" v-if="problemList">
+					<div class="input-label">針對問題</div>
+					<select v-model="targetIndex">
+						<option value="">不指定</option>
+						<option v-for="(op,index) in problemList['D1']" v-bind:value="'D1-'+index">{{op.name}}</option>
+						<option v-for="(op,index) in problemList['D2']" v-bind:value="'D2-'+index">{{op.name}}</option>
+						<option v-for="(op,index) in problemList['D3']" v-bind:value="'D3-'+index">{{op.name}}</option>
+						<option v-for="(op,index) in problemList['D4']" v-bind:value="'D4-'+index">{{op.name}}</option>
+					</select>
+				</div>
+				<div v-show="step == 0 || step == 1">
+					<div class="input-item">
+						<div class="input-label">優先順序</div>
+						<select v-model="selectPriority" v-bind:disabled="modify">
+							<option v-for="(p,i) in priority" v-bind:value="i">{{p.name}}</option>
+						</select>
+					</div>
+					<div class="input-item">
+						<div class="input-label">措施</div>
+						<select v-model="selectIntervention">
+							<option v-for="(v,i) in intervention" v-bind:value="i">{{v.name}}</option>
+						</select>
+					</div>
+				</div>
+				<div v-show="step == 2">
+					<div class="input-item">
+						<div class="input-label">專業連結</div>
+						<select v-model="selectProfession">
+							<option v-for="p in professions" v-bind:value="p">{{p}}</option>
+						</select>
+						
+					</div>
+					<div class="input-item" v-show="selectProfession=='其他'">
+						<input type="text" v-model="customProfession" placeholder="請輸入您要連結的專業">
+					</div>
+				</div>
+				<div v-show="step == 3">
+					<care-service-selection ref="serviceSelect"></care-service-selection>
+				</div>
+
+				<textarea v-model="inputDesc" placeholder="請簡述您提供的措施"></textarea>
+				<div class="input-bt" v-show="!modify" v-on:click="AddItem();">新增</div>
+				<div class="input-bt" v-show="!modify" v-on:click="ClearTarget();">取消</div>
+				<div class="input-bt" v-show="modify" v-on:click="DoModify();">修改</div>
+				<div class="input-bt" v-show="modify" v-on:click="ClearModify();">取消修改</div>
+			</div>
+		</div>
+	</transition>
 </div>
 </template>
 
@@ -131,6 +155,7 @@ export default {
 				{0:[]},
 				{0:[]}
 			],
+			problemList: null,
 			step: 0,
 			openInputPanel: false,
 			//for intervention
@@ -138,6 +163,7 @@ export default {
 			selectIntervention: 0,
 			selectProfession: "",
 			inputDesc: "",
+			targetIndex: "",
 			modify: false,
 			modifyCategory: "",
 			modifyIndex: -1
@@ -156,6 +182,9 @@ export default {
 		}.bind(this));
 	},
 	methods: {
+		SetProblem: function(problem){
+			this.problemList = problem;
+		},
 		EditSolution: function(solutionID){
 			$.get("/solution/view?solution="+solutionID,function(result){
 				if(result.status != "ok") return alert("讀取解方失敗");
@@ -179,6 +208,25 @@ export default {
 			];
 			this.step = 0;
 		},
+		AddSolutionForTarget: function(cat ,index){
+			this.step = 0;
+			this.openInputPanel = true;
+			this.targetIndex = cat+"-"+index;
+		},
+		ClearTarget: function(){
+			this.targetIndex = "";
+			this.openInputPanel = false;
+		},
+		GetTargetName: function(){
+			var name = "不指定";
+			if(this.targetIndex != ""){
+				var cat = this.targetIndex.split("-");
+				var problemCat = this.problemList[cat[0]];
+				if(!problemCat) return name;
+				if(cat[1]<0 || cat[1]>=problemCat.length) return name;
+				return problemCat[cat[1]].name;
+			}
+		},
 		AddItem: function(){
 			switch(this.step){
 				case 0: this.AddIntervention(); break;
@@ -186,13 +234,15 @@ export default {
 				case 2: this.AddProfession(); break;
 				case 3: this.AddService(); break;
 			}
-			this.openInputPanel = false;
+			this.ClearTarget();
 		},
 		AddIntervention: function(){
 			var plan = {};
 			plan.priority = this.selectPriority;
 			plan.intervention = this.selectIntervention;
 			plan.desc = this.inputDesc;
+			plan.targetIndex = this.targetIndex;
+			plan.targetName = this.GetTargetName();
 			this.inputDesc = "";
 			this.solution[this.step][this.selectPriority].push(plan);
 		},
@@ -202,6 +252,8 @@ export default {
 				plan.profession = this.customProfession;
 			}
 			else plan.profession = this.selectProfession;
+			plan.targetIndex = this.targetIndex;
+			plan.targetName = this.GetTargetName();
 			plan.desc = this.inputDesc;
 			this.inputDesc = "";
 			this.solution[this.step][0].push(plan);
@@ -209,6 +261,8 @@ export default {
 		AddService: function(){
 			var item = this.$refs.serviceSelect.GetSelectItem();
 			item.desc = this.inputDesc;
+			item.targetIndex = this.targetIndex;
+			item.targetName = this.GetTargetName();
 			this.inputDesc = "";
 			this.solution[this.step][0].push(item);
 		},
@@ -273,20 +327,14 @@ export default {
 			this.inputDesc = "";
 			this.openInputPanel = false;
 		},
-		NextQuest: function(){
-			var solNum = 0;
-			for(var key in this.solution[this.step]){
-				solNum += this.solution[this.step][key].length;
-			}
-			if(this.step == 0 && solNum == 0){
-				return alert("請新增至少一個項目");
-			}
-			if(this.step<this.quest.length-1) this.step++;
-		},
-		PrevQuest: function(){
-			if(this.step>0) this.step--;
-		},
 		SubmitSolution: function(){
+			var solNum = 0;
+			for(var key in this.solution[0]){
+				solNum += this.solution[0][key].length;
+			}
+			if(solNum == 0){
+				return alert("請新增至少一個個案措施");
+			}
 			var solution = {};
 			var caseInfo = this.$parent.GetCaseInfo();
 			solution.caseID = caseInfo.caseID;
@@ -323,7 +371,7 @@ export default {
 
 .solution-editor{
 	width: 100%;
-	height: 100%;
+	min-height: 100%;
 	.step-page{
 		background-color: #eeeeee;
 		color: rgb(50,50,50);
@@ -344,8 +392,9 @@ export default {
 		color: #888888;
 	}
 	.step-bt-container{
+		padding: 10px;
 		display: flex;
-		justify-content: flex-end;
+		justify-content: center;
 		align-items: center;
 		flex-wrap: wrap;
 	}

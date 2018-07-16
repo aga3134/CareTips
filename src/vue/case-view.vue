@@ -37,6 +37,9 @@
 				<div class="problem-title">{{p.name}}</div>
 				<div class="problem-body">
 					<div class="problem-desc" v-html="p.desc"></div>
+					<div class="item-bt-container">
+						<div class="item-bt" v-on:click="OpenSolutionPanel(cat,i);">解題</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -81,7 +84,7 @@
 	</div>
 
 	<div class="slide-panel" v-bind:class="{open: status == 'ProvideSolution'}">
-		<div class="panel-title">請依序回答下列問題</div>
+		<div class="panel-title" v-on:click="status='ViewCase';">提供解方</div>
 		<solution-editor ref="solutionEditor"></solution-editor>
 	</div>
 
@@ -250,6 +253,9 @@ export default {
 			if(problem.D2) this.problem.D2 = problem.D2;
 			if(problem.D3) this.problem.D3 = problem.D3;
 			if(problem.D4) this.problem.D4 = problem.D4;
+
+			var curCaseVersion = this.caseInfo.info[this.vIndex].version;
+			this.$refs.caseViewSolution.SetCurCaseVersion(curCaseVersion);
 		},
 		GetCaseInfo: function(){
 			var info = {};
@@ -346,6 +352,7 @@ export default {
 			}
 			this.status = "ProvideSolution";
 			this.openSearchPanel = false;
+			this.$refs.solutionEditor.SetProblem(this.problem);
 		},
 		ViewSolution: function(solutionID){
 			this.solutionID = solutionID;
@@ -358,6 +365,15 @@ export default {
 				this.SearchSolution();
 			}
 			this.openSearchPanel = false;
+		},
+		OpenSolutionPanel: function(cat, index){
+			this.ProvideSolution();
+			this.$refs.solutionEditor.AddSolutionForTarget(cat,index);
+		},
+		GetProblem: function(cat, index){
+			if(!this.problem[cat]) return null;
+			if(index<0 || index>=this.problem[cat].length) return null;
+			return this.problem[cat][index];
 		},
 		SearchSolution: function(){
 			var param = {};
@@ -374,9 +390,6 @@ export default {
 			}
 			this.$refs.solutionList.ClearList();
 			this.$refs.solutionList.LoadMoreList(param);
-			
-			var curCaseVersion = this.caseInfo.info[this.vIndex].version;
-			this.$refs.solutionList.SetCurCaseVersion(curCaseVersion);
 		},
 		ResetCondition: function(){
 			this.keyword = "";

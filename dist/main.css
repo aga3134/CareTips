@@ -104,6 +104,9 @@ a {
       border-radius: 3px; }
       .problem-cat .problem-item .item-bt:hover {
         background-color: #ffffff; }
+    .problem-cat .problem-item .target-info {
+      padding: 5px 10px;
+      color: #555555; }
 
 .cat-D1 {
   background-color: #FFA5A4; }
@@ -480,6 +483,9 @@ a {
   color: white;
   overflow-x: hidden;
   overflow-y: auto; }
+  .care-tips .input-panel.full {
+    top: 0px;
+    height: calc(100% - 60px); }
 
 .care-tips .close-bt {
   position: absolute;
@@ -499,7 +505,7 @@ a {
   max-height: 100%;
   overflow-y: auto;
   position: relative;
-  background-color: #ffffff;
+  background-color: #f8f8f8;
   color: #323232;
   border-radius: 5px;
   width: 1024px;
@@ -610,22 +616,23 @@ a {
     display: flex;
     overflow-x: auto;
     padding: 10px; }
-  .care-tips .tab-bar .tab-bt {
-    text-align: center;
-    min-width: 110px;
-    cursor: pointer;
-    padding: 5px 10px;
-    background-color: #ffffff;
-    color: #555555;
-    border: 1px solid #555555;
-    border-radius: 5px;
-    margin: 0px 10px; }
-    .care-tips .tab-bar .tab-bt:hover {
-      color: #888888;
-      border: 1px solid #888888; }
-    .care-tips .tab-bar .tab-bt.on {
-      color: #ff5555;
-      border: 1px solid #ff5555; }
+
+.care-tips .tab-bt {
+  text-align: center;
+  min-width: 110px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: #555555;
+  border: 1px solid #555555;
+  border-radius: 5px;
+  margin: 0px 10px; }
+  .care-tips .tab-bt:hover {
+    color: #888888;
+    border: 1px solid #888888; }
+  .care-tips .tab-bt.on {
+    color: #ff5555;
+    border: 1px solid #ff5555; }
 
 
 /*# sourceMappingURL=main.css.map*/

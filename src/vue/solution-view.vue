@@ -1,6 +1,7 @@
 <template lang="html">
 <div class="solution-view">
 	<div class="panel-title">觀看解方</div>
+	<p class="warning center" v-if="solutionInfo && curCaseVersion != solutionInfo.caseVersion">* 此為針對案例版本{{solutionInfo.caseVersion}} 提出的解方，與目前觀看的案例版本{{curCaseVersion}} 不同，參考時請小心。</p>
 	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
 	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
 	<div class="feedback-statistic" v-if="solutionInfo">
@@ -29,6 +30,7 @@
 						<div class="problem-body">
 							<div class="problem-desc" v-html="s.desc"></div>
 						</div>
+						<div class="target-info">針對問題 - {{s.targetName}}</div>
 					</div>
 				</div>
 			</div>
@@ -45,6 +47,7 @@
 								<div class="item-bt" v-on:click="SearchProfession(s.profession);">找人</div>
 							</div>
 						</div>
+						<div class="target-info">針對問題 - {{s.targetName}}</div>
 					</div>
 				</div>
 			</div>
@@ -61,6 +64,7 @@
 						<div class="problem-body">
 							<div class="problem-desc" v-html="s.desc"></div>
 						</div>
+						<div class="target-info">針對問題 - {{s.targetName}}</div>
 					</div>
 				</div>
 			</div>
@@ -115,7 +119,8 @@ export default {
 			solutionInfo: null,
 			sendMessage: "",
 			messageList: [],
-			solutionID: null
+			solutionID: null,
+			curCaseVersion: 1
 		};
 	},
 	created: function(){
@@ -181,6 +186,9 @@ export default {
 				this.messageList = result.data;
 				
 			}.bind(this));
+		},
+		SetCurCaseVersion: function(version){
+			this.curCaseVersion = version;
 		},
 		SendMessage: function(){
 			var body = {};

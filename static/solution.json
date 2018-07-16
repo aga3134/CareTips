@@ -1,9 +1,9 @@
 {
 	"quest": [
-		"1. 針對此案例，您會為<span style='color: red'>「個案」</span>提供什麼照護計畫?",
-		"2. 針對此案例，您會為<span style='color: red'>「家屬」</span>提供什麼協助?",
-		"3. 針對此案例，您會連結哪些<span style='color: red'>專業</span>進場協助?",
-		"4. 針對此案例，您會使用哪些<span style='color: red'>照護服務</span>?"
+		"* 針對此案例，您會為<span style='color: red'>「個案」</span>提供什麼照護計畫?",
+		"* 針對此案例，您會為<span style='color: red'>「家屬」</span>提供什麼協助?",
+		"* 針對此案例，您會連結哪些<span style='color: red'>專業</span>進場協助?",
+		"* 針對此案例，您會使用哪些<span style='color: red'>照護服務</span>?"
 	],
 	"priority":[
 		{"id":0,"name":"馬上處理"},
