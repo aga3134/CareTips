@@ -656,10 +656,8 @@ export default {
 			this.totalPrice.equipRent = ter;
 			this.totalPrice.rest = tr;
 		},
-		AddService: function(){
-			var item = this.$refs.serviceSelect.GetSelectItem();
-			this.items[item.category].push(item);
-			this.items[item.category].sort(function (a, b) {
+		SortItemCategory: function(category){
+			this.items[category].sort(function (a, b) {
 				if (a.code < b.code) {
 					return -1;
 				}
@@ -668,6 +666,11 @@ export default {
 				}
 				else return 0;
 			});
+		},
+		AddService: function(){
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			this.items[item.category].push(item);
+			this.SortItemCategory(item.category);
 			this.UpdatePrice();
 			this.openInputPanel = false;
 			this.$root.ShowMessage("加入服務 "+item.code);
@@ -678,12 +681,19 @@ export default {
 			this.modifyIndex = index;
 			var item = this.items[code][index];
 			this.$refs.serviceSelect.SetSelectItem(item);
-			this.$refs.serviceSelect.fixMainCategory = true;
 			this.openInputPanel = true;
 		},
 		DoModify: function(){
 			var item = this.$refs.serviceSelect.GetSelectItem();
-			this.items[this.modifyCategory][this.modifyIndex] = item;
+			if(this.modifyCategory == item.category){
+				this.items[this.modifyCategory][this.modifyIndex] = item;
+			}
+			else{
+				this.items[this.modifyCategory].splice(this.modifyIndex,1);
+				this.items[item.category].push(item);
+			}
+			this.SortItemCategory(item.category);
+			
 			this.ClearModify();
 			this.UpdatePrice();
 		},
@@ -691,7 +701,6 @@ export default {
 			this.modify = false;
 			this.modifyCategory = "";
 			this.modifyIndex = -1;
-			this.$refs.serviceSelect.fixMainCategory = false;
 			this.openInputPanel = false;
 		},
 		DeleteItem: function(code, index){

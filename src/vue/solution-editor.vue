@@ -91,7 +91,7 @@
 				<div v-show="step == 0 || step == 1">
 					<div class="input-item">
 						<div class="input-label">優先順序</div>
-						<select v-model="selectPriority" v-bind:disabled="modify">
+						<select v-model="selectPriority">
 							<option v-for="(p,i) in priority" v-bind:value="i">{{p.name}}</option>
 						</select>
 					</div>
@@ -282,6 +282,7 @@ export default {
 					this.$refs.serviceSelect.SetSelectItem(plan);
 					break;
 			}
+			this.targetIndex = plan.targetIndex;
 			this.inputDesc = plan.desc;
 
 			this.openInputPanel = true;
@@ -295,10 +296,14 @@ export default {
 		},
 		DoModify: function(){
 			var plan = {};
+			var changeCategory = false;
 			switch(this.step){
 				case 0: case 1:
 					plan.priority = this.selectPriority;
 					plan.intervention = this.selectIntervention;
+					if(this.selectPriority != this.modifyCategory){
+						changeCategory = true;
+					}
 					break;
 				case 2:
 					if(this.selectProfession == "其他"){
@@ -310,9 +315,17 @@ export default {
 					plan = this.$refs.serviceSelect.GetSelectItem();
 					break;
 			}
+			plan.targetIndex = this.targetIndex;
+			plan.targetName = this.GetTargetName();
 			plan.desc = this.inputDesc;
 
-			this.solution[this.step][this.modifyCategory][this.modifyIndex] = plan;
+			if(changeCategory){
+				this.solution[this.step][this.modifyCategory].splice(this.modifyIndex,1);
+				this.solution[this.step][this.selectPriority].push(plan);
+			}
+			else{
+				this.solution[this.step][this.modifyCategory][this.modifyIndex] = plan;
+			}
 			this.ClearModify();
 		},
 		ClearModify: function(){
@@ -376,6 +389,13 @@ export default {
 		border-radius: 5px;
 		margin: 10px auto;
 	}
+	.step-bt-container{
+		padding: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
 	.quest{
 		padding: 10px 0px;
 		font-size: 1.2em;
@@ -387,13 +407,7 @@ export default {
 		font-size: 0.9em;
 		color: #888888;
 	}
-	.step-bt-container{
-		padding: 10px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-wrap: wrap;
-	}
+	
 }
 
 </style>

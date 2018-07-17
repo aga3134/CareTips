@@ -59,7 +59,7 @@
 					<div class="box-title" v-show="modify">修改問題</div>
 					<div class="input-item">
 						<div class="input-label">面向</div>
-						<select v-model="selectDomain" v-bind:disabled="modify" v-on:change="ChangeDomain();">
+						<select v-model="selectDomain" v-on:change="ChangeDomain();">
 							<option value="D1">{{omaha.D1.name}}</option>
 							<option value="D2">{{omaha.D2.name}}</option>
 							<option value="D3">{{omaha.D3.name}}</option>
@@ -240,11 +240,21 @@ export default {
 			var selectProblem = selectDomain.problem[this.selectProblem];
 			var selectSign = selectProblem.sign[this.selectSign];
 
-			var item = this.caseInfo.problem[this.modifyCategory][this.modifyIndex];
+			var item = {};
+			item.id = domainID+"-"+selectProblem.id+"-"+selectSign.id;
 			item.name = selectSign.cht;
+			item.domainID = domainID;
 			item.problemIndex = this.selectProblem;
 			item.signIndex = this.selectSign;
 			item.desc = this.problemDesc;
+
+			if(this.modifyCategory == domainID){
+				this.caseInfo.problem[this.modifyCategory][this.modifyIndex] = item;
+			}
+			else{
+				this.caseInfo.problem[this.modifyCategory].splice(this.modifyIndex,1);
+				this.caseInfo.problem[domainID].push(item);
+			}
 			this.ClearModify();
 		},
 		ClearModify: function(){

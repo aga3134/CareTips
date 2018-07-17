@@ -745,16 +745,19 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.totalPrice.equipRent = ter;
 			this.totalPrice.rest = tr;
 		},
-		AddService: function () {
-			var item = this.$refs.serviceSelect.GetSelectItem();
-			this.items[item.category].push(item);
-			this.items[item.category].sort(function (a, b) {
+		SortItemCategory: function (category) {
+			this.items[category].sort(function (a, b) {
 				if (a.code < b.code) {
 					return -1;
 				} else if (a.code > b.code) {
 					return 1;
 				} else return 0;
 			});
+		},
+		AddService: function () {
+			var item = this.$refs.serviceSelect.GetSelectItem();
+			this.items[item.category].push(item);
+			this.SortItemCategory(item.category);
 			this.UpdatePrice();
 			this.openInputPanel = false;
 			this.$root.ShowMessage("加入服務 " + item.code);
@@ -765,12 +768,18 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.modifyIndex = index;
 			var item = this.items[code][index];
 			this.$refs.serviceSelect.SetSelectItem(item);
-			this.$refs.serviceSelect.fixMainCategory = true;
 			this.openInputPanel = true;
 		},
 		DoModify: function () {
 			var item = this.$refs.serviceSelect.GetSelectItem();
-			this.items[this.modifyCategory][this.modifyIndex] = item;
+			if (this.modifyCategory == item.category) {
+				this.items[this.modifyCategory][this.modifyIndex] = item;
+			} else {
+				this.items[this.modifyCategory].splice(this.modifyIndex, 1);
+				this.items[item.category].push(item);
+			}
+			this.SortItemCategory(item.category);
+
 			this.ClearModify();
 			this.UpdatePrice();
 		},
@@ -778,7 +787,6 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.modify = false;
 			this.modifyCategory = "";
 			this.modifyIndex = -1;
-			this.$refs.serviceSelect.fixMainCategory = false;
 			this.openInputPanel = false;
 		},
 		DeleteItem: function (code, index) {
@@ -1310,11 +1318,20 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var selectProblem = selectDomain.problem[this.selectProblem];
 			var selectSign = selectProblem.sign[this.selectSign];
 
-			var item = this.caseInfo.problem[this.modifyCategory][this.modifyIndex];
+			var item = {};
+			item.id = domainID + "-" + selectProblem.id + "-" + selectSign.id;
 			item.name = selectSign.cht;
+			item.domainID = domainID;
 			item.problemIndex = this.selectProblem;
 			item.signIndex = this.selectSign;
 			item.desc = this.problemDesc;
+
+			if (this.modifyCategory == domainID) {
+				this.caseInfo.problem[this.modifyCategory][this.modifyIndex] = item;
+			} else {
+				this.caseInfo.problem[this.modifyCategory].splice(this.modifyIndex, 1);
+				this.caseInfo.problem[domainID].push(item);
+			}
 			this.ClearModify();
 		},
 		ClearModify: function () {
@@ -2684,6 +2701,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					this.$refs.serviceSelect.SetSelectItem(plan);
 					break;
 			}
+			this.targetIndex = plan.targetIndex;
 			this.inputDesc = plan.desc;
 
 			this.openInputPanel = true;
@@ -2697,10 +2715,14 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		},
 		DoModify: function () {
 			var plan = {};
+			var changeCategory = false;
 			switch (this.step) {
 				case 0:case 1:
 					plan.priority = this.selectPriority;
 					plan.intervention = this.selectIntervention;
+					if (this.selectPriority != this.modifyCategory) {
+						changeCategory = true;
+					}
 					break;
 				case 2:
 					if (this.selectProfession == "其他") {
@@ -2711,9 +2733,16 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					plan = this.$refs.serviceSelect.GetSelectItem();
 					break;
 			}
+			plan.targetIndex = this.targetIndex;
+			plan.targetName = this.GetTargetName();
 			plan.desc = this.inputDesc;
 
-			this.solution[this.step][this.modifyCategory][this.modifyIndex] = plan;
+			if (changeCategory) {
+				this.solution[this.step][this.modifyCategory].splice(this.modifyIndex, 1);
+				this.solution[this.step][this.selectPriority].push(plan);
+			} else {
+				this.solution[this.step][this.modifyCategory][this.modifyIndex] = plan;
+			}
 			this.ClearModify();
 		},
 		ClearModify: function () {
@@ -3033,6 +3062,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
@@ -3049,7 +3089,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			sendMessage: "",
 			messageList: [],
 			solutionID: null,
-			curCaseVersion: 1
+			curCaseVersion: 1,
+			step: 0
 		};
 	},
 	created: function () {
@@ -3871,7 +3912,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\nhtml[data-v-472eb156], body[data-v-472eb156] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-472eb156] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-472eb156] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-472eb156] {\n  display: none;\n}\n.warning[data-v-472eb156] {\n  color: red;\n}\n.bold[data-v-472eb156] {\n  font-weight: bold;\n}\n.inline-block[data-v-472eb156] {\n  display: inline-block;\n}\na[data-v-472eb156] {\n  text-decoration: none;\n  color: #ff3333;\n}\na[data-v-472eb156]:hover {\n    color: #ff8800;\n}\n.one-third-w[data-v-472eb156] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.one-third-w[data-v-472eb156] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n@media only screen and (min-width: 1024px) {\n.one-third-w[data-v-472eb156] {\n      width: calc(33% - 20px);\n      margin: 10px;\n}\n}\n.half-w[data-v-472eb156] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-472eb156] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-472eb156] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-472eb156] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-472eb156] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-472eb156] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-472eb156] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-472eb156] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-472eb156] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-472eb156] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-472eb156] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-472eb156] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-472eb156] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-472eb156]:hover {\n        background-color: #ffffff;\n}\n.problem-cat .problem-item .target-info[data-v-472eb156] {\n      padding: 5px 10px;\n      color: #555555;\n}\n.cat-D1[data-v-472eb156] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-472eb156] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-472eb156] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-472eb156] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-472eb156] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-472eb156] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-472eb156] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-472eb156] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-472eb156] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-472eb156] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-472eb156] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-472eb156] {\n  background-color: #FF8AE7;\n}\n.list-item[data-v-472eb156] {\n  background-color: #eeeeee;\n  border-radius: 5px;\n  max-width: 100%;\n  margin: 10px 0px;\n  padding-bottom: 10px;\n  cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.list-item[data-v-472eb156] {\n      margin: 10px;\n}\n}\n.list-item a[data-v-472eb156] {\n    text-decoration: none;\n    color: #323232;\n}\n.list-item .domain-statistic[data-v-472eb156] {\n    display: flex;\n    justify-content: flex-start;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.list-item .domain-statistic .domain-info[data-v-472eb156] {\n      position: relative;\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.list-item .domain-statistic .domain-info .domain-icon[data-v-472eb156] {\n        display: inline-block;\n        padding: 7px;\n        margin: 10px 5px 10px 10px;\n        border-radius: 3px;\n}\n.list-item .domain-statistic .domain-info .domain-num[data-v-472eb156] {\n        display: inline-block;\n        font-size: 0.8em;\n        vertical-align: middle;\n}\n.list-item .domain-statistic .domain-info .tip[data-v-472eb156] {\n        padding: 5px;\n        box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n        border-radius: 3px;\n        position: absolute;\n        top: 40px;\n        left: 10px;\n        width: 120px;\n        text-align: center;\n        z-index: 1;\n        opacity: 0;\n        -webkit-transition: opacity 0.5s ease;\n        transition: opacity 0.5s ease;\n}\n.list-item .domain-statistic .domain-info:hover .tip[data-v-472eb156] {\n        opacity: 1;\n}\n.list-item .desc[data-v-472eb156] {\n    white-space: pre-wrap;\n    color: #333333;\n    padding: 0px 20px 0px 10px;\n    width: 100%;\n    height: 4.5em;\n    line-height: 1.5em;\n    overflow: hidden;\n}\n.load-more[data-v-472eb156] {\n  width: 500px;\n  max-width: 100%;\n  padding: 10px 20px;\n  border-radius: 5px;\n  margin: 20px auto;\n  border: 1px solid #888888;\n  color: #888888;\n  background-color: #ffffff;\n  cursor: pointer;\n  text-align: center;\n}\n.load-more[data-v-472eb156]:hover {\n    border: 1px solid #333333;\n    color: #333333;\n}\n.fade-enter-active[data-v-472eb156], .fade-leave-active[data-v-472eb156] {\n  transition: opacity 0.5s;\n}\n.fade-enter[data-v-472eb156], .fade-leave-to[data-v-472eb156] {\n  opacity: 0;\n}\n.create-enter-active[data-v-472eb156] {\n  transition: opacity 0.5s;\n}\n.create-enter[data-v-472eb156] {\n  opacity: 0;\n}\n.main-container[data-v-472eb156] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 0px 0px 50px 0px;\n  color: #333333;\n}\n.care-tips .sub-title[data-v-472eb156] {\n  padding: 10px;\n  font-size: 1.5em;\n}\n.care-tips .mid-title[data-v-472eb156] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 1.5em;\n  text-align: center;\n}\n.care-tips .mid-title .bottom-line[data-v-472eb156] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-title[data-v-472eb156] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 2em;\n  text-align: center;\n}\n.care-tips .category-title .bottom-line[data-v-472eb156] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-separator[data-v-472eb156] {\n  width: 800px;\n  max-width: 100%;\n  padding: 20px;\n  margin: auto;\n  border-bottom: 1px solid #dddddd;\n}\n.care-tips .separator[data-v-472eb156] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .shadow-light[data-v-472eb156] {\n  box-shadow: 5px 5px 5px #888888;\n}\n.care-tips .shadow-light[data-v-472eb156]:hover {\n    box-shadow: 10px 10px 10px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .shadow-dark[data-v-472eb156] {\n  box-shadow: 5px 5px 5px #333333;\n}\n.care-tips .shadow-dark[data-v-472eb156]:hover {\n    box-shadow: 10px 10px 10px #333333;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .owner a[data-v-472eb156] {\n  text-decoration: none;\n  color: #323232;\n}\n.care-tips .owner a[data-v-472eb156]:hover {\n    color: #888888;\n}\n.care-tips .owner-info[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #eeeeee;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-472eb156] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-472eb156] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .bt-bar[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  align-items: center;\n  flex-wrap: wrap;\n  width: 1024px;\n  max-width: 100%;\n  padding: 0px 15px;\n  margin: auto;\n}\n.care-tips .input-bt[data-v-472eb156] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-472eb156]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-472eb156] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-472eb156]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .feedback-statistic[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px;\n  color: #888888;\n  font-size: 0.9em;\n}\n.care-tips .feedback-statistic .container[data-v-472eb156] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-472eb156] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-472eb156]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-472eb156] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-472eb156] {\n    position: relative;\n    padding: 0px 10px 0px 5px;\n}\n.care-tips .feedback-statistic .feedback-num .tip[data-v-472eb156] {\n      padding: 5px;\n      box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n      border-radius: 3px;\n      position: absolute;\n      top: 40px;\n      left: -50%;\n      width: 150px;\n      text-align: center;\n      visibility: hidden;\n      z-index: 1;\n      background-color: #ffffff;\n}\n.care-tips .feedback-statistic .feedback-num:hover .tip[data-v-472eb156] {\n      visibility: visible;\n}\n.care-tips .inform-message[data-v-472eb156] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-472eb156] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-472eb156] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-472eb156] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-472eb156] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-472eb156] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-472eb156] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-472eb156] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-472eb156] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-472eb156]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-472eb156] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .no-result-box[data-v-472eb156] {\n  width: 1200px;\n  max-width: 100%;\n  background-color: #ffffff;\n  color: #333333;\n  padding: 20px;\n  border-radius: 5px;\n  margin: 10px auto;\n  text-align: center;\n  font-size: 1.2em;\n}\n.care-tips .no-result-box .center-bt[data-v-472eb156] {\n    background-color: #ffffff;\n    color: #ff5555;\n    border: 1px solid #ff5555;\n    width: 200px;\n    padding: 10px;\n    margin: 40px auto;\n    border-radius: 5px;\n    cursor: pointer;\n}\n.care-tips .no-result-box .center-bt[data-v-472eb156]:hover {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.care-tips .input-panel[data-v-472eb156] {\n  position: fixed;\n  top: 70px;\n  left: 0px;\n  width: 100%;\n  height: calc(100% - 130px);\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.5);\n  color: white;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-tips .input-panel.full[data-v-472eb156] {\n    top: 0px;\n    height: calc(100% - 60px);\n}\n.care-tips .close-bt[data-v-472eb156] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  font-size: 1.2em;\n  cursor: pointer;\n  padding: 5px 10px;\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n}\n.care-tips .close-bt[data-v-472eb156]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .input-area[data-v-472eb156] {\n  max-height: 100%;\n  overflow-y: auto;\n  position: relative;\n  background-color: #f8f8f8;\n  color: #323232;\n  border-radius: 5px;\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n  -ms-transform: translateY(-50%);\n  transform: translateY(-50%);\n}\n.care-tips .input-area .input-item[data-v-472eb156] {\n    margin: 5px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.care-tips .input-area .input-item .item[data-v-472eb156] {\n      margin: 5px;\n}\n.care-tips .input-area .input-label[data-v-472eb156] {\n    font-size: 1.2em;\n    display: inline-block;\n    margin: 5px;\n}\n.care-tips .input-area select[data-v-472eb156] {\n    border-radius: 3px;\n    max-width: 100%;\n    padding: 5px;\n    font-size: 1.1em;\n}\n.care-tips .input-area textarea[data-v-472eb156] {\n    margin: 10px 0px;\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"number\"][data-v-472eb156] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    max-width: 80px;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"text\"][data-v-472eb156] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    font-size: 1.1em;\n}\n.care-tips .input-area .filter-icon[data-v-472eb156] {\n    width: 30px;\n    height: 30px;\n    margin: 5px;\n    padding: 2px;\n    cursor: pointer;\n}\n.care-tips .input-area .filter-icon[data-v-472eb156]:hover {\n      padding: 0px;\n}\n.care-tips .input-area .filter-list[data-v-472eb156] {\n    padding: 10px;\n}\n.care-tips .input-area .filter-list .filter-category[data-v-472eb156] {\n      padding: 10px;\n      color: #888888;\n}\n.care-tips .input-area .filter-list .filter-category .cat-label[data-v-472eb156] {\n        font-size: 1.5em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-problem[data-v-472eb156] {\n      color: #333333;\n      display: flex;\n      justify-content: flex-start;\n      align-items: center;\n      flex-wrap: wrap;\n      padding: 5px;\n}\n.care-tips .input-area .filter-list .filter-problem .problem-label[data-v-472eb156] {\n        font-size: 1.2em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-472eb156] {\n      margin: 5px;\n      padding: 5px;\n      cursor: pointer;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-472eb156]:hover {\n        border-bottom: 1px solid #BE9063;\n}\n.care-tips .slide-panel[data-v-472eb156] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  max-width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.5);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-472eb156] {\n    left: 0px;\n}\n.care-tips .side-panel[data-v-472eb156] {\n  position: fixed;\n  top: 0px;\n  left: -400px;\n  width: 300px;\n  max-width: 100%;\n  height: 100%;\n  padding: 10px;\n  z-index: 11;\n  color: #333333;\n  background-color: rgba(240, 240, 240, 0.9);\n  border-radius: 0px 5px 5px 0px;\n  box-shadow: 3px 3px 5px #888888;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .side-panel.open[data-v-472eb156] {\n    left: 0px;\n}\n.care-tips .side-panel .search-container[data-v-472eb156] {\n    width: 400px;\n    max-width: 100%;\n    margin: auto;\n}\n.care-tips .side-panel .search-container .search-item[data-v-472eb156] {\n      margin: 5px;\n      font-size: 1.1em;\n}\n.care-tips .side-panel .search-container .search-item input[data-v-472eb156] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item select[data-v-472eb156] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item .search-label[data-v-472eb156] {\n        padding: 5px;\n}\n.care-tips .tab-bar[data-v-472eb156] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-472eb156] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bt[data-v-472eb156] {\n  text-align: center;\n  min-width: 110px;\n  cursor: pointer;\n  padding: 5px 10px;\n  background-color: #ffffff;\n  color: #555555;\n  border: 1px solid #555555;\n  border-radius: 5px;\n  margin: 0px 10px;\n}\n.care-tips .tab-bt[data-v-472eb156]:hover {\n    color: #888888;\n    border: 1px solid #888888;\n}\n.care-tips .tab-bt.on[data-v-472eb156] {\n    color: #ff5555;\n    border: 1px solid #ff5555;\n}\n.solution-editor[data-v-472eb156] {\n  width: 100%;\n  min-height: 100%;\n}\n.solution-editor .step-page[data-v-472eb156] {\n    background-color: #eeeeee;\n    color: #323232;\n    width: 1024px;\n    max-width: 100%;\n    padding: 30px 10px;\n    border-radius: 5px;\n    margin: 10px auto;\n}\n.solution-editor .quest[data-v-472eb156] {\n    padding: 10px 0px;\n    font-size: 1.2em;\n    font-weight: bold;\n}\n.solution-editor .remark[data-v-472eb156] {\n    text-align: center;\n    padding: 5px 0px;\n    font-size: 0.9em;\n    color: #888888;\n}\n.solution-editor .step-bt-container[data-v-472eb156] {\n    padding: 10px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\nhtml[data-v-472eb156], body[data-v-472eb156] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-472eb156] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-472eb156] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-472eb156] {\n  display: none;\n}\n.warning[data-v-472eb156] {\n  color: red;\n}\n.bold[data-v-472eb156] {\n  font-weight: bold;\n}\n.inline-block[data-v-472eb156] {\n  display: inline-block;\n}\na[data-v-472eb156] {\n  text-decoration: none;\n  color: #ff3333;\n}\na[data-v-472eb156]:hover {\n    color: #ff8800;\n}\n.one-third-w[data-v-472eb156] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.one-third-w[data-v-472eb156] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n@media only screen and (min-width: 1024px) {\n.one-third-w[data-v-472eb156] {\n      width: calc(33% - 20px);\n      margin: 10px;\n}\n}\n.half-w[data-v-472eb156] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-472eb156] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-472eb156] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-472eb156] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-472eb156] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-472eb156] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-472eb156] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-472eb156] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-472eb156] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-472eb156] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-472eb156] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-472eb156] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-472eb156] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-472eb156]:hover {\n        background-color: #ffffff;\n}\n.problem-cat .problem-item .target-info[data-v-472eb156] {\n      padding: 5px 10px;\n      color: #555555;\n}\n.cat-D1[data-v-472eb156] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-472eb156] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-472eb156] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-472eb156] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-472eb156] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-472eb156] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-472eb156] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-472eb156] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-472eb156] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-472eb156] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-472eb156] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-472eb156] {\n  background-color: #FF8AE7;\n}\n.list-item[data-v-472eb156] {\n  background-color: #eeeeee;\n  border-radius: 5px;\n  max-width: 100%;\n  margin: 10px 0px;\n  padding-bottom: 10px;\n  cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.list-item[data-v-472eb156] {\n      margin: 10px;\n}\n}\n.list-item a[data-v-472eb156] {\n    text-decoration: none;\n    color: #323232;\n}\n.list-item .domain-statistic[data-v-472eb156] {\n    display: flex;\n    justify-content: flex-start;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.list-item .domain-statistic .domain-info[data-v-472eb156] {\n      position: relative;\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.list-item .domain-statistic .domain-info .domain-icon[data-v-472eb156] {\n        display: inline-block;\n        padding: 7px;\n        margin: 10px 5px 10px 10px;\n        border-radius: 3px;\n}\n.list-item .domain-statistic .domain-info .domain-num[data-v-472eb156] {\n        display: inline-block;\n        font-size: 0.8em;\n        vertical-align: middle;\n}\n.list-item .domain-statistic .domain-info .tip[data-v-472eb156] {\n        padding: 5px;\n        box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n        border-radius: 3px;\n        position: absolute;\n        top: 40px;\n        left: 10px;\n        width: 120px;\n        text-align: center;\n        z-index: 1;\n        opacity: 0;\n        -webkit-transition: opacity 0.5s ease;\n        transition: opacity 0.5s ease;\n}\n.list-item .domain-statistic .domain-info:hover .tip[data-v-472eb156] {\n        opacity: 1;\n}\n.list-item .desc[data-v-472eb156] {\n    white-space: pre-wrap;\n    color: #333333;\n    padding: 0px 20px 0px 10px;\n    width: 100%;\n    height: 4.5em;\n    line-height: 1.5em;\n    overflow: hidden;\n}\n.load-more[data-v-472eb156] {\n  width: 500px;\n  max-width: 100%;\n  padding: 10px 20px;\n  border-radius: 5px;\n  margin: 20px auto;\n  border: 1px solid #888888;\n  color: #888888;\n  background-color: #ffffff;\n  cursor: pointer;\n  text-align: center;\n}\n.load-more[data-v-472eb156]:hover {\n    border: 1px solid #333333;\n    color: #333333;\n}\n.fade-enter-active[data-v-472eb156], .fade-leave-active[data-v-472eb156] {\n  transition: opacity 0.5s;\n}\n.fade-enter[data-v-472eb156], .fade-leave-to[data-v-472eb156] {\n  opacity: 0;\n}\n.create-enter-active[data-v-472eb156] {\n  transition: opacity 0.5s;\n}\n.create-enter[data-v-472eb156] {\n  opacity: 0;\n}\n.main-container[data-v-472eb156] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 0px 0px 50px 0px;\n  color: #333333;\n}\n.care-tips .sub-title[data-v-472eb156] {\n  padding: 10px;\n  font-size: 1.5em;\n}\n.care-tips .mid-title[data-v-472eb156] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 1.5em;\n  text-align: center;\n}\n.care-tips .mid-title .bottom-line[data-v-472eb156] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-title[data-v-472eb156] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 2em;\n  text-align: center;\n}\n.care-tips .category-title .bottom-line[data-v-472eb156] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-separator[data-v-472eb156] {\n  width: 800px;\n  max-width: 100%;\n  padding: 20px;\n  margin: auto;\n  border-bottom: 1px solid #dddddd;\n}\n.care-tips .separator[data-v-472eb156] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .shadow-light[data-v-472eb156] {\n  box-shadow: 5px 5px 5px #888888;\n}\n.care-tips .shadow-light[data-v-472eb156]:hover {\n    box-shadow: 10px 10px 10px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .shadow-dark[data-v-472eb156] {\n  box-shadow: 5px 5px 5px #333333;\n}\n.care-tips .shadow-dark[data-v-472eb156]:hover {\n    box-shadow: 10px 10px 10px #333333;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .owner a[data-v-472eb156] {\n  text-decoration: none;\n  color: #323232;\n}\n.care-tips .owner a[data-v-472eb156]:hover {\n    color: #888888;\n}\n.care-tips .owner-info[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #eeeeee;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-472eb156] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-472eb156] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .bt-bar[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  align-items: center;\n  flex-wrap: wrap;\n  width: 1024px;\n  max-width: 100%;\n  padding: 0px 15px;\n  margin: auto;\n}\n.care-tips .input-bt[data-v-472eb156] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-472eb156]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-472eb156] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-472eb156]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .feedback-statistic[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px;\n  color: #888888;\n  font-size: 0.9em;\n}\n.care-tips .feedback-statistic .container[data-v-472eb156] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-472eb156] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-472eb156]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-472eb156] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-472eb156] {\n    position: relative;\n    padding: 0px 10px 0px 5px;\n}\n.care-tips .feedback-statistic .feedback-num .tip[data-v-472eb156] {\n      padding: 5px;\n      box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n      border-radius: 3px;\n      position: absolute;\n      top: 40px;\n      left: -50%;\n      width: 150px;\n      text-align: center;\n      visibility: hidden;\n      z-index: 1;\n      background-color: #ffffff;\n}\n.care-tips .feedback-statistic .feedback-num:hover .tip[data-v-472eb156] {\n      visibility: visible;\n}\n.care-tips .inform-message[data-v-472eb156] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-472eb156] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-472eb156] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-472eb156] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-472eb156] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-472eb156] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-472eb156] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-472eb156] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-472eb156] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-472eb156] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-472eb156]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-472eb156] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .no-result-box[data-v-472eb156] {\n  width: 1200px;\n  max-width: 100%;\n  background-color: #ffffff;\n  color: #333333;\n  padding: 20px;\n  border-radius: 5px;\n  margin: 10px auto;\n  text-align: center;\n  font-size: 1.2em;\n}\n.care-tips .no-result-box .center-bt[data-v-472eb156] {\n    background-color: #ffffff;\n    color: #ff5555;\n    border: 1px solid #ff5555;\n    width: 200px;\n    padding: 10px;\n    margin: 40px auto;\n    border-radius: 5px;\n    cursor: pointer;\n}\n.care-tips .no-result-box .center-bt[data-v-472eb156]:hover {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.care-tips .input-panel[data-v-472eb156] {\n  position: fixed;\n  top: 70px;\n  left: 0px;\n  width: 100%;\n  height: calc(100% - 130px);\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.5);\n  color: white;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-tips .input-panel.full[data-v-472eb156] {\n    top: 0px;\n    height: calc(100% - 60px);\n}\n.care-tips .close-bt[data-v-472eb156] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  font-size: 1.2em;\n  cursor: pointer;\n  padding: 5px 10px;\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n}\n.care-tips .close-bt[data-v-472eb156]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .input-area[data-v-472eb156] {\n  max-height: 100%;\n  overflow-y: auto;\n  position: relative;\n  background-color: #f8f8f8;\n  color: #323232;\n  border-radius: 5px;\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n  -ms-transform: translateY(-50%);\n  transform: translateY(-50%);\n}\n.care-tips .input-area .input-item[data-v-472eb156] {\n    margin: 5px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.care-tips .input-area .input-item .item[data-v-472eb156] {\n      margin: 5px;\n}\n.care-tips .input-area .input-label[data-v-472eb156] {\n    font-size: 1.2em;\n    display: inline-block;\n    margin: 5px;\n}\n.care-tips .input-area select[data-v-472eb156] {\n    border-radius: 3px;\n    max-width: 100%;\n    padding: 5px;\n    font-size: 1.1em;\n}\n.care-tips .input-area textarea[data-v-472eb156] {\n    margin: 10px 0px;\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"number\"][data-v-472eb156] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    max-width: 80px;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"text\"][data-v-472eb156] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    font-size: 1.1em;\n}\n.care-tips .input-area .filter-icon[data-v-472eb156] {\n    width: 30px;\n    height: 30px;\n    margin: 5px;\n    padding: 2px;\n    cursor: pointer;\n}\n.care-tips .input-area .filter-icon[data-v-472eb156]:hover {\n      padding: 0px;\n}\n.care-tips .input-area .filter-list[data-v-472eb156] {\n    padding: 10px;\n}\n.care-tips .input-area .filter-list .filter-category[data-v-472eb156] {\n      padding: 10px;\n      color: #888888;\n}\n.care-tips .input-area .filter-list .filter-category .cat-label[data-v-472eb156] {\n        font-size: 1.5em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-problem[data-v-472eb156] {\n      color: #333333;\n      display: flex;\n      justify-content: flex-start;\n      align-items: center;\n      flex-wrap: wrap;\n      padding: 5px;\n}\n.care-tips .input-area .filter-list .filter-problem .problem-label[data-v-472eb156] {\n        font-size: 1.2em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-472eb156] {\n      margin: 5px;\n      padding: 5px;\n      cursor: pointer;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-472eb156]:hover {\n        border-bottom: 1px solid #BE9063;\n}\n.care-tips .slide-panel[data-v-472eb156] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  max-width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.5);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-472eb156] {\n    left: 0px;\n}\n.care-tips .side-panel[data-v-472eb156] {\n  position: fixed;\n  top: 0px;\n  left: -400px;\n  width: 300px;\n  max-width: 100%;\n  height: 100%;\n  padding: 10px;\n  z-index: 11;\n  color: #333333;\n  background-color: rgba(240, 240, 240, 0.9);\n  border-radius: 0px 5px 5px 0px;\n  box-shadow: 3px 3px 5px #888888;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .side-panel.open[data-v-472eb156] {\n    left: 0px;\n}\n.care-tips .side-panel .search-container[data-v-472eb156] {\n    width: 400px;\n    max-width: 100%;\n    margin: auto;\n}\n.care-tips .side-panel .search-container .search-item[data-v-472eb156] {\n      margin: 5px;\n      font-size: 1.1em;\n}\n.care-tips .side-panel .search-container .search-item input[data-v-472eb156] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item select[data-v-472eb156] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item .search-label[data-v-472eb156] {\n        padding: 5px;\n}\n.care-tips .tab-bar[data-v-472eb156] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-472eb156] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bt[data-v-472eb156] {\n  text-align: center;\n  min-width: 110px;\n  cursor: pointer;\n  padding: 5px 10px;\n  background-color: #ffffff;\n  color: #555555;\n  border: 1px solid #555555;\n  border-radius: 5px;\n  margin: 0px 10px;\n}\n.care-tips .tab-bt[data-v-472eb156]:hover {\n    color: #888888;\n    border: 1px solid #888888;\n}\n.care-tips .tab-bt.on[data-v-472eb156] {\n    color: #ff5555;\n    border: 1px solid #ff5555;\n}\n.solution-editor[data-v-472eb156] {\n  width: 100%;\n  min-height: 100%;\n}\n.solution-editor .step-page[data-v-472eb156] {\n    background-color: #eeeeee;\n    color: #323232;\n    width: 1024px;\n    max-width: 100%;\n    padding: 30px 10px;\n    border-radius: 5px;\n    margin: 10px auto;\n}\n.solution-editor .step-bt-container[data-v-472eb156] {\n    padding: 10px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.solution-editor .quest[data-v-472eb156] {\n    padding: 10px 0px;\n    font-size: 1.2em;\n    font-weight: bold;\n}\n.solution-editor .remark[data-v-472eb156] {\n    text-align: center;\n    padding: 5px 0px;\n    font-size: 0.9em;\n    color: #888888;\n}\n", ""]);
 
 // exports
 
@@ -3909,7 +3950,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "\n@charset \"UTF-8\";\nhtml[data-v-9f02cee6], body[data-v-9f02cee6] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-9f02cee6] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-9f02cee6] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-9f02cee6] {\n  display: none;\n}\n.warning[data-v-9f02cee6] {\n  color: red;\n}\n.bold[data-v-9f02cee6] {\n  font-weight: bold;\n}\n.inline-block[data-v-9f02cee6] {\n  display: inline-block;\n}\na[data-v-9f02cee6] {\n  text-decoration: none;\n  color: #ff3333;\n}\na[data-v-9f02cee6]:hover {\n    color: #ff8800;\n}\n.one-third-w[data-v-9f02cee6] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.one-third-w[data-v-9f02cee6] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n@media only screen and (min-width: 1024px) {\n.one-third-w[data-v-9f02cee6] {\n      width: calc(33% - 20px);\n      margin: 10px;\n}\n}\n.half-w[data-v-9f02cee6] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-9f02cee6] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-9f02cee6] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-9f02cee6] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-9f02cee6] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-9f02cee6] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-9f02cee6] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-9f02cee6] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-9f02cee6] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-9f02cee6] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-9f02cee6] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-9f02cee6] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-9f02cee6] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-9f02cee6]:hover {\n        background-color: #ffffff;\n}\n.problem-cat .problem-item .target-info[data-v-9f02cee6] {\n      padding: 5px 10px;\n      color: #555555;\n}\n.cat-D1[data-v-9f02cee6] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-9f02cee6] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-9f02cee6] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-9f02cee6] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-9f02cee6] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-9f02cee6] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-9f02cee6] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-9f02cee6] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-9f02cee6] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-9f02cee6] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-9f02cee6] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-9f02cee6] {\n  background-color: #FF8AE7;\n}\n.list-item[data-v-9f02cee6] {\n  background-color: #eeeeee;\n  border-radius: 5px;\n  max-width: 100%;\n  margin: 10px 0px;\n  padding-bottom: 10px;\n  cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.list-item[data-v-9f02cee6] {\n      margin: 10px;\n}\n}\n.list-item a[data-v-9f02cee6] {\n    text-decoration: none;\n    color: #323232;\n}\n.list-item .domain-statistic[data-v-9f02cee6] {\n    display: flex;\n    justify-content: flex-start;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.list-item .domain-statistic .domain-info[data-v-9f02cee6] {\n      position: relative;\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.list-item .domain-statistic .domain-info .domain-icon[data-v-9f02cee6] {\n        display: inline-block;\n        padding: 7px;\n        margin: 10px 5px 10px 10px;\n        border-radius: 3px;\n}\n.list-item .domain-statistic .domain-info .domain-num[data-v-9f02cee6] {\n        display: inline-block;\n        font-size: 0.8em;\n        vertical-align: middle;\n}\n.list-item .domain-statistic .domain-info .tip[data-v-9f02cee6] {\n        padding: 5px;\n        box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n        border-radius: 3px;\n        position: absolute;\n        top: 40px;\n        left: 10px;\n        width: 120px;\n        text-align: center;\n        z-index: 1;\n        opacity: 0;\n        -webkit-transition: opacity 0.5s ease;\n        transition: opacity 0.5s ease;\n}\n.list-item .domain-statistic .domain-info:hover .tip[data-v-9f02cee6] {\n        opacity: 1;\n}\n.list-item .desc[data-v-9f02cee6] {\n    white-space: pre-wrap;\n    color: #333333;\n    padding: 0px 20px 0px 10px;\n    width: 100%;\n    height: 4.5em;\n    line-height: 1.5em;\n    overflow: hidden;\n}\n.load-more[data-v-9f02cee6] {\n  width: 500px;\n  max-width: 100%;\n  padding: 10px 20px;\n  border-radius: 5px;\n  margin: 20px auto;\n  border: 1px solid #888888;\n  color: #888888;\n  background-color: #ffffff;\n  cursor: pointer;\n  text-align: center;\n}\n.load-more[data-v-9f02cee6]:hover {\n    border: 1px solid #333333;\n    color: #333333;\n}\n.fade-enter-active[data-v-9f02cee6], .fade-leave-active[data-v-9f02cee6] {\n  transition: opacity 0.5s;\n}\n.fade-enter[data-v-9f02cee6], .fade-leave-to[data-v-9f02cee6] {\n  opacity: 0;\n}\n.create-enter-active[data-v-9f02cee6] {\n  transition: opacity 0.5s;\n}\n.create-enter[data-v-9f02cee6] {\n  opacity: 0;\n}\n.main-container[data-v-9f02cee6] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 0px 0px 50px 0px;\n  color: #333333;\n}\n.care-tips .sub-title[data-v-9f02cee6] {\n  padding: 10px;\n  font-size: 1.5em;\n}\n.care-tips .mid-title[data-v-9f02cee6] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 1.5em;\n  text-align: center;\n}\n.care-tips .mid-title .bottom-line[data-v-9f02cee6] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-title[data-v-9f02cee6] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 2em;\n  text-align: center;\n}\n.care-tips .category-title .bottom-line[data-v-9f02cee6] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-separator[data-v-9f02cee6] {\n  width: 800px;\n  max-width: 100%;\n  padding: 20px;\n  margin: auto;\n  border-bottom: 1px solid #dddddd;\n}\n.care-tips .separator[data-v-9f02cee6] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .shadow-light[data-v-9f02cee6] {\n  box-shadow: 5px 5px 5px #888888;\n}\n.care-tips .shadow-light[data-v-9f02cee6]:hover {\n    box-shadow: 10px 10px 10px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .shadow-dark[data-v-9f02cee6] {\n  box-shadow: 5px 5px 5px #333333;\n}\n.care-tips .shadow-dark[data-v-9f02cee6]:hover {\n    box-shadow: 10px 10px 10px #333333;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .owner a[data-v-9f02cee6] {\n  text-decoration: none;\n  color: #323232;\n}\n.care-tips .owner a[data-v-9f02cee6]:hover {\n    color: #888888;\n}\n.care-tips .owner-info[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #eeeeee;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-9f02cee6] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-9f02cee6] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .bt-bar[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  align-items: center;\n  flex-wrap: wrap;\n  width: 1024px;\n  max-width: 100%;\n  padding: 0px 15px;\n  margin: auto;\n}\n.care-tips .input-bt[data-v-9f02cee6] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-9f02cee6]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-9f02cee6] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-9f02cee6]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .feedback-statistic[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px;\n  color: #888888;\n  font-size: 0.9em;\n}\n.care-tips .feedback-statistic .container[data-v-9f02cee6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-9f02cee6] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-9f02cee6]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-9f02cee6] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-9f02cee6] {\n    position: relative;\n    padding: 0px 10px 0px 5px;\n}\n.care-tips .feedback-statistic .feedback-num .tip[data-v-9f02cee6] {\n      padding: 5px;\n      box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n      border-radius: 3px;\n      position: absolute;\n      top: 40px;\n      left: -50%;\n      width: 150px;\n      text-align: center;\n      visibility: hidden;\n      z-index: 1;\n      background-color: #ffffff;\n}\n.care-tips .feedback-statistic .feedback-num:hover .tip[data-v-9f02cee6] {\n      visibility: visible;\n}\n.care-tips .inform-message[data-v-9f02cee6] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-9f02cee6] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-9f02cee6] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-9f02cee6] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-9f02cee6] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-9f02cee6] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-9f02cee6] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-9f02cee6] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-9f02cee6] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-9f02cee6]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-9f02cee6] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .no-result-box[data-v-9f02cee6] {\n  width: 1200px;\n  max-width: 100%;\n  background-color: #ffffff;\n  color: #333333;\n  padding: 20px;\n  border-radius: 5px;\n  margin: 10px auto;\n  text-align: center;\n  font-size: 1.2em;\n}\n.care-tips .no-result-box .center-bt[data-v-9f02cee6] {\n    background-color: #ffffff;\n    color: #ff5555;\n    border: 1px solid #ff5555;\n    width: 200px;\n    padding: 10px;\n    margin: 40px auto;\n    border-radius: 5px;\n    cursor: pointer;\n}\n.care-tips .no-result-box .center-bt[data-v-9f02cee6]:hover {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.care-tips .input-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 70px;\n  left: 0px;\n  width: 100%;\n  height: calc(100% - 130px);\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.5);\n  color: white;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-tips .input-panel.full[data-v-9f02cee6] {\n    top: 0px;\n    height: calc(100% - 60px);\n}\n.care-tips .close-bt[data-v-9f02cee6] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  font-size: 1.2em;\n  cursor: pointer;\n  padding: 5px 10px;\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n}\n.care-tips .close-bt[data-v-9f02cee6]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .input-area[data-v-9f02cee6] {\n  max-height: 100%;\n  overflow-y: auto;\n  position: relative;\n  background-color: #f8f8f8;\n  color: #323232;\n  border-radius: 5px;\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n  -ms-transform: translateY(-50%);\n  transform: translateY(-50%);\n}\n.care-tips .input-area .input-item[data-v-9f02cee6] {\n    margin: 5px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.care-tips .input-area .input-item .item[data-v-9f02cee6] {\n      margin: 5px;\n}\n.care-tips .input-area .input-label[data-v-9f02cee6] {\n    font-size: 1.2em;\n    display: inline-block;\n    margin: 5px;\n}\n.care-tips .input-area select[data-v-9f02cee6] {\n    border-radius: 3px;\n    max-width: 100%;\n    padding: 5px;\n    font-size: 1.1em;\n}\n.care-tips .input-area textarea[data-v-9f02cee6] {\n    margin: 10px 0px;\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"number\"][data-v-9f02cee6] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    max-width: 80px;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"text\"][data-v-9f02cee6] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    font-size: 1.1em;\n}\n.care-tips .input-area .filter-icon[data-v-9f02cee6] {\n    width: 30px;\n    height: 30px;\n    margin: 5px;\n    padding: 2px;\n    cursor: pointer;\n}\n.care-tips .input-area .filter-icon[data-v-9f02cee6]:hover {\n      padding: 0px;\n}\n.care-tips .input-area .filter-list[data-v-9f02cee6] {\n    padding: 10px;\n}\n.care-tips .input-area .filter-list .filter-category[data-v-9f02cee6] {\n      padding: 10px;\n      color: #888888;\n}\n.care-tips .input-area .filter-list .filter-category .cat-label[data-v-9f02cee6] {\n        font-size: 1.5em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-problem[data-v-9f02cee6] {\n      color: #333333;\n      display: flex;\n      justify-content: flex-start;\n      align-items: center;\n      flex-wrap: wrap;\n      padding: 5px;\n}\n.care-tips .input-area .filter-list .filter-problem .problem-label[data-v-9f02cee6] {\n        font-size: 1.2em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-9f02cee6] {\n      margin: 5px;\n      padding: 5px;\n      cursor: pointer;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-9f02cee6]:hover {\n        border-bottom: 1px solid #BE9063;\n}\n.care-tips .slide-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  max-width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.5);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-9f02cee6] {\n    left: 0px;\n}\n.care-tips .side-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 0px;\n  left: -400px;\n  width: 300px;\n  max-width: 100%;\n  height: 100%;\n  padding: 10px;\n  z-index: 11;\n  color: #333333;\n  background-color: rgba(240, 240, 240, 0.9);\n  border-radius: 0px 5px 5px 0px;\n  box-shadow: 3px 3px 5px #888888;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .side-panel.open[data-v-9f02cee6] {\n    left: 0px;\n}\n.care-tips .side-panel .search-container[data-v-9f02cee6] {\n    width: 400px;\n    max-width: 100%;\n    margin: auto;\n}\n.care-tips .side-panel .search-container .search-item[data-v-9f02cee6] {\n      margin: 5px;\n      font-size: 1.1em;\n}\n.care-tips .side-panel .search-container .search-item input[data-v-9f02cee6] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item select[data-v-9f02cee6] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item .search-label[data-v-9f02cee6] {\n        padding: 5px;\n}\n.care-tips .tab-bar[data-v-9f02cee6] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-9f02cee6] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bt[data-v-9f02cee6] {\n  text-align: center;\n  min-width: 110px;\n  cursor: pointer;\n  padding: 5px 10px;\n  background-color: #ffffff;\n  color: #555555;\n  border: 1px solid #555555;\n  border-radius: 5px;\n  margin: 0px 10px;\n}\n.care-tips .tab-bt[data-v-9f02cee6]:hover {\n    color: #888888;\n    border: 1px solid #888888;\n}\n.care-tips .tab-bt.on[data-v-9f02cee6] {\n    color: #ff5555;\n    border: 1px solid #ff5555;\n}\n.solution-view[data-v-9f02cee6] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  border-radius: 5px;\n  background-color: white;\n  color: #323232;\n}\n.solution-view .solution-title[data-v-9f02cee6] {\n    font-size: 1.5em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n}\n", ""]);
+exports.push([module.i, "\n@charset \"UTF-8\";\nhtml[data-v-9f02cee6], body[data-v-9f02cee6] {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n*[data-v-9f02cee6] {\n  box-sizing: border-box;\n  font-family: \"\\5FAE\\8EDF\\6B63\\9ED1\\9AD4\", \"Microsoft JhengHei\";\n}\n.center[data-v-9f02cee6] {\n  display: block;\n  margin: auto;\n  clear: both;\n  text-align: center;\n}\n.hide[data-v-9f02cee6] {\n  display: none;\n}\n.warning[data-v-9f02cee6] {\n  color: red;\n}\n.bold[data-v-9f02cee6] {\n  font-weight: bold;\n}\n.inline-block[data-v-9f02cee6] {\n  display: inline-block;\n}\na[data-v-9f02cee6] {\n  text-decoration: none;\n  color: #ff3333;\n}\na[data-v-9f02cee6]:hover {\n    color: #ff8800;\n}\n.one-third-w[data-v-9f02cee6] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.one-third-w[data-v-9f02cee6] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n@media only screen and (min-width: 1024px) {\n.one-third-w[data-v-9f02cee6] {\n      width: calc(33% - 20px);\n      margin: 10px;\n}\n}\n.half-w[data-v-9f02cee6] {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 10px 0px;\n  width: 100%;\n}\n@media only screen and (min-width: 640px) {\n.half-w[data-v-9f02cee6] {\n      width: calc(50% - 20px);\n      margin: 10px;\n}\n}\n.full-w[data-v-9f02cee6] {\n  display: block;\n  margin: 10px 0px;\n  width: 100%;\n}\n.problem-cat[data-v-9f02cee6] {\n  background-color: #f8f8f8;\n  padding: 0px 0px 10px 0px;\n  margin: 10px auto;\n  border-radius: 5px;\n}\n.problem-cat .problem-header[data-v-9f02cee6] {\n    margin: 0px auto;\n    font-size: 1.2em;\n    text-align: left;\n    padding: 10px;\n    background-color: #dddddd;\n    border-radius: 5px 5px 0px 0px;\n}\n.problem-cat .problem-container[data-v-9f02cee6] {\n    padding: 0px;\n}\n.problem-cat .problem-item[data-v-9f02cee6] {\n    border-radius: 5px;\n}\n.problem-cat .problem-item.select[data-v-9f02cee6] {\n      border: 1px solid red;\n}\n.problem-cat .problem-item .problem-title[data-v-9f02cee6] {\n      padding: 10px;\n      border-bottom: 1px solid #eeeeee;\n}\n.problem-cat .problem-item .problem-desc[data-v-9f02cee6] {\n      white-space: pre-wrap;\n      padding: 10px;\n}\n.problem-cat .problem-item .problem-body[data-v-9f02cee6] {\n      color: black;\n}\n.problem-cat .problem-item .item-bt-container[data-v-9f02cee6] {\n      padding: 10px;\n      display: flex;\n      justify-content: flex-end;\n      align-items: center;\n      flex-wrap: wrap;\n}\n.problem-cat .problem-item .item-bt[data-v-9f02cee6] {\n      display: inline-block;\n      margin: 0px 0px 0px 10px;\n      padding: 5px 10px;\n      cursor: pointer;\n      background-color: #eeeeee;\n      color: #333333;\n      border-radius: 3px;\n}\n.problem-cat .problem-item .item-bt[data-v-9f02cee6]:hover {\n        background-color: #ffffff;\n}\n.problem-cat .problem-item .target-info[data-v-9f02cee6] {\n      padding: 5px 10px;\n      color: #555555;\n}\n.cat-D1[data-v-9f02cee6] {\n  background-color: #FFA5A4;\n}\n.cat-D2[data-v-9f02cee6] {\n  background-color: #DEE885;\n}\n.cat-D3[data-v-9f02cee6] {\n  background-color: #85CAE8;\n}\n.cat-D4[data-v-9f02cee6] {\n  background-color: #C089E8;\n}\n.cat-A[data-v-9f02cee6] {\n  background-color: #FFA5A4;\n}\n.cat-B[data-v-9f02cee6] {\n  background-color: #FFDE9C;\n}\n.cat-C[data-v-9f02cee6] {\n  background-color: #DEE885;\n}\n.cat-D[data-v-9f02cee6] {\n  background-color: #9FFFBC;\n}\n.cat-E[data-v-9f02cee6] {\n  background-color: #85CAE8;\n}\n.cat-F[data-v-9f02cee6] {\n  background-color: #AF93FF;\n}\n.cat-G[data-v-9f02cee6] {\n  background-color: #C089E8;\n}\n.cat-O[data-v-9f02cee6] {\n  background-color: #FF8AE7;\n}\n.list-item[data-v-9f02cee6] {\n  background-color: #eeeeee;\n  border-radius: 5px;\n  max-width: 100%;\n  margin: 10px 0px;\n  padding-bottom: 10px;\n  cursor: pointer;\n}\n@media only screen and (min-width: 640px) {\n.list-item[data-v-9f02cee6] {\n      margin: 10px;\n}\n}\n.list-item a[data-v-9f02cee6] {\n    text-decoration: none;\n    color: #323232;\n}\n.list-item .domain-statistic[data-v-9f02cee6] {\n    display: flex;\n    justify-content: flex-start;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.list-item .domain-statistic .domain-info[data-v-9f02cee6] {\n      position: relative;\n      display: flex;\n      justify-content: flex-start;\n      flex-wrap: wrap;\n      align-items: center;\n}\n.list-item .domain-statistic .domain-info .domain-icon[data-v-9f02cee6] {\n        display: inline-block;\n        padding: 7px;\n        margin: 10px 5px 10px 10px;\n        border-radius: 3px;\n}\n.list-item .domain-statistic .domain-info .domain-num[data-v-9f02cee6] {\n        display: inline-block;\n        font-size: 0.8em;\n        vertical-align: middle;\n}\n.list-item .domain-statistic .domain-info .tip[data-v-9f02cee6] {\n        padding: 5px;\n        box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n        border-radius: 3px;\n        position: absolute;\n        top: 40px;\n        left: 10px;\n        width: 120px;\n        text-align: center;\n        z-index: 1;\n        opacity: 0;\n        -webkit-transition: opacity 0.5s ease;\n        transition: opacity 0.5s ease;\n}\n.list-item .domain-statistic .domain-info:hover .tip[data-v-9f02cee6] {\n        opacity: 1;\n}\n.list-item .desc[data-v-9f02cee6] {\n    white-space: pre-wrap;\n    color: #333333;\n    padding: 0px 20px 0px 10px;\n    width: 100%;\n    height: 4.5em;\n    line-height: 1.5em;\n    overflow: hidden;\n}\n.load-more[data-v-9f02cee6] {\n  width: 500px;\n  max-width: 100%;\n  padding: 10px 20px;\n  border-radius: 5px;\n  margin: 20px auto;\n  border: 1px solid #888888;\n  color: #888888;\n  background-color: #ffffff;\n  cursor: pointer;\n  text-align: center;\n}\n.load-more[data-v-9f02cee6]:hover {\n    border: 1px solid #333333;\n    color: #333333;\n}\n.fade-enter-active[data-v-9f02cee6], .fade-leave-active[data-v-9f02cee6] {\n  transition: opacity 0.5s;\n}\n.fade-enter[data-v-9f02cee6], .fade-leave-to[data-v-9f02cee6] {\n  opacity: 0;\n}\n.create-enter-active[data-v-9f02cee6] {\n  transition: opacity 0.5s;\n}\n.create-enter[data-v-9f02cee6] {\n  opacity: 0;\n}\n.main-container[data-v-9f02cee6] {\n  width: 100%;\n  margin: 80px auto 20px auto;\n  padding: 0px 0px 50px 0px;\n  color: #333333;\n}\n.care-tips .sub-title[data-v-9f02cee6] {\n  padding: 10px;\n  font-size: 1.5em;\n}\n.care-tips .mid-title[data-v-9f02cee6] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 1.5em;\n  text-align: center;\n}\n.care-tips .mid-title .bottom-line[data-v-9f02cee6] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-title[data-v-9f02cee6] {\n  padding: 5px;\n  margin: 10px auto 0px auto;\n  font-size: 2em;\n  text-align: center;\n}\n.care-tips .category-title .bottom-line[data-v-9f02cee6] {\n    margin: auto;\n    width: 150px;\n    padding: 5px;\n    border-bottom: 1px solid #888888;\n}\n.care-tips .category-separator[data-v-9f02cee6] {\n  width: 800px;\n  max-width: 100%;\n  padding: 20px;\n  margin: auto;\n  border-bottom: 1px solid #dddddd;\n}\n.care-tips .separator[data-v-9f02cee6] {\n  margin: 30px;\n  border-bottom: 1px solid #999999;\n}\n.care-tips .shadow-light[data-v-9f02cee6] {\n  box-shadow: 5px 5px 5px #888888;\n}\n.care-tips .shadow-light[data-v-9f02cee6]:hover {\n    box-shadow: 10px 10px 10px #888888;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .shadow-dark[data-v-9f02cee6] {\n  box-shadow: 5px 5px 5px #333333;\n}\n.care-tips .shadow-dark[data-v-9f02cee6]:hover {\n    box-shadow: 10px 10px 10px #333333;\n    -webkit-transition: box-shadow 0.5s ease;\n    transition: box-shadow 0.5s ease;\n}\n.care-tips .owner a[data-v-9f02cee6] {\n  text-decoration: none;\n  color: #323232;\n}\n.care-tips .owner a[data-v-9f02cee6]:hover {\n    color: #888888;\n}\n.care-tips .owner-info[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-start;\n  flex-wrap: wrap;\n  align-items: center;\n  border-bottom: 1px solid #eeeeee;\n  border-radius: 5px 5px 0px 0px;\n  padding: 10px;\n}\n.care-tips .owner-info .owner-icon[data-v-9f02cee6] {\n    width: 30px;\n    height: 30px;\n    border-radius: 50%;\n    margin: 0px 5px 0px 0px;\n}\n.care-tips .owner-desc[data-v-9f02cee6] {\n  white-space: pre-wrap;\n  padding: 10px;\n}\n.care-tips .bt-bar[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  align-items: center;\n  flex-wrap: wrap;\n  width: 1024px;\n  max-width: 100%;\n  padding: 0px 15px;\n  margin: auto;\n}\n.care-tips .input-bt[data-v-9f02cee6] {\n  display: inline-block;\n  color: #ffffff;\n  padding: 7px 10px;\n  margin: 5px;\n  background-color: #555555;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.care-tips .input-bt[data-v-9f02cee6]:hover {\n    background-color: #888888;\n}\n.care-tips .action-bt[data-v-9f02cee6] {\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n  padding: 5px 10px;\n  margin: 5px;\n  cursor: pointer;\n}\n.care-tips .action-bt[data-v-9f02cee6]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .feedback-statistic[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  padding: 5px;\n  color: #888888;\n  font-size: 0.9em;\n}\n.care-tips .feedback-statistic .container[data-v-9f02cee6] {\n    display: flex;\n    justify-content: center;\n    flex-wrap: wrap;\n    align-items: center;\n    padding: 5px;\n}\n.care-tips .feedback-statistic .clickable[data-v-9f02cee6] {\n    cursor: pointer;\n}\n.care-tips .feedback-statistic .clickable[data-v-9f02cee6]:hover {\n      border-bottom: 2px solid #ff5555;\n      -webkit-filter: brightness(80%);\n      filter: brightness(80%);\n}\n.care-tips .feedback-statistic .feedback-icon[data-v-9f02cee6] {\n    width: 25px;\n    height: 25px;\n}\n.care-tips .feedback-statistic .feedback-num[data-v-9f02cee6] {\n    position: relative;\n    padding: 0px 10px 0px 5px;\n}\n.care-tips .feedback-statistic .feedback-num .tip[data-v-9f02cee6] {\n      padding: 5px;\n      box-shadow: 5px 5px 5px rgba(50, 50, 50, 0.8);\n      border-radius: 3px;\n      position: absolute;\n      top: 40px;\n      left: -50%;\n      width: 150px;\n      text-align: center;\n      visibility: hidden;\n      z-index: 1;\n      background-color: #ffffff;\n}\n.care-tips .feedback-statistic .feedback-num:hover .tip[data-v-9f02cee6] {\n      visibility: visible;\n}\n.care-tips .inform-message[data-v-9f02cee6] {\n  width: 100%;\n  background-color: #aaaaaa;\n  color: #ffffff;\n  text-align: center;\n  padding: 10px;\n  position: fixed;\n  left: 0px;\n  height: 40px;\n  top: -40px;\n  z-index: 99;\n  -webkit-transition: top 0.5s ease;\n  transition: top 0.5s ease;\n}\n.care-tips .inform-message.show[data-v-9f02cee6] {\n    top: 0px;\n}\n.care-tips .message-list .message[data-v-9f02cee6] {\n  margin: 10px;\n  border-bottom: 1px solid #dddddd;\n  padding: 0px;\n}\n.care-tips .message-list .message .message-content[data-v-9f02cee6] {\n    padding-left: 10px;\n    white-space: pre-wrap;\n}\n.care-tips .message-list .sub-info[data-v-9f02cee6] {\n  display: flex;\n  justify-content: flex-end;\n  flex-wrap: wrap;\n  align-items: center;\n  font-size: 0.8em;\n  color: #888888;\n}\n.care-tips .message-list .sub-info .info-item[data-v-9f02cee6] {\n    margin: 10px 5px;\n}\n.care-tips .message-box[data-v-9f02cee6] {\n  border: 1px solid #cccccc;\n  border-radius: 5px;\n  padding: 10px;\n}\n.care-tips .message-box textarea[data-v-9f02cee6] {\n    border: none;\n    outline: none;\n    width: 100%;\n    height: 60px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .message-box .bt-container[data-v-9f02cee6] {\n    display: flex;\n    justify-content: flex-end;\n    flex-wrap: wrap;\n    align-items: center;\n}\n.care-tips .message-box .bt-container .bt[data-v-9f02cee6] {\n      display: inline-block;\n      float: right;\n      color: #ffffff;\n      padding: 5px 10px;\n      margin: 0px;\n      background-color: #555555;\n      cursor: pointer;\n      border-radius: 3px;\n}\n.care-tips .message-box .bt-container .bt[data-v-9f02cee6]:hover {\n        background-color: #888888;\n}\n.care-tips .panel-title[data-v-9f02cee6] {\n  font-size: 1.5em;\n  text-align: center;\n  margin: 20px;\n}\n.care-tips .no-result-box[data-v-9f02cee6] {\n  width: 1200px;\n  max-width: 100%;\n  background-color: #ffffff;\n  color: #333333;\n  padding: 20px;\n  border-radius: 5px;\n  margin: 10px auto;\n  text-align: center;\n  font-size: 1.2em;\n}\n.care-tips .no-result-box .center-bt[data-v-9f02cee6] {\n    background-color: #ffffff;\n    color: #ff5555;\n    border: 1px solid #ff5555;\n    width: 200px;\n    padding: 10px;\n    margin: 40px auto;\n    border-radius: 5px;\n    cursor: pointer;\n}\n.care-tips .no-result-box .center-bt[data-v-9f02cee6]:hover {\n      color: #ff8888;\n      border: 1px solid #ff8888;\n}\n.care-tips .input-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 70px;\n  left: 0px;\n  width: 100%;\n  height: calc(100% - 130px);\n  padding: 10px;\n  background-color: rgba(50, 50, 50, 0.5);\n  color: white;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.care-tips .input-panel.full[data-v-9f02cee6] {\n    top: 0px;\n    height: calc(100% - 60px);\n}\n.care-tips .close-bt[data-v-9f02cee6] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  font-size: 1.2em;\n  cursor: pointer;\n  padding: 5px 10px;\n  color: #ff5555;\n  border: 1px solid #ff5555;\n  border-radius: 5px;\n}\n.care-tips .close-bt[data-v-9f02cee6]:hover {\n    color: #ff8888;\n    border: 1px solid #ff8888;\n}\n.care-tips .input-area[data-v-9f02cee6] {\n  max-height: 100%;\n  overflow-y: auto;\n  position: relative;\n  background-color: #f8f8f8;\n  color: #323232;\n  border-radius: 5px;\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n  -ms-transform: translateY(-50%);\n  transform: translateY(-50%);\n}\n.care-tips .input-area .input-item[data-v-9f02cee6] {\n    margin: 5px;\n    display: flex;\n    justify-content: flex-start;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.care-tips .input-area .input-item .item[data-v-9f02cee6] {\n      margin: 5px;\n}\n.care-tips .input-area .input-label[data-v-9f02cee6] {\n    font-size: 1.2em;\n    display: inline-block;\n    margin: 5px;\n}\n.care-tips .input-area select[data-v-9f02cee6] {\n    border-radius: 3px;\n    max-width: 100%;\n    padding: 5px;\n    font-size: 1.1em;\n}\n.care-tips .input-area textarea[data-v-9f02cee6] {\n    margin: 10px 0px;\n    border-radius: 3px;\n    padding: 10px;\n    width: 100%;\n    height: 120px;\n    resize: none;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"number\"][data-v-9f02cee6] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    max-width: 80px;\n    font-size: 1.1em;\n}\n.care-tips .input-area input[type=\"text\"][data-v-9f02cee6] {\n    max-width: 100%;\n    padding: 5px;\n    border-radius: 3px;\n    font-size: 1.1em;\n}\n.care-tips .input-area .filter-icon[data-v-9f02cee6] {\n    width: 30px;\n    height: 30px;\n    margin: 5px;\n    padding: 2px;\n    cursor: pointer;\n}\n.care-tips .input-area .filter-icon[data-v-9f02cee6]:hover {\n      padding: 0px;\n}\n.care-tips .input-area .filter-list[data-v-9f02cee6] {\n    padding: 10px;\n}\n.care-tips .input-area .filter-list .filter-category[data-v-9f02cee6] {\n      padding: 10px;\n      color: #888888;\n}\n.care-tips .input-area .filter-list .filter-category .cat-label[data-v-9f02cee6] {\n        font-size: 1.5em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-problem[data-v-9f02cee6] {\n      color: #333333;\n      display: flex;\n      justify-content: flex-start;\n      align-items: center;\n      flex-wrap: wrap;\n      padding: 5px;\n}\n.care-tips .input-area .filter-list .filter-problem .problem-label[data-v-9f02cee6] {\n        font-size: 1.2em;\n        font-weight: bold;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-9f02cee6] {\n      margin: 5px;\n      padding: 5px;\n      cursor: pointer;\n}\n.care-tips .input-area .filter-list .filter-item[data-v-9f02cee6]:hover {\n        border-bottom: 1px solid #BE9063;\n}\n.care-tips .slide-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 0px;\n  left: 100%;\n  width: 100%;\n  max-width: 100%;\n  height: calc(100% - 60px);\n  padding: 10px;\n  z-index: 10;\n  color: white;\n  background-color: rgba(50, 50, 50, 0.5);\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .slide-panel.open[data-v-9f02cee6] {\n    left: 0px;\n}\n.care-tips .side-panel[data-v-9f02cee6] {\n  position: fixed;\n  top: 0px;\n  left: -400px;\n  width: 300px;\n  max-width: 100%;\n  height: 100%;\n  padding: 10px;\n  z-index: 11;\n  color: #333333;\n  background-color: rgba(240, 240, 240, 0.9);\n  border-radius: 0px 5px 5px 0px;\n  box-shadow: 3px 3px 5px #888888;\n  overflow-x: hidden;\n  overflow-y: auto;\n  -webkit-transition: left 0.5s ease;\n  transition: left 0.5s ease;\n}\n.care-tips .side-panel.open[data-v-9f02cee6] {\n    left: 0px;\n}\n.care-tips .side-panel .search-container[data-v-9f02cee6] {\n    width: 400px;\n    max-width: 100%;\n    margin: auto;\n}\n.care-tips .side-panel .search-container .search-item[data-v-9f02cee6] {\n      margin: 5px;\n      font-size: 1.1em;\n}\n.care-tips .side-panel .search-container .search-item input[data-v-9f02cee6] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item select[data-v-9f02cee6] {\n        padding: 5px;\n        width: 100%;\n}\n.care-tips .side-panel .search-container .search-item .search-label[data-v-9f02cee6] {\n        padding: 5px;\n}\n.care-tips .tab-bar[data-v-9f02cee6] {\n  position: fixed;\n  left: 0px;\n  bottom: 0px;\n  width: 100%;\n  height: 60px;\n  z-index: 9;\n  background-color: rgba(240, 240, 240, 0.9);\n  box-shadow: 0px 0px 5px #888888;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.care-tips .tab-bar .tab-bt-container[data-v-9f02cee6] {\n    display: flex;\n    overflow-x: auto;\n    padding: 10px;\n}\n.care-tips .tab-bt[data-v-9f02cee6] {\n  text-align: center;\n  min-width: 110px;\n  cursor: pointer;\n  padding: 5px 10px;\n  background-color: #ffffff;\n  color: #555555;\n  border: 1px solid #555555;\n  border-radius: 5px;\n  margin: 0px 10px;\n}\n.care-tips .tab-bt[data-v-9f02cee6]:hover {\n    color: #888888;\n    border: 1px solid #888888;\n}\n.care-tips .tab-bt.on[data-v-9f02cee6] {\n    color: #ff5555;\n    border: 1px solid #ff5555;\n}\n.solution-view[data-v-9f02cee6] {\n  width: 1024px;\n  max-width: 100%;\n  margin: auto;\n  padding: 10px;\n  border-radius: 5px;\n  background-color: white;\n  color: #323232;\n}\n.solution-view .solution-title[data-v-9f02cee6] {\n    font-size: 1.5em;\n    padding: 10px 0px;\n    margin: 10px 0px;\n}\n.solution-view .step-bt-container[data-v-9f02cee6] {\n    padding: 10px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-wrap: wrap;\n}\n.solution-view .quest[data-v-9f02cee6] {\n    padding: 10px 0px;\n    font-size: 1.2em;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -6859,7 +6900,6 @@ var render = function() {
                     expression: "mainCategory"
                   }
                 ],
-                attrs: { disabled: _vm.fixMainCategory },
                 on: {
                   change: [
                     function($event) {
@@ -7648,7 +7688,6 @@ var render = function() {
                               expression: "selectDomain"
                             }
                           ],
-                          attrs: { disabled: _vm.modify },
                           on: {
                             change: [
                               function($event) {
@@ -10909,7 +10948,6 @@ var render = function() {
                             expression: "selectPriority"
                           }
                         ],
-                        attrs: { disabled: _vm.modify },
                         on: {
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -11411,430 +11449,477 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "solution-view" },
-    [
-      _c("div", { staticClass: "panel-title" }, [_vm._v("觀看解方")]),
-      _vm._v(" "),
-      _vm.solutionInfo && _vm.curCaseVersion != _vm.solutionInfo.caseVersion
-        ? _c("p", { staticClass: "warning center" }, [
-            _vm._v(
-              "* 此為針對案例版本" +
-                _vm._s(_vm.solutionInfo.caseVersion) +
-                " 提出的解方，與目前觀看的案例版本" +
-                _vm._s(_vm.curCaseVersion) +
-                " 不同，參考時請小心。"
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "input-bt",
-          on: {
-            click: function($event) {
-              _vm.ViewCase()
-            }
-          }
-        },
-        [_vm._v("觀看案例")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "input-bt",
-          on: {
-            click: function($event) {
-              _vm.BackToSolutionList()
-            }
-          }
-        },
-        [_vm._v("解方列表")]
-      ),
-      _vm._v(" "),
-      _vm.solutionInfo
-        ? _c("div", { staticClass: "feedback-statistic" }, [
-            _c(
-              "div",
-              {
-                staticClass: "container clickable",
-                on: {
-                  click: function($event) {
-                    _vm.ToggleLike()
-                  }
-                }
-              },
-              [
-                _c("img", {
-                  staticClass: "feedback-icon",
-                  attrs: { src: "/static/image/like.png" }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "feedback-num" }, [
-                  _vm._v(_vm._s(_vm.solutionInfo.likeNum))
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "container" }, [
-              _vm._v("\r\n\t\t\t觀看次數"),
-              _c("div", { staticClass: "feedback-num" }, [
-                _vm._v(_vm._s(_vm.solutionInfo.viewNum))
-              ]),
-              _vm._v("\r\n\t\t\t案例版本"),
-              _c("div", { staticClass: "feedback-num" }, [
-                _vm._v(_vm._s(_vm.solutionInfo.caseVersion))
-              ])
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.isMySolution,
-                    expression: "isMySolution"
-                  }
-                ],
-                staticClass: "container"
-              },
-              [
-                _c(
-                  "div",
-                  {
-                    staticClass: "action-bt",
-                    on: {
-                      click: function($event) {
-                        _vm.ModifySolution()
-                      }
-                    }
-                  },
-                  [_vm._v("修改解方")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "action-bt",
-                    on: {
-                      click: function($event) {
-                        _vm.DeleteSolution()
-                      }
-                    }
-                  },
-                  [_vm._v("刪除解方")]
-                )
-              ]
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm._l(_vm.quest, function(q, step) {
-        return _vm.solutionInfo
-          ? _c("div", [
-              _c("div", {
-                staticClass: "quest",
-                domProps: { innerHTML: _vm._s(q) }
-              }),
-              _vm._v(" "),
-              step == 0 || step == 1
-                ? _c(
-                    "div",
-                    _vm._l(_vm.priority, function(p, i) {
-                      return _c("div", { staticClass: "problem-cat" }, [
-                        _c("div", { staticClass: "problem-header" }, [
-                          _vm._v(_vm._s(p.name))
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "problem-container" },
-                          _vm._l(_vm.solutionInfo.info[step][i], function(
-                            s,
-                            j
-                          ) {
-                            return _c(
-                              "div",
-                              {
-                                staticClass: "problem-item one-third-w",
-                                class: "cat-D" + (i + 1)
-                              },
-                              [
-                                _c("div", { staticClass: "problem-title" }, [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.intervention[s.intervention].name
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "problem-body" }, [
-                                  _c("div", {
-                                    staticClass: "problem-desc",
-                                    domProps: { innerHTML: _vm._s(s.desc) }
-                                  })
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "target-info" }, [
-                                  _vm._v("針對問題 - " + _vm._s(s.targetName))
-                                ])
-                              ]
-                            )
-                          })
-                        )
-                      ])
-                    })
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              step == 2
-                ? _c("div", [
-                    _c("div", { staticClass: "problem-cat" }, [
-                      _c("div", { staticClass: "problem-header" }, [
-                        _vm._v("專業連結")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "problem-container" },
-                        _vm._l(_vm.solutionInfo.info[step][0], function(s, j) {
-                          return _c(
-                            "div",
-                            { staticClass: "problem-item one-third-w cat-D4" },
-                            [
-                              _c("div", { staticClass: "problem-title" }, [
-                                _vm._v(_vm._s(s.profession))
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "problem-body" }, [
-                                _c("div", {
-                                  staticClass: "problem-desc",
-                                  domProps: { innerHTML: _vm._s(s.desc) }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "item-bt-container" },
-                                  [
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass: "item-bt",
-                                        on: {
-                                          click: function($event) {
-                                            _vm.SearchProfession(s.profession)
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("找人")]
-                                    )
-                                  ]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "target-info" }, [
-                                _vm._v("針對問題 - " + _vm._s(s.targetName))
-                              ])
-                            ]
-                          )
-                        })
-                      )
-                    ])
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              step == 3
-                ? _c("div", [
-                    _c("div", { staticClass: "problem-cat" }, [
-                      _c("div", { staticClass: "problem-header" }, [
-                        _vm._v("\r\n\t\t\t\t\t服務項目\r\n\t\t\t\t\t"),
-                        _c(
-                          "div",
-                          {
-                            staticClass: "input-bt",
-                            on: {
-                              click: function($event) {
-                                _vm.CalculateService()
-                              }
-                            }
-                          },
-                          [_vm._v("價格試算")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "problem-container" },
-                        _vm._l(_vm.solutionInfo.info[step][0], function(s, j) {
-                          return _c(
-                            "div",
-                            {
-                              staticClass: "problem-item one-third-w",
-                              class: "cat-" + s.category
-                            },
-                            [
-                              _c("div", { staticClass: "problem-title" }, [
-                                _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "problem-body" }, [
-                                _c("div", {
-                                  staticClass: "problem-desc",
-                                  domProps: { innerHTML: _vm._s(s.desc) }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "target-info" }, [
-                                _vm._v("針對問題 - " + _vm._s(s.targetName))
-                              ])
-                            ]
-                          )
-                        })
-                      )
-                    ])
-                  ])
-                : _vm._e()
-            ])
-          : _vm._e()
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "solution-title" }, [_vm._v("分享者簡介")]),
-      _vm._v(" "),
-      _vm.solutionInfo
-        ? _c("div", { staticClass: "owner" }, [
-            _c(
-              "a",
-              { attrs: { href: "/user?target=" + _vm.solutionInfo.user.id } },
-              [
-                _c("div", { staticClass: "owner-info" }, [
-                  _c("img", {
-                    staticClass: "owner-icon",
-                    attrs: { src: _vm.solutionInfo.user.icon }
-                  }),
-                  _vm._v(
-                    "\r\n\t\t\t\t" +
-                      _vm._s(_vm.solutionInfo.user.profession) +
-                      " - " +
-                      _vm._s(_vm.solutionInfo.user.name) +
-                      "\r\n\t\t\t"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "owner-desc" }, [
-                  _vm._v(_vm._s(_vm.solutionInfo.user.desc))
-                ])
-              ]
-            )
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _c("div", { staticClass: "solution-title" }, [_vm._v("留言回饋")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "message-box" }, [
-        _c("textarea", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.sendMessage,
-              expression: "sendMessage"
-            }
-          ],
-          attrs: { placeholder: "留言給分享者..." },
-          domProps: { value: _vm.sendMessage },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.sendMessage = $event.target.value
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "bt-container" }, [
+  return _c("div", { staticClass: "solution-view" }, [
+    _c("div", { staticClass: "panel-title" }, [_vm._v("觀看解方")]),
+    _vm._v(" "),
+    _vm.solutionInfo && _vm.curCaseVersion != _vm.solutionInfo.caseVersion
+      ? _c("p", { staticClass: "warning center" }, [
+          _vm._v(
+            "* 此為針對案例版本" +
+              _vm._s(_vm.solutionInfo.caseVersion) +
+              " 提出的解方，與目前觀看的案例版本" +
+              _vm._s(_vm.curCaseVersion) +
+              " 不同，參考時請小心。"
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.solutionInfo
+      ? _c("div", { staticClass: "feedback-statistic" }, [
           _c(
             "div",
             {
-              staticClass: "bt",
+              staticClass: "container clickable",
               on: {
                 click: function($event) {
-                  _vm.SendMessage()
+                  _vm.ToggleLike()
                 }
               }
             },
-            [_vm._v("送出")]
+            [
+              _c("img", {
+                staticClass: "feedback-icon",
+                attrs: { src: "/static/image/like.png" }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "feedback-num" }, [
+                _vm._v(_vm._s(_vm.solutionInfo.likeNum))
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "container" }, [
+            _vm._v("\r\n\t\t\t觀看次數"),
+            _c("div", { staticClass: "feedback-num" }, [
+              _vm._v(_vm._s(_vm.solutionInfo.viewNum))
+            ]),
+            _vm._v("\r\n\t\t\t案例版本"),
+            _c("div", { staticClass: "feedback-num" }, [
+              _vm._v(_vm._s(_vm.solutionInfo.caseVersion))
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.isMySolution,
+                  expression: "isMySolution"
+                }
+              ],
+              staticClass: "container"
+            },
+            [
+              _c(
+                "div",
+                {
+                  staticClass: "action-bt",
+                  on: {
+                    click: function($event) {
+                      _vm.ModifySolution()
+                    }
+                  }
+                },
+                [_vm._v("修改解方")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "action-bt",
+                  on: {
+                    click: function($event) {
+                      _vm.DeleteSolution()
+                    }
+                  }
+                },
+                [_vm._v("刪除解方")]
+              )
+            ]
           )
         ])
-      ]),
-      _vm._v(" "),
-      _vm.solutionInfo
-        ? _c(
-            "div",
-            { staticClass: "message-list" },
-            [
-              _c("a", { attrs: { name: "solMessageList" } }),
-              _vm._v(" "),
-              _vm._l(_vm.messageList, function(m, i) {
-                return _c("div", { staticClass: "message" }, [
-                  _c("div", { staticClass: "owner-info" }, [
-                    _c("img", {
-                      staticClass: "owner-icon",
-                      attrs: { src: m.user.icon }
-                    }),
-                    _vm._v(
-                      "\r\n\t\t\t\t" +
-                        _vm._s(m.user.profession) +
-                        " - " +
-                        _vm._s(m.user.name) +
-                        "\r\n\t\t\t"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "message-content" }, [
-                    _vm._v(_vm._s(m.message))
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "sub-info" }, [
-                    _c("div", { staticClass: "info-item" }, [
-                      _vm._v(_vm._s(m.time))
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.solutionInfo
+      ? _c("div", [
+          _c("div", {
+            staticClass: "quest",
+            domProps: { innerHTML: _vm._s(_vm.quest[_vm.step]) }
+          }),
+          _vm._v(" "),
+          _vm.step == 0 || _vm.step == 1
+            ? _c(
+                "div",
+                _vm._l(_vm.priority, function(p, i) {
+                  return _c("div", { staticClass: "problem-cat" }, [
+                    _c("div", { staticClass: "problem-header" }, [
+                      _vm._v(_vm._s(p.name))
                     ]),
                     _vm._v(" "),
                     _c(
                       "div",
-                      {
-                        directives: [
+                      { staticClass: "problem-container" },
+                      _vm._l(_vm.solutionInfo.info[_vm.step][i], function(
+                        s,
+                        j
+                      ) {
+                        return _c(
+                          "div",
                           {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.user && m.user.id == _vm.user.id,
-                            expression: "user && m.user.id == user.id"
-                          }
-                        ],
-                        staticClass: "action-bt",
+                            staticClass: "problem-item one-third-w",
+                            class: "cat-D" + (i + 1)
+                          },
+                          [
+                            _c("div", { staticClass: "problem-title" }, [
+                              _vm._v(
+                                _vm._s(_vm.intervention[s.intervention].name)
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "problem-body" }, [
+                              _c("div", {
+                                staticClass: "problem-desc",
+                                domProps: { innerHTML: _vm._s(s.desc) }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "target-info" }, [
+                              _vm._v("針對問題 - " + _vm._s(s.targetName))
+                            ])
+                          ]
+                        )
+                      })
+                    )
+                  ])
+                })
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.step == 2
+            ? _c("div", [
+                _c("div", { staticClass: "problem-cat" }, [
+                  _c("div", { staticClass: "problem-header" }, [
+                    _vm._v("專業連結")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "problem-container" },
+                    _vm._l(_vm.solutionInfo.info[_vm.step][0], function(s, j) {
+                      return _c(
+                        "div",
+                        { staticClass: "problem-item one-third-w cat-D4" },
+                        [
+                          _c("div", { staticClass: "problem-title" }, [
+                            _vm._v(_vm._s(s.profession))
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "problem-body" }, [
+                            _c("div", {
+                              staticClass: "problem-desc",
+                              domProps: { innerHTML: _vm._s(s.desc) }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "item-bt-container" }, [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "item-bt",
+                                  on: {
+                                    click: function($event) {
+                                      _vm.SearchProfession(s.profession)
+                                    }
+                                  }
+                                },
+                                [_vm._v("找人")]
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "target-info" }, [
+                            _vm._v("針對問題 - " + _vm._s(s.targetName))
+                          ])
+                        ]
+                      )
+                    })
+                  )
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.step == 3
+            ? _c("div", [
+                _c("div", { staticClass: "problem-cat" }, [
+                  _c("div", { staticClass: "problem-header" }, [
+                    _vm._v("\r\n\t\t\t\t\t服務項目\r\n\t\t\t\t\t"),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "input-bt",
                         on: {
                           click: function($event) {
-                            _vm.DeleteMessage(i)
+                            _vm.CalculateService()
                           }
                         }
                       },
-                      [_vm._v("刪除")]
+                      [_vm._v("價格試算")]
                     )
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "problem-container" },
+                    _vm._l(_vm.solutionInfo.info[_vm.step][0], function(s, j) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass: "problem-item one-third-w",
+                          class: "cat-" + s.category
+                        },
+                        [
+                          _c("div", { staticClass: "problem-title" }, [
+                            _vm._v(_vm._s(s.code) + " " + _vm._s(s.name))
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "problem-body" }, [
+                            _c("div", {
+                              staticClass: "problem-desc",
+                              domProps: { innerHTML: _vm._s(s.desc) }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "target-info" }, [
+                            _vm._v("針對問題 - " + _vm._s(s.targetName))
+                          ])
+                        ]
+                      )
+                    })
+                  )
                 ])
-              })
-            ],
-            2
+              ])
+            : _vm._e()
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "separator" }),
+    _vm._v(" "),
+    _c("div", { staticClass: "step-bt-container" }, [
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 0 },
+          on: {
+            click: function($event) {
+              _vm.step = 0
+            }
+          }
+        },
+        [_vm._v("個案措施")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 1 },
+          on: {
+            click: function($event) {
+              _vm.step = 1
+            }
+          }
+        },
+        [_vm._v("家屬協助")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 2 },
+          on: {
+            click: function($event) {
+              _vm.step = 2
+            }
+          }
+        },
+        [_vm._v("專業連結")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 3 },
+          on: {
+            click: function($event) {
+              _vm.step = 3
+            }
+          }
+        },
+        [_vm._v("服務設定")]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "input-bt",
+        on: {
+          click: function($event) {
+            _vm.ViewCase()
+          }
+        }
+      },
+      [_vm._v("觀看案例")]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "input-bt",
+        on: {
+          click: function($event) {
+            _vm.BackToSolutionList()
+          }
+        }
+      },
+      [_vm._v("解方列表")]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "solution-title" }, [_vm._v("分享者簡介")]),
+    _vm._v(" "),
+    _vm.solutionInfo
+      ? _c("div", { staticClass: "owner" }, [
+          _c(
+            "a",
+            { attrs: { href: "/user?target=" + _vm.solutionInfo.user.id } },
+            [
+              _c("div", { staticClass: "owner-info" }, [
+                _c("img", {
+                  staticClass: "owner-icon",
+                  attrs: { src: _vm.solutionInfo.user.icon }
+                }),
+                _vm._v(
+                  "\r\n\t\t\t\t" +
+                    _vm._s(_vm.solutionInfo.user.profession) +
+                    " - " +
+                    _vm._s(_vm.solutionInfo.user.name) +
+                    "\r\n\t\t\t"
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "owner-desc" }, [
+                _vm._v(_vm._s(_vm.solutionInfo.user.desc))
+              ])
+            ]
           )
-        : _vm._e()
-    ],
-    2
-  )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "solution-title" }, [_vm._v("留言回饋")]),
+    _vm._v(" "),
+    _c("div", { staticClass: "message-box" }, [
+      _c("textarea", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.sendMessage,
+            expression: "sendMessage"
+          }
+        ],
+        attrs: { placeholder: "留言給分享者..." },
+        domProps: { value: _vm.sendMessage },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.sendMessage = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "bt-container" }, [
+        _c(
+          "div",
+          {
+            staticClass: "bt",
+            on: {
+              click: function($event) {
+                _vm.SendMessage()
+              }
+            }
+          },
+          [_vm._v("送出")]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _vm.solutionInfo
+      ? _c(
+          "div",
+          { staticClass: "message-list" },
+          [
+            _c("a", { attrs: { name: "solMessageList" } }),
+            _vm._v(" "),
+            _vm._l(_vm.messageList, function(m, i) {
+              return _c("div", { staticClass: "message" }, [
+                _c("div", { staticClass: "owner-info" }, [
+                  _c("img", {
+                    staticClass: "owner-icon",
+                    attrs: { src: m.user.icon }
+                  }),
+                  _vm._v(
+                    "\r\n\t\t\t\t" +
+                      _vm._s(m.user.profession) +
+                      " - " +
+                      _vm._s(m.user.name) +
+                      "\r\n\t\t\t"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "message-content" }, [
+                  _vm._v(_vm._s(m.message))
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "sub-info" }, [
+                  _c("div", { staticClass: "info-item" }, [
+                    _vm._v(_vm._s(m.time))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.user && m.user.id == _vm.user.id,
+                          expression: "user && m.user.id == user.id"
+                        }
+                      ],
+                      staticClass: "action-bt",
+                      on: {
+                        click: function($event) {
+                          _vm.DeleteMessage(i)
+                        }
+                      }
+                    },
+                    [_vm._v("刪除")]
+                  )
+                ])
+              ])
+            })
+          ],
+          2
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

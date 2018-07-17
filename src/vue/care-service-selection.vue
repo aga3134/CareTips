@@ -3,7 +3,7 @@
 	<div class="care-service-selection" v-if="serviceCode">
 		<div class="input-item">
 			<div class="input-label">主類</div>
-			<select v-model="mainCategory" v-on:change="UpdateMainCategory();" v-bind:disabled="fixMainCategory">
+			<select v-model="mainCategory" v-on:change="UpdateMainCategory();">
 				<option v-for="(s,i) in serviceCode.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
 			</select>
 		</div>

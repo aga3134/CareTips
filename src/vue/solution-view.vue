@@ -2,8 +2,7 @@
 <div class="solution-view">
 	<div class="panel-title">觀看解方</div>
 	<p class="warning center" v-if="solutionInfo && curCaseVersion != solutionInfo.caseVersion">* 此為針對案例版本{{solutionInfo.caseVersion}} 提出的解方，與目前觀看的案例版本{{curCaseVersion}} 不同，參考時請小心。</p>
-	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
-	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
+	
 	<div class="feedback-statistic" v-if="solutionInfo">
 		<div class="container clickable" v-on:click="ToggleLike();">
 			<img class="feedback-icon" src="/static/image/like.png">
@@ -19,8 +18,8 @@
 		</div>
 	</div>
 
-	<div v-for="(q,step) in quest" v-if="solutionInfo">
-		<div class="quest" v-html="q"></div>
+	<div v-if="solutionInfo">
+		<div class="quest" v-html="quest[step]"></div>
 		<div v-if="step==0 || step==1">
 			<div class="problem-cat" v-for="(p,i) in priority">
 				<div class="problem-header">{{p.name}}</div>
@@ -70,6 +69,18 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="separator"></div>
+	<div class="step-bt-container">
+		<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
+		<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
+		<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
+		<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
+	</div>
+
+	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
+
 	<div class="solution-title">分享者簡介</div>
 	<div class="owner" v-if="solutionInfo">
 		<a v-bind:href="'/user?target='+solutionInfo.user.id">
@@ -120,7 +131,8 @@ export default {
 			sendMessage: "",
 			messageList: [],
 			solutionID: null,
-			curCaseVersion: 1
+			curCaseVersion: 1,
+			step: 0
 		};
 	},
 	created: function(){
@@ -272,6 +284,20 @@ export default {
 		font-size: 1.5em;
 		padding: 10px 0px;
 		margin: 10px 0px;
+	}
+
+	.step-bt-container{
+		padding: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.quest{
+		padding: 10px 0px;
+		font-size: 1.2em;
+		font-weight: bold;
 	}
 }
 
