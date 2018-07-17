@@ -1,12 +1,6 @@
 <template lang="html">
 <div class="solution-editor" v-on:click.self="ViewCase();">
 	<div class="step-page">
-		<div class="step-bt-container">
-			<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
-			<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
-			<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
-			<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
-		</div>
 		<div class="quest" v-html="quest[step]"></div>
 		<div class="separator"></div>
 		<div class="input-bt" v-on:click="openInputPanel=true;">新增項目</div>
@@ -226,6 +220,7 @@ export default {
 				if(cat[1]<0 || cat[1]>=problemCat.length) return name;
 				return problemCat[cat[1]].name;
 			}
+			return name;
 		},
 		AddItem: function(){
 			switch(this.step){
@@ -377,13 +372,14 @@ export default {
 		color: rgb(50,50,50);
 		width: 1024px;
 		max-width: 100%;
-		padding: 10px;
+		padding: 30px 10px;
 		border-radius: 5px;
 		margin: 10px auto;
 	}
 	.quest{
-		padding: 5px 0px;
+		padding: 10px 0px;
 		font-size: 1.2em;
+		font-weight: bold;
 	}
 	.remark{
 		text-align: center;

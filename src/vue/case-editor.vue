@@ -97,7 +97,7 @@
 					<div class="close-bt" v-on:click="openFilterPanel=false;">X</div>
 					<div class="input-item">
 						<div class="input-label">篩選</div>
-						<input type="text" v-model="filterInput" v-on:keyup="UpdateFilterList();">
+						<input type="text" v-model="filterInput" ref="filterInput" v-on:keyup="UpdateFilterList();">
 					</div>
 					<div class="filter-list">
 						<div v-for="cat in filterList" class="filter-category" v-if="cat.num>0">
@@ -257,6 +257,9 @@ export default {
 		OpenFilterPanel: function(){
 			this.openFilterPanel = true;
 			this.UpdateFilterList();
+			setTimeout(function(){
+				this.$refs.filterInput.focus();
+			}.bind(this),10);
 		},
 		UpdateFilterList: function(){
 			this.filterList = {};

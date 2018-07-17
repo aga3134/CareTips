@@ -1,44 +1,69 @@
 <template lang="html">
-<div class="care-service-selection" v-if="serviceCode">
-	<div class="input-item">
-		<div class="input-label">主類</div>
-		<select v-model="mainCategory" v-on:change="UpdateMainCategory();" v-bind:disabled="fixMainCategory">
-			<option v-for="(s,i) in serviceCode.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
-		</select>
-	</div>
-	<div class="input-item" v-if="serviceCode.service[mainCategory].items.length > 1">
-		<div class="input-label">子類</div>
-		<select v-model="subCategory" v-on:change="UpdateSubCategory();">
-			<option v-for="(s,i) in serviceCode.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-		</select>
-	</div>
-	<div class="input-item" v-if="mainCategory != 7">
-		<div class="input-label">項目</div>
-		<select v-model="selectService" v-on:change="UpdateItemInfo();">
-			<option v-for="(s,i) in serviceCode.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
-		</select>
-	</div>
-	<div v-if="calcPrice == '1'">
-		<div class="inline-block input-item" v-if="mainCategory == 4 || mainCategory == 5">
-			<div class="input-label">方式</div>
-			<select v-model="isRent">
-				<option value="0" v-show="itemInfo.payForBuy !== '不適用' ">購買</option>
-				<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
+<div>
+	<div class="care-service-selection" v-if="serviceCode">
+		<div class="input-item">
+			<div class="input-label">主類</div>
+			<select v-model="mainCategory" v-on:change="UpdateMainCategory();" v-bind:disabled="fixMainCategory">
+				<option v-for="(s,i) in serviceCode.service" v-bind:value="i">{{s.code}} {{s.name}}</option>
 			</select>
 		</div>
-		<div class="inline-block input-item" v-if="mainCategory == 7">
-			<div class="input-label">服務名稱</div>
-			<input type="text" v-model="customName">
+		<div class="input-item" v-if="serviceCode.service[mainCategory].items.length > 1">
+			<div class="input-label">子類</div>
+			<select v-model="subCategory" v-on:change="UpdateSubCategory();">
+				<option v-for="(s,i) in serviceCode.service[mainCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
+			</select>
 		</div>
-		<div class="inline-block input-item" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
-			<div class="input-label">價格</div>
-			<input type="number" min="1" v-model="customPrice">
+		<div class="input-item" v-if="mainCategory != 7">
+			<div class="input-label">項目</div>
+			<select v-model="selectService" v-on:change="UpdateItemInfo();">
+				<option v-for="(s,i) in serviceCode.service[mainCategory].items[subCategory].items" v-bind:value="i">{{s.code}} {{s.name}}</option>
+			</select>
+			<img class="filter-icon" src="/static/image/search-icon.png" v-on:click="OpenFilterPanel();">
 		</div>
-		<div class="inline-block input-item">
-			<div class="input-label">數量</div>
-			<input type="number" min="1" max="100" v-model="serviceCount">
+		<div v-if="calcPrice == '1'">
+			<div class="input-item">
+				<div class="item" v-if="mainCategory == 4 || mainCategory == 5">
+					<div class="input-label">方式</div>
+					<select v-model="isRent">
+						<option value="0" v-show="itemInfo.payForBuy !== '不適用' ">購買</option>
+						<option value="1" v-show="itemInfo.payForRent !== '不適用' ">租賃</option>
+					</select>
+				</div>
+				<div class="item" v-if="mainCategory == 7">
+					<div class="input-label">服務名稱</div>
+					<input type="text" v-model="customName">
+				</div>
+				<div class="item" v-if="mainCategory == 3 || mainCategory == 4 || mainCategory == 5 || mainCategory == 7">
+					<div class="input-label">價格</div>
+					<input type="number" min="1" v-model="customPrice">
+				</div>
+				<div class="item">
+					<div class="input-label">數量</div>
+					<input type="number" min="1" max="100" v-model="serviceCount">
+				</div>
+			</div>
 		</div>
 	</div>
+	
+	<div class="popup-panel" v-show="openFilterPanel">
+		<div class="input-area">
+			<div class="close-bt" v-on:click="CloseFilterPanel();">X</div>
+			<div class="input-item">
+				<div class="input-label">篩選</div>
+				<input type="text" v-model="filterInput" ref="filterInput" v-on:keyup="UpdateFilterList();">
+			</div>
+			<div class="filter-list">
+				<div v-for="mainCat in filterList" class="filter-category" v-if="mainCat.num>0">
+					<div v-for="subCat in mainCat.items" class="filter-problem" v-if="subCat.items.length>0">
+						<div class="filter-item" v-for="item in subCat.items" v-on:click="SelectFilterItem(item.mainCat,item.subCat,item.itemIndex);">
+							{{item.code}} - {{item.name}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 </div>
 </template>
 
@@ -58,7 +83,10 @@ export default {
 			selectService: 0,
 			itemInfo: null,
 			serviceCount: 1,
-			fixMainCategory: false
+			fixMainCategory: false,
+			openFilterPanel: false,
+			filterInput: "",
+			filterList: []
 		};
 	},
 	created: function(){
@@ -163,6 +191,45 @@ export default {
 					this.isRent = 1;
 				}
 			}
+		},
+		OpenFilterPanel: function(){
+			this.openFilterPanel = true;
+			this.$parent.enableAddButton = false;
+			this.UpdateFilterList();
+			setTimeout(function(){
+				this.$refs.filterInput.focus();
+			}.bind(this),10);
+		},
+		CloseFilterPanel: function(){
+			this.openFilterPanel = false;
+		},
+		UpdateFilterList: function(){
+			this.filterList = [];
+			for(var i=0;i<this.serviceCode.service.length;i++){
+				var service = this.serviceCode.service[i];
+				var mainCategory = {"code":service.code,"name":service.name,"items":[],num:0};
+				for(var j=0;j<service.items.length;j++){
+					var serviceItem = service.items[j];
+					var subCategory = {"code":serviceItem.code,"name":serviceItem.name,"items":[]};
+					for(var k=0;k<serviceItem.items.length;k++){
+						var targetItem = serviceItem.items[k];
+						if(targetItem.name.includes(this.filterInput) || 
+							targetItem.code.includes(this.filterInput)){
+							subCategory.items.push({"code":targetItem.code,"name":targetItem.name,"mainCat":i,"subCat":j,"itemIndex":k});
+						}
+					}
+					mainCategory.items.push(subCategory);
+					mainCategory.num += subCategory.items.length;
+				}
+				this.filterList.push(mainCategory);
+			}
+		},
+		SelectFilterItem: function(i,j,k){
+			this.mainCategory = i;
+			this.subCategory = j;
+			this.selectService = k;
+			this.UpdateItemInfo();
+			this.CloseFilterPanel();
 		}
 	}
 }
@@ -170,9 +237,16 @@ export default {
 
 <style lang="scss" scoped>
 @import "../scss/main.scss";
-
-.case-view-solution{
+.care-service-selection{
 	
 }
-
+.popup-panel{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #eeeeee;
+	overflow-y: auto;
+}
 </style>
