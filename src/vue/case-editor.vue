@@ -4,7 +4,7 @@
 		<div class="case-info">
 			<a name="caseDesc"></a>
 			<div class="cat-header">新增案例</div>
-			<textarea v-model="caseInfo.desc" placeholder="請簡單描述案例之生活背景與問題摘要"></textarea>
+			<textarea v-model="caseInfo.desc" placeholder="請簡單描述案例之生活背景與問題摘要" v-on:change="dirty=true;"></textarea>
 		</div>
 		<div class="case-info">
 			<a name="caseProblem"></a>
@@ -153,7 +153,8 @@ export default {
 			user: null,
 			openFilterPanel: false,
 			filterInput: "",
-			filterList: {}
+			filterList: {},
+			dirty: false
 		};
 	},
 	created: function(){
@@ -178,6 +179,9 @@ export default {
 			}
 		}.bind(this));
 		
+		window.onbeforeunload = function(){
+			if(this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetUser: function(user){
@@ -198,6 +202,7 @@ export default {
 			this.selectSign = 0;
 		},
 		AddProblem: function(){
+			this.dirty = true;
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
 			var selectProblem = selectDomain.problem[this.selectProblem];
@@ -235,6 +240,7 @@ export default {
 			}
 		},
 		DoModify: function(){
+			this.dirty = true;
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
 			var selectProblem = selectDomain.problem[this.selectProblem];
@@ -320,6 +326,7 @@ export default {
 				return;
 			}
 			//console.log(this.target.profession);
+			this.dirty = false;
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch(this.action){
 				case "create":

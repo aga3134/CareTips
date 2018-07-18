@@ -1,6 +1,16 @@
 <template lang="html">
 <div class="solution-editor" v-on:click.self="ViewCase();">
 	<div class="step-page">
+
+		<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+
+		<div class="step-bt-container">
+			<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
+			<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
+			<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
+			<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
+		</div>
+
 		<div class="quest" v-html="quest[step]"></div>
 		<div class="separator"></div>
 		<div class="input-bt" v-on:click="openInputPanel=true;">新增項目</div>
@@ -62,14 +72,6 @@
 		</div>
 
 		<div class="separator"></div>
-		<div class="step-bt-container">
-			<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
-			<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
-			<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
-			<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
-		</div>
-
-		<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
 		<div class="input-bt" v-show="action=='edit'" v-on:click="ClearEditSolution(true);">取消修改</div>
 		<div class="input-bt" v-on:click="SubmitSolution();">{{action=="edit"?"完成修改":"完成解題"}}</div>
 	</div>
@@ -160,7 +162,8 @@ export default {
 			targetIndex: "",
 			modify: false,
 			modifyCategory: "",
-			modifyIndex: -1
+			modifyIndex: -1,
+			dirty: false
 		};
 	},
 	components: {
@@ -174,6 +177,10 @@ export default {
 			this.professions = data.profession;
 			this.selectProfession = this.professions[0];
 		}.bind(this));
+
+		window.onbeforeunload = function(){
+			if(this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetProblem: function(problem){
@@ -223,6 +230,7 @@ export default {
 			return name;
 		},
 		AddItem: function(){
+			this.dirty = true;
 			switch(this.step){
 				case 0: this.AddIntervention(); break;
 				case 1: this.AddIntervention(); break;
@@ -295,6 +303,7 @@ export default {
 			}
 		},
 		DoModify: function(){
+			this.dirty = true;
 			var plan = {};
 			var changeCategory = false;
 			switch(this.step){
@@ -336,13 +345,23 @@ export default {
 			this.openInputPanel = false;
 		},
 		SubmitSolution: function(){
-			var solNum = 0;
-			for(var key in this.solution[0]){
-				solNum += this.solution[0][key].length;
+			var solNum = [0,0,0,0];
+			for(var i=0;i<this.quest.length;i++){
+				for(var key in this.solution[i]){
+					solNum[i] += this.solution[i][key].length;
+				}
 			}
-			if(solNum == 0){
+			if(solNum[0] == 0){
 				return alert("請新增至少一個個案措施");
 			}
+			var str = "您的解方提供了\n";
+			str += "個案措施 "+solNum[0]+" 項，";
+			str += "家屬協助 "+solNum[1]+" 項，";
+			str += "專業連結 "+solNum[2]+" 項，";
+			str += "服務設定 "+solNum[3]+" 項\n";
+			str += "確定送出?";
+			if(!confirm(str)) return;
+
 			var solution = {};
 			var caseInfo = this.$parent.GetCaseInfo();
 			solution.caseID = caseInfo.caseID;
@@ -350,6 +369,7 @@ export default {
 			solution.info = JSON.stringify(this.solution);
 
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			this.dirty = false;
 			switch(this.action){
 				case "create":
 					$.post("/solution/create", {data: solution,_csrf:csrfToken}, function(result){

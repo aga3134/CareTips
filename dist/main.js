@@ -1231,7 +1231,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			user: null,
 			openFilterPanel: false,
 			filterInput: "",
-			filterList: {}
+			filterList: {},
+			dirty: false
 		};
 	},
 	created: function () {
@@ -1255,6 +1256,10 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				}.bind(this));
 			}
 		}.bind(this));
+
+		window.onbeforeunload = function () {
+			if (this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetUser: function (user) {
@@ -1275,6 +1280,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.selectSign = 0;
 		},
 		AddProblem: function () {
+			this.dirty = true;
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
 			var selectProblem = selectDomain.problem[this.selectProblem];
@@ -1312,6 +1318,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			}
 		},
 		DoModify: function () {
+			this.dirty = true;
 			var domainID = this.selectDomain;
 			var selectDomain = this.omaha[domainID];
 			var selectProblem = selectDomain.problem[this.selectProblem];
@@ -1393,6 +1400,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				return;
 			}
 			//console.log(this.target.profession);
+			this.dirty = false;
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch (this.action) {
 				case "create":
@@ -2576,6 +2584,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
@@ -2602,7 +2612,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			targetIndex: "",
 			modify: false,
 			modifyCategory: "",
-			modifyIndex: -1
+			modifyIndex: -1,
+			dirty: false
 		};
 	},
 	components: {
@@ -2616,6 +2627,10 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.professions = data.profession;
 			this.selectProfession = this.professions[0];
 		}.bind(this));
+
+		window.onbeforeunload = function () {
+			if (this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetProblem: function (problem) {
@@ -2660,6 +2675,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			return name;
 		},
 		AddItem: function () {
+			this.dirty = true;
 			switch (this.step) {
 				case 0:
 					this.AddIntervention();break;
@@ -2734,6 +2750,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			}
 		},
 		DoModify: function () {
+			this.dirty = true;
 			var plan = {};
 			var changeCategory = false;
 			switch (this.step) {
@@ -2773,13 +2790,23 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.openInputPanel = false;
 		},
 		SubmitSolution: function () {
-			var solNum = 0;
-			for (var key in this.solution[0]) {
-				solNum += this.solution[0][key].length;
+			var solNum = [0, 0, 0, 0];
+			for (var i = 0; i < this.quest.length; i++) {
+				for (var key in this.solution[i]) {
+					solNum[i] += this.solution[i][key].length;
+				}
 			}
-			if (solNum == 0) {
+			if (solNum[0] == 0) {
 				return alert("請新增至少一個個案措施");
 			}
+			var str = "您的解方提供了\n";
+			str += "個案措施 " + solNum[0] + " 項，";
+			str += "家屬協助 " + solNum[1] + " 項，";
+			str += "專業連結 " + solNum[2] + " 項，";
+			str += "服務設定 " + solNum[3] + " 項\n";
+			str += "確定送出?";
+			if (!confirm(str)) return;
+
 			var solution = {};
 			var caseInfo = this.$parent.GetCaseInfo();
 			solution.caseID = caseInfo.caseID;
@@ -2787,6 +2814,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			solution.info = JSON.stringify(this.solution);
 
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			this.dirty = false;
 			switch (this.action) {
 				case "create":
 					$.post("/solution/create", { data: solution, _csrf: csrfToken }, function (result) {
@@ -2978,6 +3006,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -3418,7 +3447,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			professions: [],
 			counties: [],
 			submitCallback: null,
-			finalCheck: false
+			finalCheck: false,
+			dirty: false
 		};
 	},
 	created: function () {
@@ -3426,6 +3456,10 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.professions = data.profession;
 			this.counties = data.county;
 		}.bind(this));
+
+		window.onbeforeunload = function () {
+			if (this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetUser: function (user) {
@@ -3487,6 +3521,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			}
 			//console.log(this.user.profession);
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			this.dirty = false;
 			$.post("/user/edit", { data: this.user, _csrf: csrfToken }, function (result) {
 				if (this.submitCallback) this.submitCallback(result);else {
 					alert(result.status == "ok" ? "修改成功" : "修改失敗");
@@ -7386,6 +7421,9 @@ var render = function() {
             attrs: { placeholder: "請簡單描述案例之生活背景與問題摘要" },
             domProps: { value: _vm.caseInfo.desc },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -10518,6 +10556,77 @@ var render = function() {
     },
     [
       _c("div", { staticClass: "step-page" }, [
+        _c(
+          "div",
+          {
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.ViewCase()
+              }
+            }
+          },
+          [_vm._v("觀看案例")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "step-bt-container" }, [
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.step == 0 },
+              on: {
+                click: function($event) {
+                  _vm.step = 0
+                }
+              }
+            },
+            [_vm._v("個案措施")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.step == 1 },
+              on: {
+                click: function($event) {
+                  _vm.step = 1
+                }
+              }
+            },
+            [_vm._v("家屬協助")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.step == 2 },
+              on: {
+                click: function($event) {
+                  _vm.step = 2
+                }
+              }
+            },
+            [_vm._v("專業連結")]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "tab-bt",
+              class: { on: _vm.step == 3 },
+              on: {
+                click: function($event) {
+                  _vm.step = 3
+                }
+              }
+            },
+            [_vm._v("服務設定")]
+          )
+        ]),
+        _vm._v(" "),
         _c("div", {
           staticClass: "quest",
           domProps: { innerHTML: _vm._s(_vm.quest[_vm.step]) }
@@ -10747,77 +10856,6 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "separator" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "step-bt-container" }, [
-          _c(
-            "div",
-            {
-              staticClass: "tab-bt",
-              class: { on: _vm.step == 0 },
-              on: {
-                click: function($event) {
-                  _vm.step = 0
-                }
-              }
-            },
-            [_vm._v("個案措施")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "tab-bt",
-              class: { on: _vm.step == 1 },
-              on: {
-                click: function($event) {
-                  _vm.step = 1
-                }
-              }
-            },
-            [_vm._v("家屬協助")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "tab-bt",
-              class: { on: _vm.step == 2 },
-              on: {
-                click: function($event) {
-                  _vm.step = 2
-                }
-              }
-            },
-            [_vm._v("專業連結")]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass: "tab-bt",
-              class: { on: _vm.step == 3 },
-              on: {
-                click: function($event) {
-                  _vm.step = 3
-                }
-              }
-            },
-            [_vm._v("服務設定")]
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "input-bt",
-            on: {
-              click: function($event) {
-                _vm.ViewCase()
-              }
-            }
-          },
-          [_vm._v("觀看案例")]
-        ),
         _vm._v(" "),
         _c(
           "div",
@@ -11574,6 +11612,90 @@ var render = function() {
         ])
       : _vm._e(),
     _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "input-bt",
+        on: {
+          click: function($event) {
+            _vm.ViewCase()
+          }
+        }
+      },
+      [_vm._v("觀看案例")]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "input-bt",
+        on: {
+          click: function($event) {
+            _vm.BackToSolutionList()
+          }
+        }
+      },
+      [_vm._v("解方列表")]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "step-bt-container" }, [
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 0 },
+          on: {
+            click: function($event) {
+              _vm.step = 0
+            }
+          }
+        },
+        [_vm._v("個案措施")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 1 },
+          on: {
+            click: function($event) {
+              _vm.step = 1
+            }
+          }
+        },
+        [_vm._v("家屬協助")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 2 },
+          on: {
+            click: function($event) {
+              _vm.step = 2
+            }
+          }
+        },
+        [_vm._v("專業連結")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tab-bt",
+          class: { on: _vm.step == 3 },
+          on: {
+            click: function($event) {
+              _vm.step = 3
+            }
+          }
+        },
+        [_vm._v("服務設定")]
+      )
+    ]),
+    _vm._v(" "),
     _vm.solutionInfo
       ? _c("div", [
           _c("div", {
@@ -11736,90 +11858,6 @@ var render = function() {
       : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "separator" }),
-    _vm._v(" "),
-    _c("div", { staticClass: "step-bt-container" }, [
-      _c(
-        "div",
-        {
-          staticClass: "tab-bt",
-          class: { on: _vm.step == 0 },
-          on: {
-            click: function($event) {
-              _vm.step = 0
-            }
-          }
-        },
-        [_vm._v("個案措施")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "tab-bt",
-          class: { on: _vm.step == 1 },
-          on: {
-            click: function($event) {
-              _vm.step = 1
-            }
-          }
-        },
-        [_vm._v("家屬協助")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "tab-bt",
-          class: { on: _vm.step == 2 },
-          on: {
-            click: function($event) {
-              _vm.step = 2
-            }
-          }
-        },
-        [_vm._v("專業連結")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "tab-bt",
-          class: { on: _vm.step == 3 },
-          on: {
-            click: function($event) {
-              _vm.step = 3
-            }
-          }
-        },
-        [_vm._v("服務設定")]
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "input-bt",
-        on: {
-          click: function($event) {
-            _vm.ViewCase()
-          }
-        }
-      },
-      [_vm._v("觀看案例")]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "input-bt",
-        on: {
-          click: function($event) {
-            _vm.BackToSolutionList()
-          }
-        }
-      },
-      [_vm._v("解方列表")]
-    ),
     _vm._v(" "),
     _c("div", { staticClass: "solution-title" }, [_vm._v("分享者簡介")]),
     _vm._v(" "),
@@ -12080,6 +12118,9 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.user.name },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -12105,19 +12146,24 @@ var render = function() {
                 }
               ],
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.selectProfession = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectProfession = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  function($event) {
+                    _vm.dirty = true
+                  }
+                ]
               }
             },
             _vm._l(_vm.professions, function(profession) {
@@ -12156,6 +12202,9 @@ var render = function() {
                 attrs: { type: "text" },
                 domProps: { value: _vm.otherProfession },
                 on: {
+                  change: function($event) {
+                    _vm.dirty = true
+                  },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -12180,6 +12229,9 @@ var render = function() {
             ],
             domProps: { value: _vm.user.desc },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -12209,21 +12261,26 @@ var render = function() {
                 }
               ],
               on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.$set(
-                    _vm.user,
-                    "county",
-                    $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                  )
-                }
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.user,
+                      "county",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  },
+                  function($event) {
+                    _vm.dirty = true
+                  }
+                ]
               }
             },
             _vm._l(_vm.counties, function(county) {
@@ -12249,6 +12306,9 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.user.company },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -12274,6 +12334,9 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.user.companyUrl },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -12299,6 +12362,9 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.user.contactEmail },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return
@@ -12324,6 +12390,9 @@ var render = function() {
             attrs: { type: "text" },
             domProps: { value: _vm.user.tel },
             on: {
+              change: function($event) {
+                _vm.dirty = true
+              },
               input: function($event) {
                 if ($event.target.composing) {
                   return

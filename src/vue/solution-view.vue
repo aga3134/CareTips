@@ -18,6 +18,16 @@
 		</div>
 	</div>
 
+	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
+	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
+
+	<div class="step-bt-container">
+		<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
+		<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
+		<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
+		<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
+	</div>
+
 	<div v-if="solutionInfo">
 		<div class="quest" v-html="quest[step]"></div>
 		<div v-if="step==0 || step==1">
@@ -71,15 +81,6 @@
 	</div>
 
 	<div class="separator"></div>
-	<div class="step-bt-container">
-		<div class="tab-bt" v-bind:class="{on:step==0}" v-on:click="step=0;">個案措施</div>
-		<div class="tab-bt" v-bind:class="{on:step==1}" v-on:click="step=1;">家屬協助</div>
-		<div class="tab-bt" v-bind:class="{on:step==2}" v-on:click="step=2;">專業連結</div>
-		<div class="tab-bt" v-bind:class="{on:step==3}" v-on:click="step=3;">服務設定</div>
-	</div>
-
-	<div class="input-bt" v-on:click="ViewCase();">觀看案例</div>
-	<div class="input-bt" v-on:click="BackToSolutionList();">解方列表</div>
 
 	<div class="solution-title">分享者簡介</div>
 	<div class="owner" v-if="solutionInfo">

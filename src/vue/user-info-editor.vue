@@ -9,42 +9,42 @@
 			</div>
 			<div class="info-box grow">
 				<div class="info-label canNotEmpty">姓名</div>
-				<input type="text" v-model="user.name">
+				<input type="text" v-model="user.name" v-on:change="dirty=true;">
 				<div class="info-label canNotEmpty">服務專業</div>
-				<select v-model="selectProfession">
+				<select v-model="selectProfession" v-on:change="dirty=true;">
 					<option v-for="profession in professions" v-bind:value="profession">{{profession}}</option>
 				</select>
 				<div v-show="selectProfession == '其他' ">
 					<div class="info-label canNotEmpty">請填寫服務專業</div>
-					<input type="text" v-model="otherProfession">
+					<input type="text" v-model="otherProfession" v-on:change="dirty=true;">
 				</div>
 				<div class="info-label">自我介紹</div>
-				<textarea v-model="user.desc"></textarea>
+				<textarea v-model="user.desc" v-on:change="dirty=true;"></textarea>
 			</div>
 		</div>
 		<div class="sub-title">聯絡資訊</div>
 		<div class="info-container">
 			<div class="info-box">
 				<div class="info-label">服務縣市</div>
-				<select v-model="user.county">
+				<select v-model="user.county" v-on:change="dirty=true;">
 					<option v-for="county in counties" v-bind:value="county">{{county}}</option>
 				</select>
 			</div>
 			<div class="info-box">
 				<div class="info-label">公司或組織名稱</div>
-				<input type="text" v-model="user.company">
+				<input type="text" v-model="user.company" v-on:change="dirty=true;">
 			</div>
 			<div class="info-box">
 				<div class="info-label">公司或組織網址</div>
-				<input type="text" v-model="user.companyUrl">
+				<input type="text" v-model="user.companyUrl" v-on:change="dirty=true;">
 			</div>
 			<div class="info-box">
 				<div class="info-label">服務聯絡信箱</div>
-				<input type="text" v-model="user.contactEmail">
+				<input type="text" v-model="user.contactEmail" v-on:change="dirty=true;">
 			</div>
 			<div class="info-box">
 				<div class="info-label">服務聯絡電話</div>
-				<input type="text" v-model="user.tel">
+				<input type="text" v-model="user.tel" v-on:change="dirty=true;">
 			</div>
 		</div>
 		
@@ -71,7 +71,8 @@ export default {
 			professions: [],
 			counties: [],
 			submitCallback: null,
-			finalCheck: false
+			finalCheck: false,
+			dirty: false
 		};
 	},
 	created: function(){
@@ -79,6 +80,10 @@ export default {
 			this.professions = data.profession;
 			this.counties = data.county;
 		}.bind(this));
+
+		window.onbeforeunload = function(){
+			if(this.dirty) return "";
+		}.bind(this);
 	},
 	methods: {
 		SetUser: function(user){
@@ -142,6 +147,7 @@ export default {
 			}
 			//console.log(this.user.profession);
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			this.dirty = false;
 			$.post("/user/edit", {data: this.user, _csrf: csrfToken}, function(result){
 				if(this.submitCallback) this.submitCallback(result);
 				else{
