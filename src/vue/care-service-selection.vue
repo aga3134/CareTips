@@ -83,7 +83,6 @@ export default {
 			selectService: 0,
 			itemInfo: null,
 			serviceCount: 1,
-			fixMainCategory: false,
 			openFilterPanel: false,
 			filterInput: "",
 			filterList: []

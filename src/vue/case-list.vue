@@ -93,7 +93,7 @@ export default {
 			if(this.param.ownerID) urlStr += "&owner="+this.param.ownerID;
 			if(this.param.keyword) urlStr += "&keyword="+this.param.keyword;
 			if(this.param.profession) urlStr += "&profession="+this.param.profession;
-			urlStr += "&sort="+this.param.sort||"newest";
+			urlStr += "&sort="+(this.param.sort||"newest");
 			$.get(urlStr, function(result){
 				this.preLoad = result.data;
 				if(result.status != "ok") return alert("讀取案例列表失敗");

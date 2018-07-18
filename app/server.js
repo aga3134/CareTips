@@ -4,6 +4,10 @@ var passport = require("passport");
 var session = require("express-session");
 var MySQLStore = require('express-mysql-session')(session);
 var bodyParser = require("body-parser");
+var fs = require('fs-extra');
+var path = require('path');
+var morgan = require('morgan');
+var rfs = require('rotating-file-stream');
 
 var viewRoute = require("./route/viewRoute");
 var authRoute = require("./route/authRoute");
@@ -25,6 +29,14 @@ app.set("views", rootDir + "/view");
 app.use('/static',express.static(rootDir + '/static'));
 app.use('/dist',express.static(rootDir + '/dist'));
 
+//create one log file per day
+var logDirectory = path.join(rootDir, 'log');
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+var accessLogStream = rfs('access.log', {
+    interval: '1d',
+    path: logDirectory
+});
+app.use(morgan('short',{stream: accessLogStream}));
 
 //setup auth
 var options = {

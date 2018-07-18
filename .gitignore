@@ -2,6 +2,7 @@ config.json
 *.txt
 *.log
 *.map
+log/
 node_modules/
 imageSrc/
 static/file/
