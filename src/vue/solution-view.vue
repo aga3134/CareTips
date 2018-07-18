@@ -160,7 +160,8 @@ export default {
 		},
 		DeleteSolution: function(){
 			if(confirm("確定刪除解方?")){
-				$.get("/solution/delete?solution="+this.solutionInfo.id+"&case="+this.solutionInfo.caseID, function(result){
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				$.post("/solution/delete?solution="+this.solutionInfo.id+"&case="+this.solutionInfo.caseID+"&_csrf="+csrfToken, function(result){
 					if(result.status != "ok"){
 						switch(result.message){
 							case "msgNum not zero": alert("無法刪除已有留言的解方"); break;
@@ -206,6 +207,8 @@ export default {
 			var body = {};
 			body.solutionID = this.solutionInfo.id;
 			body.message = this.sendMessage;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf=csrfToken;
 
 			$.post("/solution/message/create", body, function(result){
 				if(result.status != "ok") return alert("新增留言失敗");
@@ -225,6 +228,8 @@ export default {
 				var body = {};
 				body.message = this.messageList[index].id;
 				body.solution = this.solutionInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				body._csrf=csrfToken;
 
 				$.post("/solution/message/delete", body, function(result){
 					if(result.status != "ok") return alert("刪除留言失敗");
@@ -240,6 +245,8 @@ export default {
 			var body = {};
 			body.solutionID = this.solutionInfo.id;
 			body.ownerID = this.user.id;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf=csrfToken;
 
 			if(this.isLike){
 				if(confirm("您已按過讚，要將按讚取消?")){

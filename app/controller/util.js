@@ -1,6 +1,7 @@
 var Config = require('../../config');
 var URL = require('url');
 var DB = require("../db/db");
+var csrf = require('csurf');
 
 var util = {};
 
@@ -97,5 +98,7 @@ util.CheckMySolutionMessage = function (req, res, next) {
 		else return util.FailRedirect(req,res,"/","權限不足");
 	});
 };
+
+util.CSRF = csrf();
 
 module.exports = util;

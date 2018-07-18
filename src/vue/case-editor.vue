@@ -320,15 +320,16 @@ export default {
 				return;
 			}
 			//console.log(this.target.profession);
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch(this.action){
 				case "create":
-					$.post("/case/create", {data: this.caseInfo}, function(data){
+					$.post("/case/create", {data: this.caseInfo,_csrf:csrfToken}, function(data){
 						if(data.status != "ok") return window.location.href="/?message=新增案例失敗";
 						window.location.href = "/case?case="+data.data;
 					});
 					break;
 				case "edit":
-					$.post("/case/edit?case="+this.caseID, {data: this.caseInfo}, function(data){
+					$.post("/case/edit?case="+this.caseID, {data: this.caseInfo,_csrf:csrfToken}, function(data){
 						if(data.status != "ok") return window.location.href="/?message=修改案例失敗";
 						window.location.href = "/case?case="+data.data;
 					});

@@ -11,12 +11,13 @@ var meta = {};
 meta.version = Config.version;
 meta.hostname = Config.hostname;
 
-router.get('/', util.CheckLogin, function(req, res) {
+router.get('/', util.CheckLogin, util.CSRF, function(req, res) {
 	var userID = req.query.user;
 
 	meta.title = "照服秘笈";
 	meta.path = req.originalUrl;
 	meta.desc = Config.desc;
+	meta.csrfToken = req.csrfToken();
 	ejs.renderFile("view/content/user.ejs").then(function(content){
 		res.render("template.ejs",{meta: meta, content: content});
 	});
@@ -59,7 +60,7 @@ router.get('/info', util.CheckLogin, function(req, res) {
 });
 
 
-router.post('/edit', util.CheckLogin, function(req, res) {
+router.post('/edit', util.CheckLogin, util.CSRF, function(req, res) {
 	var param = {};
 	param.userID = req.user.id;
 	param.body = req.body.data;
@@ -74,7 +75,7 @@ router.post('/edit', util.CheckLogin, function(req, res) {
 });
 
 
-router.post('/upload-image', util.CheckLogin, upload.UploadImageToMem, function(req, res){
+router.post('/upload-image', util.CheckLogin, util.CSRF, upload.UploadImageToMem, function(req, res){
 	var param = {};
 	var ext = upload.GetImageType(req.file);
 	param.buffer = req.file.buffer;

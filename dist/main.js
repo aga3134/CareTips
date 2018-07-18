@@ -1393,15 +1393,16 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				return;
 			}
 			//console.log(this.target.profession);
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch (this.action) {
 				case "create":
-					$.post("/case/create", { data: this.caseInfo }, function (data) {
+					$.post("/case/create", { data: this.caseInfo, _csrf: csrfToken }, function (data) {
 						if (data.status != "ok") return window.location.href = "/?message=新增案例失敗";
 						window.location.href = "/case?case=" + data.data;
 					});
 					break;
 				case "edit":
-					$.post("/case/edit?case=" + this.caseID, { data: this.caseInfo }, function (data) {
+					$.post("/case/edit?case=" + this.caseID, { data: this.caseInfo, _csrf: csrfToken }, function (data) {
 						if (data.status != "ok") return window.location.href = "/?message=修改案例失敗";
 						window.location.href = "/case?case=" + data.data;
 					});
@@ -1827,7 +1828,21 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		},
 		DeleteCase: function () {
 			if (confirm("確定刪除案例?")) {
-				window.location.href = "/case/delete?case=" + this.caseInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				$.post("/case/delete?case=" + this.caseInfo.id + "&_csrf=" + csrfToken, function (result) {
+					if (result.status != "ok") {
+						switch (result.message) {
+							case "solNum not zero":
+								return alert("無法刪除已有解決方案的案例");
+							case "msgNum not zero":
+								return alert("無法刪除已有留言的案例");
+							case "likeNum not zero":
+								return alert("無法刪除已被按讚的案例");
+							default:
+								return alert("案例刪除失敗");
+						}
+					} else window.location.href = "/?message=" + encodeURIComponent("案例刪除成功");
+				});
 			}
 		},
 		RandomCase: function () {
@@ -1838,6 +1853,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			body.caseID = this.caseInfo.id;
 			body.caseVersion = this.caseInfo.info[this.vIndex].version;
 			body.message = this.sendMessage;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf = csrfToken;
 
 			$.post("/case/message/create", body, function (result) {
 				if (result.status != "ok") return alert("新增留言失敗");
@@ -1856,6 +1873,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				var body = {};
 				body.message = this.messageList[index].id;
 				body.case = this.caseInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				body._csrf = csrfToken;
 
 				$.post("/case/message/delete", body, function (result) {
 					if (result.status != "ok") return alert("刪除留言失敗");
@@ -1871,6 +1890,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var body = {};
 			body.caseID = this.caseInfo.id;
 			body.ownerID = this.user.id;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf = csrfToken;
 
 			if (this.isLike) {
 				if (confirm("您已按過讚，要將按讚取消?")) {
@@ -2764,9 +2785,11 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			solution.caseID = caseInfo.caseID;
 			solution.caseVersion = caseInfo.caseVersion;
 			solution.info = JSON.stringify(this.solution);
+
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch (this.action) {
 				case "create":
-					$.post("/solution/create", { data: solution }, function (result) {
+					$.post("/solution/create", { data: solution, _csrf: csrfToken }, function (result) {
 						if (result.status != "ok") return alert("新增解方失敗");
 						alert("新增解方成功");
 						this.$parent.ViewSolution(result.data);
@@ -2774,7 +2797,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					}.bind(this));
 					break;
 				case "edit":
-					$.post("/solution/edit?solution=" + this.solutionID, { data: solution }, function (result) {
+					$.post("/solution/edit?solution=" + this.solutionID, { data: solution, _csrf: csrfToken }, function (result) {
 						if (result.status != "ok") return alert("修改解方失敗");
 						alert("修改解方成功");
 						this.$parent.ViewSolution(result.data);
@@ -3117,7 +3140,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		},
 		DeleteSolution: function () {
 			if (confirm("確定刪除解方?")) {
-				$.get("/solution/delete?solution=" + this.solutionInfo.id + "&case=" + this.solutionInfo.caseID, function (result) {
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				$.post("/solution/delete?solution=" + this.solutionInfo.id + "&case=" + this.solutionInfo.caseID + "&_csrf=" + csrfToken, function (result) {
 					if (result.status != "ok") {
 						switch (result.message) {
 							case "msgNum not zero":
@@ -3165,6 +3189,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var body = {};
 			body.solutionID = this.solutionInfo.id;
 			body.message = this.sendMessage;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf = csrfToken;
 
 			$.post("/solution/message/create", body, function (result) {
 				if (result.status != "ok") return alert("新增留言失敗");
@@ -3183,6 +3209,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				var body = {};
 				body.message = this.messageList[index].id;
 				body.solution = this.solutionInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				body._csrf = csrfToken;
 
 				$.post("/solution/message/delete", body, function (result) {
 					if (result.status != "ok") return alert("刪除留言失敗");
@@ -3198,6 +3226,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var body = {};
 			body.solutionID = this.solutionInfo.id;
 			body.ownerID = this.user.id;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf = csrfToken;
 
 			if (this.isLike) {
 				if (confirm("您已按過讚，要將按讚取消?")) {
@@ -3412,8 +3442,9 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var formData = new FormData();
 			formData.append("uploadImage", file);
 
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			$.ajax({
-				url: "/user/upload-image",
+				url: "/user/upload-image?_csrf=" + csrfToken,
 				type: "POST",
 				data: formData,
 				processData: false,
@@ -3455,7 +3486,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				return alert("請閱讀紅色警示文字並勾選「我了解了」");
 			}
 			//console.log(this.user.profession);
-			$.post("/user/edit", { data: this.user }, function (result) {
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			$.post("/user/edit", { data: this.user, _csrf: csrfToken }, function (result) {
 				if (this.submitCallback) this.submitCallback(result);else {
 					alert(result.status == "ok" ? "修改成功" : "修改失敗");
 					if (this.$parent.UpdateUserInfo) this.$parent.UpdateUserInfo(this.user);

@@ -268,7 +268,18 @@ export default {
 		},
 		DeleteCase: function(){
 			if(confirm("確定刪除案例?")){
-				window.location.href="/case/delete?case="+this.caseInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				$.post("/case/delete?case="+this.caseInfo.id+"&_csrf="+csrfToken, function(result){
+					if(result.status != "ok"){
+						switch(result.message){
+							case "solNum not zero": return alert("無法刪除已有解決方案的案例");
+							case "msgNum not zero": return alert("無法刪除已有留言的案例");
+							case "likeNum not zero": return alert("無法刪除已被按讚的案例");
+							default: return alert("案例刪除失敗");
+						}
+					} 
+					else window.location.href="/?message="+encodeURIComponent("案例刪除成功");
+				});
 			}
 		},
 		RandomCase: function(){
@@ -279,6 +290,8 @@ export default {
 			body.caseID = this.caseInfo.id;
 			body.caseVersion = this.caseInfo.info[this.vIndex].version;
 			body.message = this.sendMessage;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf=csrfToken;
 
 			$.post("/case/message/create", body, function(result){
 				if(result.status != "ok") return alert("新增留言失敗");
@@ -298,6 +311,8 @@ export default {
 				var body = {};
 				body.message = this.messageList[index].id;
 				body.case = this.caseInfo.id;
+				var csrfToken = $("meta[name='csrf-token']").attr("content");
+				body._csrf=csrfToken;
 
 				$.post("/case/message/delete", body, function(result){
 					if(result.status != "ok") return alert("刪除留言失敗");
@@ -313,6 +328,8 @@ export default {
 			var body = {};
 			body.caseID = this.caseInfo.id;
 			body.ownerID = this.user.id;
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			body._csrf=csrfToken;
 
 			if(this.isLike){
 				if(confirm("您已按過讚，要將按讚取消?")){

@@ -95,8 +95,9 @@ export default {
 			var formData = new FormData();
 			formData.append("uploadImage", file);
 
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			$.ajax({
-				url: "/user/upload-image",
+				url: "/user/upload-image?_csrf="+csrfToken,
 				type: "POST",
 				data: formData,
 				processData: false,
@@ -140,7 +141,8 @@ export default {
 				return alert("請閱讀紅色警示文字並勾選「我了解了」");
 			}
 			//console.log(this.user.profession);
-			$.post("/user/edit", {data: this.user}, function(result){
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
+			$.post("/user/edit", {data: this.user, _csrf: csrfToken}, function(result){
 				if(this.submitCallback) this.submitCallback(result);
 				else{
 					alert(result.status == "ok"?"修改成功":"修改失敗");

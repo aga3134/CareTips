@@ -39,7 +39,7 @@ router.get('/view', function(req, res) {
 	caseSolution.ViewSolution(param);
 });
 
-router.post('/create', util.CheckLogin, function(req, res) {
+router.post('/create', util.CheckLogin, util.CSRF, function(req, res) {
 	var param = {};
 	param.user = req.user;
 	param.data = req.body.data;
@@ -52,7 +52,7 @@ router.post('/create', util.CheckLogin, function(req, res) {
 	caseSolution.CreateSolution(param);
 });
 
-router.post('/edit', util.CheckMySolution, function(req, res) {
+router.post('/edit', util.CheckMySolution, util.CSRF, function(req, res) {
 	var param = {};
 	param.user = req.user;
 	param.caseID = req.body.data.caseID;
@@ -68,7 +68,7 @@ router.post('/edit', util.CheckMySolution, function(req, res) {
 	caseSolution.EditSolution(param);
 });
 
-router.get('/delete', util.CheckMySolution, function(req, res){
+router.post('/delete', util.CheckMySolution, util.CSRF, function(req, res){
 	var param = {};
 	param.solutionID = req.query.solution;
 	param.caseID = req.query.case;
@@ -83,7 +83,7 @@ router.get('/delete', util.CheckMySolution, function(req, res){
 });
 
 //============================like==============================
-router.post('/like/create', util.CheckLogin, function(req, res) {
+router.post('/like/create', util.CheckLogin, util.CSRF, function(req, res) {
 	var param = {};
 	param.solutionID = req.body.solutionID;
 	param.ownerID = req.user.id;
@@ -96,7 +96,7 @@ router.post('/like/create', util.CheckLogin, function(req, res) {
 	caseSolution.CreateLike(param);
 });
 
-router.post('/like/delete', util.CheckLogin, function(req, res) {
+router.post('/like/delete', util.CheckLogin, util.CSRF, function(req, res) {
 	var param = {};
 	param.solutionID = req.body.solutionID;
 	param.ownerID = req.user.id;
@@ -110,7 +110,7 @@ router.post('/like/delete', util.CheckLogin, function(req, res) {
 });
 
 //============================message==============================
-router.post('/message/create', util.CheckLogin, function(req, res) {
+router.post('/message/create', util.CheckLogin, util.CSRF, function(req, res) {
 	var param = {};
 	param.ownerID = req.user.id;
 	param.message = req.body.message;
@@ -136,7 +136,7 @@ router.get('/message/list', function(req, res) {
 	caseSolution.ListMessage(param);
 });
 
-router.post('/message/delete', util.CheckMySolutionMessage, function(req, res) {
+router.post('/message/delete', util.CheckMySolutionMessage, util.CSRF, function(req, res) {
 	var param = {};
 	param.ownerID = req.user.id;
 	param.solutionID = req.body.solution;

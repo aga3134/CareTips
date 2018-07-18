@@ -348,9 +348,11 @@ export default {
 			solution.caseID = caseInfo.caseID;
 			solution.caseVersion = caseInfo.caseVersion;
 			solution.info = JSON.stringify(this.solution);
+
+			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch(this.action){
 				case "create":
-					$.post("/solution/create", {data: solution}, function(result){
+					$.post("/solution/create", {data: solution,_csrf:csrfToken}, function(result){
 						if(result.status != "ok") return alert("新增解方失敗");
 						alert("新增解方成功");
 						this.$parent.ViewSolution(result.data);
@@ -358,7 +360,7 @@ export default {
 					}.bind(this));
 					break;
 				case "edit":
-					$.post("/solution/edit?solution="+this.solutionID, {data: solution}, function(result){
+					$.post("/solution/edit?solution="+this.solutionID, {data: solution,_csrf:csrfToken}, function(result){
 						if(result.status != "ok") return alert("修改解方失敗");
 						alert("修改解方成功");
 						this.$parent.ViewSolution(result.data);
