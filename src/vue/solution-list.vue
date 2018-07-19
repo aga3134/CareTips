@@ -112,7 +112,7 @@ export default {
 			}
 			//compute statistic data
 			for(var i=0;i<this.preLoad.length;i++){
-				this.preLoad[i].info = JSON.parse(this.preLoad[i].info);
+				this.preLoad[i].info = JSON.parse(this.preLoad[i].info).data;
 				var desc = "";
 				for(var step=0;step<this.preLoad[i].info.length;step++){
 					var sol = this.preLoad[i].info[step];

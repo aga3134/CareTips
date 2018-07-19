@@ -326,6 +326,7 @@ export default {
 				return;
 			}
 			//console.log(this.target.profession);
+			this.caseInfo.omahaVersion = this.omaha.version;
 			this.dirty = false;
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch(this.action){

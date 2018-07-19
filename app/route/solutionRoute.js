@@ -55,9 +55,7 @@ router.post('/create', util.CheckLogin, util.CSRF, function(req, res) {
 router.post('/edit', util.CheckMySolution, util.CSRF, function(req, res) {
 	var param = {};
 	param.user = req.user;
-	param.caseID = req.body.data.caseID;
-	param.caseVersion = req.body.data.caseVersion;
-	param.info = req.body.data.info;
+	param.data = req.body.data;
 	param.solutionID = req.query.solution;
 	param.succFunc = function(result){
 		res.status(200).json({"status":"ok","data": result.id});

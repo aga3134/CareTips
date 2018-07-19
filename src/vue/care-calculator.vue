@@ -379,7 +379,8 @@ export default {
 		if(solutionID){
 			$.get("/solution/view?solution="+solutionID, function(result){
 				if(result.status != "ok") return alert("無法讀取解方");
-				var service = JSON.parse(result.data.info)[3][0];
+				var info = JSON.parse(result.data.info);
+				var service = info.data[3][0];
 				for(var i=0;i<service.length;i++){
 					var item = service[i];
 					this.items[item.category].push(item);

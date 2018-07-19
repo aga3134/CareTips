@@ -1,1 +1,2197 @@
-{"D1": {"name": "環境面向", "problem": [{"id": 1, "cht": "收入", "eng": "Income", "sign": [{"id": 1, "cht": "低或無收入", "eng": "low/no income"}, {"id": 2, "cht": "沒有醫療保險", "eng": "uninsured medical expenses"}, {"id": 3, "cht": "無法管理金錢", "eng": "inadequate money manaement"}, {"id": 4, "cht": "只買得起必需品", "eng": "able to buy only necessities"}, {"id": 5, "cht": "買必需品有困難", "eng": "difficulty buying necessities"}, {"id": 6, "cht": "其他", "eng": "other"}]}, {"id": 2, "cht": "清潔衛生", "eng": "Sanitation", "sign": [{"id": 1, "cht": "髒亂的生活區", "eng": "soiled living area"}, {"id": 2, "cht": "缺乏存糧/缺乏備餐能力", "eng": "inadequate food storage/disposal"}, {"id": 3, "cht": "昆蟲/囓齒動物(老鼠?)", "eng": "insects/rodents"}, {"id": 4, "cht": "惡臭", "eng": "foul odor"}, {"id": 5, "cht": "水源不足", "eng": "inadequate water supply"}, {"id": 6, "cht": "汙水處理不足", "eng": "inadequate sewage disposal"}, {"id": 7, "cht": "洗衣設施不足", "eng": "inadequate laundry facilities"}, {"id": 8, "cht": "過敏原", "eng": "allergens"}, {"id": 9, "cht": "傳染源/汙染物", "eng": "infectious/contaminating agents"}, {"id": 10, "cht": "出現黴菌", "eng": "presence of mold"}, {"id": 11, "cht": "過多寵物", "eng": "excessive pets"}, {"id": 12, "cht": "其他", "eng": "other"}]}, {"id": 3, "cht": "住處", "eng": "Residence", "sign": [{"id": 2, "cht": "不足的冷暖氣", "eng": "inadequate heating/cooling"}, {"id": 3, "cht": "很陡/不安全的階梯", "eng": "steep/unsafe stairs"}, {"id": 4, "cht": "缺乏/不通的進出口", "eng": "inadequate/obstructed exits/entries"}, {"id": 5, "cht": "雜物遍布", "eng": "cluttered living space"}, {"id": 6, "cht": "儲存危險物品/物質", "eng": "unsafe storage of dangerous objects/substances"}, {"id": 7, "cht": "不安全的地墊/滑動的地毯", "eng": "unsafe mats/throw rugs"}, {"id": 8, "cht": "缺乏安源的裝備", "eng": "inadequate safety devices"}, {"id": 9, "cht": "空間以鉛基油漆塗裝", "eng": "presence of lead-based paint"}, {"id": 10, "cht": "不安全的用具/設備", "eng": "unsafe appliances/equiptment"}, {"id": 11, "cht": "不足/擁擠的生活空間", "eng": "inadequate/crowded living space"}, {"id": 12, "cht": "管線外露", "eng": "exposed wiring"}, {"id": 13, "cht": "結構性障礙", "eng": "structural barriers"}, {"id": 14, "cht": "無家可歸", "eng": "homeless"}, {"id": 15, "cht": "其他", "eng": "other"}, {"id": 1, "cht": "不穩固的建築", "eng": "structurally unsound"}]}, {"id": 4, "cht": "社區鄰里/工作場所安全", "eng": "Neighborhood/workplace safety", "sign": [{"id": 1, "cht": "高犯罪率", "eng": "high crime rate"}, {"id": 2, "cht": "高汙染等級", "eng": "high pollution level"}, {"id": 3, "cht": "不受控/危險的/帶病的動物", "eng": "uncontrolled/dangerous/infected animals"}, {"id": 4, "cht": "不足的/不安全遊戲場或運動場", "eng": "inadequate/unsafe play/exercise areas"}, {"id": 5, "cht": "不足的空間與資源促進健康", "eng": "inadequate space/resources to foster health"}, {"id": 6, "cht": "正在或被通報遭受暴力", "eng": "threats/reports of violence"}, {"id": 7, "cht": "物理性危害", "eng": "physical hazards"}, {"id": 8, "cht": "車輛/交通危害", "eng": "vehicle/traffic hazards"}, {"id": 9, "cht": "化學性危害", "eng": "chemical hazards"}, {"id": 10, "cht": "放射線危害", "eng": "radiological hazards"}]}]}, "D2": {"name": "心理社會面向", "problem": [{"id": 1, "cht": "與 社區資源的整合", "eng": "Communication with community resources", "sign": [{"id": 1, "cht": "難以理解服務提供者的角色與法規限制", "eng": "unfamiliar with options/procedures for obtaining services"}, {"id": 2, "cht": "不知如何向服務提供者提出訴求", "eng": "difficulty understanding roles/regulations of service providers"}, {"id": 3, "cht": "不滿服務", "eng": "unable to communicate concerns to provider"}, {"id": 4, "cht": "缺乏可及資源", "eng": "dissatisfaction with services"}, {"id": 5, "cht": "語言阻礙", "eng": "inadequate/unavailable resources"}, {"id": 6, "cht": "文化阻礙", "eng": "language barrier"}, {"id": 7, "cht": "教育阻礙", "eng": "cultural barrier"}, {"id": 8, "cht": "交通運輸阻礙", "eng": "educational barrier"}, {"id": 9, "cht": "求助管道有限(照顧、服務、物資)", "eng": "transportation barrier"}, {"id": 10, "cht": "不用會/沒有通訊設備", "eng": "limited access to care/services/goods"}, {"id": 11, "cht": "無法使用/擁有不合適的溝通器具/設備", "eng": "unable to use/has inadequate communication devices/equiptment"}, {"id": 12, "cht": "其他", "eng": "Other"}]}, {"id": 2, "cht": "社交", "eng": "Social contact", "sign": [{"id": 1, "cht": "有限的社交", "eng": "limited social contact"}, {"id": 2, "cht": "耗用健康照護提供者當社交", "eng": "uses health care provider for social contact"}, {"id": 3, "cht": "很少戶外刺激與休閒活動", "eng": "minimal outside stimulation/leisure time activities"}, {"id": 4, "cht": "其他", "eng": "Other"}]}, {"id": 3, "cht": "角色改變", "eng": "Role change", "sign": [{"id": 1, "cht": "非自願的角色轉換", "eng": "involuntary role reversal"}, {"id": 2, "cht": "承擔新角色", "eng": "assumes new role"}, {"id": 3, "cht": "失去過往角色功能", "eng": "loses previous role"}, {"id": 4, "cht": "其他", "eng": "Other"}]}, {"id": 4, "cht": "人際關係", "eng": "Interpersonal relationship", "sign": [{"id": 1, "cht": "難建立或維持關係", "eng": "difficulty establishing/maintaining relationships"}, {"id": 2, "cht": "吝於分享", "eng": "minimal shared activities"}, {"id": 3, "cht": "眼高手低", "eng": "incongruent values/goals/expectations/schedules"}, {"id": 4, "cht": "缺乏溝通技巧", "eng": "inadequate interpersonal communication skills"}, {"id": 5, "cht": "沒完沒了的僵局", "eng": "prolonged, unrelieved tension"}, {"id": 6, "cht": "控制狂", "eng": "inappropriate suspicion/manipulation/control"}, {"id": 7, "cht": "對伴侶進行身心虐待", "eng": "physically/emotionally abusive to partner"}, {"id": 8, "cht": "不動干戈解決難題", "eng": "difficulty problem solving without conflict"}, {"id": 9, "cht": "其他", "eng": "Other"}]}, {"id": 5, "cht": "信仰", "eng": "Spirituality", "sign": [{"id": 1, "cht": "表達靈性關注", "eng": "expresses spiritual concerns"}, {"id": 2, "cht": "具爭議的宗教儀式", "eng": "disrupted spiritual rituals"}, {"id": 3, "cht": "靈性上的信任被破壞", "eng": "disrupted spiritual trust"}, {"id": 4, "cht": "靈性信仰與醫療/照護衝突", "eng": "conflicting spiritual beliefs and medical/health care regimen"}, {"id": 5, "cht": "其他", "eng": "Other"}]}, {"id": 6, "cht": "喪慟", "eng": "Grief", "sign": [{"id": 1, "cht": "無法辨識哀傷階段/癒合過程", "eng": "fails to recognize stages of grief/process of healing"}, {"id": 2, "cht": "難以調適的哀傷反應", "eng": "difficulty coping with grief responses"}, {"id": 3, "cht": "難以言表的哀傷反應", "eng": "difficulty expressing grief responses"}, {"id": 4, "cht": "個人/家人間哀傷矛盾階段", "eng": "conflicting stages of grief among individuals/families"}, {"id": 5, "cht": "其他", "eng": "Other"}]}, {"id": 7, "cht": "精神健康", "eng": "Mental health", "sign": [{"id": 1, "cht": "悲傷/無望/低自尊", "eng": "sadness/hopelessness/decreased self-esteem"}, {"id": 2, "cht": "杞人憂天", "eng": "apprehension/undefined fear"}, {"id": 3, "cht": "對參與活動/自我照顧失去興趣", "eng": "loss of interest/involvement in activities/self-care"}, {"id": 4, "cht": "狹隘導致 分散注意力與焦點", "eng": "narrowed to scattered attention/focus"}, {"id": 5, "cht": "情感平淡", "eng": "flat affect"}, {"id": 6, "cht": "焦躁/激動/侵略性", "eng": "irritable/agitated/aggressive"}, {"id": 7, "cht": "強迫性無目的行為", "eng": "purposeless/compulsive activity"}, {"id": 8, "cht": "難控制壓力", "eng": "difficulty managing stress"}, {"id": 9, "cht": "難控制怒氣", "eng": "difficulty managing anger"}, {"id": 10, "cht": "身體症狀/疲勞", "eng": "somatic complaints/fatigue"}, {"id": 11, "cht": "妄想", "eng": "delusions"}, {"id": 12, "cht": "幻覺/幻想", "eng": "hallucinations/illusions"}, {"id": 13, "cht": "表達自傷傷人想法", "eng": "expresses suicidal/homicidal thoughts"}, {"id": 14, "cht": "企圖自傷/傷人", "eng": "attempts suicide/homicide"}, {"id": 15, "cht": "自殘", "eng": "self-mutilation"}, {"id": 16, "cht": "情緒波動", "eng": "mood swings"}, {"id": 17, "cht": "情境再現", "eng": "flash-backs"}, {"id": 18, "cht": "其他", "eng": "Other"}]}, {"id": 8, "cht": "性", "eng": "Sexuality", "sign": [{"id": 1, "cht": "不考慮後果的性行為", "eng": "difficulty recognizing consequences of sexual behavior"}, {"id": 2, "cht": "難以表達親密", "eng": "difficulty expressing intimacy"}, {"id": 3, "cht": "性別認同混淆", "eng": "sexual identity confusion"}, {"id": 4, "cht": "性價值混亂", "eng": "sexual value confusion"}, {"id": 5, "cht": "性飢渴", "eng": "dissatisfied with sexual relationships"}, {"id": 6, "cht": "不安全性行為", "eng": "unsafe sexual practices"}, {"id": 7, "cht": "性衝動/性挑逗/性騷擾", "eng": "sexual acting out/provocative behaviors/harassment"}, {"id": 8, "cht": "性犯罪/毆打", "eng": "sexual perpetration/assault"}, {"id": 9, "cht": "其他", "eng": "Other"}]}, {"id": 9, "cht": "照顧/教養", "eng": "Caretaking/parenting", "sign": [{"id": 1, "cht": "難以提供生理照護與安全", "eng": "difficulty providing physical care/safety"}, {"id": 2, "cht": "難以提供情感滋養", "eng": "difficulty providing emotional nurturance"}, {"id": 3, "cht": "難以提供認知學習經驗與活動", "eng": "difficulty providing cognitive learning experiences and activities"}, {"id": 4, "cht": "難以提供預防保健照護", "eng": "difficulty providing preventive and therapeutic health care"}, {"id": 5, "cht": "揠苗助長", "eng": "expectations incongruent with stage of growth and development"}, {"id": 6, "cht": "不滿/無法承擔責任", "eng": "dissatisfaction/difficulty with responsibilities"}, {"id": 7, "cht": "難有語言非語言之互動或回應", "eng": "difficulty interpreting or responding to verbal/nonverbal communication"}, {"id": 8, "cht": "忽視", "eng": "neglectful"}, {"id": 9, "cht": "辱罵", "eng": "abusive"}, {"id": 10, "cht": "其他", "eng": "Other"}]}, {"id": 10, "cht": "疏忽", "eng": "Neglect", "sign": [{"id": 1, "cht": "身體照顧缺失", "eng": "acks adequate physical care"}, {"id": 2, "cht": "缺乏情緒滋養與支持", "eng": "lacks emotional nurturance/support"}, {"id": 3, "cht": "缺乏合式的刺激與認知經驗", "eng": "lacks appropriate stimulation/cognitive experiences"}, {"id": 4, "cht": "不合宜的任其獨處", "eng": "inappropiately left alone"}, {"id": 5, "cht": "放牛吃草", "eng": "lacks necessary supervision"}, {"id": 6, "cht": "不適當或延遲就醫", "eng": "inadequate/delayed medical care"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 11, "cht": "虐待", "eng": "Abuse", "sign": [{"id": 1, "cht": "苛刻/過度嚴格的管教", "eng": "harsh/excessive discipline"}, {"id": 2, "cht": "傷痕與燒傷或其他傷勢", "eng": "welts/burns/other injuries"}, {"id": 3, "cht": "不合理的傷勢", "eng": "questionable explanation of injury"}, {"id": 4, "cht": "語言暴力", "eng": "attacked verbally"}, {"id": 5, "cht": "恐懼/過度警覺", "eng": "fearful/hypervigilant behavior"}, {"id": 6, "cht": "暴力環境", "eng": "violent environment"}, {"id": 7, "cht": "持續的負面訊息", "eng": "consistent negative messages"}, {"id": 8, "cht": "性暴力", "eng": "assaulted sexually"}, {"id": 9, "cht": "其他", "eng": "Other"}]}, {"id": 12, "cht": "成長與發展", "eng": "Growth and development", "sign": [{"id": 1, "cht": "發展檢核量表有異常", "eng": "abnormal results of developmental screening tests"}, {"id": 2, "cht": "偏離該年齡生長發育平均值(體重/身高/頭圍)", "eng": "abnormal weight/height/head circumference in relation growth/aging standards"}, {"id": 3, "cht": "與年齡不相符的行為舉止", "eng": "age-inappropriate behavior"}, {"id": 4, "cht": "發育不足(不適當)", "eng": "inadequate achieve"}, {"id": 5, "cht": "其他", "eng": "Other"}]}]}, "D3": {"name": "生理面向", "problem": [{"id": 1, "cht": "聽力", "eng": "Hearing", "sign": [{"id": 1, "cht": "難以聽懂一般腔調", "eng": "difficulty hearing normal speech tones"}, {"id": 2, "cht": "在吵雜的環境中有障礙", "eng": "difficulty hearing speech in large group settings"}, {"id": 3, "cht": "難以聽見高頻音", "eng": "difficulty hearing high frequency sounds"}, {"id": 4, "cht": "對聲音反應異常", "eng": "absent/abnormal response to sound"}, {"id": 5, "cht": "聽力篩檢異常", "eng": "abnormal results of hearing screening test"}, {"id": 6, "cht": "其他", "eng": "Other"}]}, {"id": 2, "cht": "視力8項", "eng": "Vision", "sign": [{"id": 1, "cht": "老花", "eng": "difficulty seeing small print/calibrations"}, {"id": 2, "cht": "近視", "eng": "difficulty seeing distant objects"}, {"id": 3, "cht": "遠視", "eng": "difficulty seeing close objects"}, {"id": 4, "cht": "對於視覺刺激沒反應/不正常反應", "eng": "absent/abnormal response to visual stimuli"}, {"id": 5, "cht": "視力篩檢異常", "eng": "abnormal results of vision screening test"}, {"id": 6, "cht": "瞇眼/閃爍/撕裂/模糊", "eng": "squinting/blinking/tearing/blurring"}, {"id": 7, "cht": "飛蚊症/閃光", "eng": "floaters/flashes"}, {"id": 8, "cht": "辨色力差", "eng": "difficulty differentiating colors"}, {"id": 9, "cht": "其他", "eng": "Other"}]}, {"id": 3, "cht": "談話、語言能力", "eng": "Speech and language", "sign": [{"id": 1, "cht": "缺乏/異常的談話或演講能力", "eng": "absent/abnormal ability to speak/vocalize"}, {"id": 2, "cht": "缺乏/異常的理解能力", "eng": "absent/abnormal ability to understand"}, {"id": 3, "cht": "缺交互溝通的技巧或手勢", "eng": "lacks alternative communication skills/gestures"}, {"id": 4, "cht": "句子結構不恰當", "eng": "inappropriate sentence structure"}, {"id": 5, "cht": "發音含糊不清", "eng": "limited enunciation/clarity"}, {"id": 6, "cht": "不當用字", "eng": "inappropriate word usage"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 4, "cht": "口腔健康", "eng": "Oral health", "sign": [{"id": 1, "cht": "缺失/斷裂/畸形牙齒", "eng": "missing/broken/malformed teeth"}, {"id": 2, "cht": "齲齒", "eng": "caries"}, {"id": 3, "cht": "牙菌斑", "eng": "excess tartar"}, {"id": 4, "cht": "疼痛/腫脹/牙齦出血", "eng": "sore/swollen/bleeding gums"}, {"id": 5, "cht": "咬合不正", "eng": "malocclusion"}, {"id": 6, "cht": "假牙不合/遺失", "eng": "ill-fitting/missing dentures"}, {"id": 7, "cht": "冷熱敏感", "eng": "sensitivity to hot or cold"}, {"id": 8, "cht": "其他", "eng": "Other"}]}, {"id": 5, "cht": "認知", "eng": "Cognition", "sign": [{"id": 1, "cht": "判斷力變差", "eng": "diminished judgment"}, {"id": 2, "cht": "定向感有異 時/地/人", "eng": "disoriented to time/place/person"}, {"id": 3, "cht": "短期記憶缺失", "eng": "limited recall of recent events"}, {"id": 4, "cht": "長期記憶缺失", "eng": "limited recall of long past events"}, {"id": 5, "cht": "計算與排序能力差", "eng": "limited calculating/sequencing skills"}, {"id": 6, "cht": "難以專心", "eng": "limited concentration"}, {"id": 7, "cht": "推理/抽象思考能力差", "eng": "limited reasoning/abstract thinking"}, {"id": 8, "cht": "衝動", "eng": "impulsiveness"}, {"id": 9, "cht": "重複語言/行為", "eng": "repetitious language/behavior"}, {"id": 10, "cht": "遊走", "eng": "wanders"}, {"id": 11, "cht": "其他", "eng": "Other"}]}, {"id": 6, "cht": "病痛", "eng": "Pain", "sign": [{"id": 1, "cht": "表達不舒服/痛", "eng": "expresses discomfort/pain"}, {"id": 2, "cht": "脈搏快/呼吸喘/血壓高", "eng": "elevated pulse/respirations/blood pressure"}, {"id": 3, "cht": "代償動作/防衛動作", "eng": "compensated movement/guarding"}, {"id": 4, "cht": "倉促不安", "eng": "restless behavior"}, {"id": 5, "cht": "臉部扭曲", "eng": "facial grimaces"}, {"id": 6, "cht": "蒼白/冒冷汗", "eng": "pallor/perspiration"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 7, "cht": "意識", "eng": "Consciousness", "sign": [{"id": 1, "cht": "倦怠", "eng": "lethargic"}, {"id": 2, "cht": "昏迷", "eng": "stuporous"}, {"id": 3, "cht": "沒有反應", "eng": "unresponsive"}, {"id": 4, "cht": "不省人事", "eng": "comatose"}, {"id": 5, "cht": "其他", "eng": "Other"}]}, {"id": 8, "cht": "皮膚", "eng": "Skin", "sign": [{"id": 1, "cht": "完整性受損/壓瘡", "eng": "lesion/pressure ulcer"}, {"id": 2, "cht": "皮疹", "eng": "rash"}, {"id": 3, "cht": "乾燥", "eng": "excessively dry"}, {"id": 4, "cht": "出油", "eng": "excessively oily"}, {"id": 5, "cht": "發炎", "eng": "inflammation"}, {"id": 6, "cht": "搔癢", "eng": "pruritus"}, {"id": 7, "cht": "引流", "eng": "drainage"}, {"id": 8, "cht": "瘀血", "eng": "bruising"}, {"id": 9, "cht": "指甲肥大", "eng": "hypertrophy of nails"}, {"id": 10, "cht": "傷口難以癒合", "eng": "delayed incisional healing"}, {"id": 11, "cht": "其他", "eng": "Other"}]}, {"id": 9, "cht": "神經-肌肉-骨骼功能", "eng": "Neuro-musculo-skeletal function", "sign": [{"id": 1, "cht": "活動範圍受限", "eng": "limited range of motion"}, {"id": 2, "cht": "肌力減弱", "eng": "decreased muscle strength"}, {"id": 3, "cht": "肌肉協調性下降", "eng": "decreased coordination"}, {"id": 4, "cht": "肌肉張力下降", "eng": "decreased muscle tone"}, {"id": 5, "cht": "肌肉張力增加", "eng": "increased muscle tone"}, {"id": 6, "cht": "麻木", "eng": "decreased sensation"}, {"id": 7, "cht": "敏感", "eng": "increased sensation"}, {"id": 8, "cht": "平衡功能下降", "eng": "decreased balance"}, {"id": 9, "cht": "步態/行走障礙", "eng": "gait/ambulation disturbance"}, {"id": 10, "cht": "難以移位", "eng": "difficulty transferring"}, {"id": 11, "cht": "骨折", "eng": "fractures"}, {"id": 12, "cht": "震顫/癲癇發作", "eng": "tremors/seizures"}, {"id": 13, "cht": "體溫調節困難", "eng": "difficulty with thermoregulation"}, {"id": 14, "cht": "其他", "eng": "Other"}]}, {"id": 10, "cht": "呼吸", "eng": "Respiration", "sign": [{"id": 1, "cht": "呼吸型態異常", "eng": "abnormal breath patterns"}, {"id": 2, "cht": "無法自主呼吸", "eng": "unable to breathe independently"}, {"id": 3, "cht": "咳嗽", "eng": "cough"}, {"id": 4, "cht": "無法自咳痰", "eng": "unable to cough/expectorate independently"}, {"id": 5, "cht": "發紺(缺氧)", "eng": "cyanosis"}, {"id": 6, "cht": "異常痰", "eng": "abnormal sputum"}, {"id": 7, "cht": "呼嚕聲", "eng": "noisy respirations"}, {"id": 8, "cht": "流鼻水/鼻塞", "eng": "rhinorrhea/nasal congestion"}, {"id": 9, "cht": "不正常呼吸音", "eng": "normal breath sounds"}, {"id": 10, "cht": "呼吸生理學相關檢查異常", "eng": "abnormal respiratory laboratory results"}, {"id": 11, "cht": "其他", "eng": "Other"}]}, {"id": 11, "cht": "循環", "eng": "Circulation", "sign": [{"id": 1, "cht": "水腫", "eng": "edema"}, {"id": 2, "cht": "四肢疼痛/痙攣", "eng": "cramping/pain of extremities"}, {"id": 3, "cht": "心搏減速", "eng": "decreased pulses"}, {"id": 4, "cht": "皮膚變色", "eng": "discoloration of skin"}, {"id": 5, "cht": "局部體溫改變", "eng": "temperature change in affected area"}, {"id": 6, "cht": "靜脈曲張", "eng": "varicosities"}, {"id": 7, "cht": "昏厥/頭暈", "eng": "syncopal episodes (fainting)/dizziness"}, {"id": 8, "cht": "血壓值異常", "eng": "abnormal blood pressure reading"}, {"id": 9, "cht": "脈搏微弱", "eng": "pulse deficit"}, {"id": 10, "cht": "心律不整", "eng": "irregular heart rate"}, {"id": 11, "cht": "心搏過速", "eng": "excessively rapid heart rate"}, {"id": 12, "cht": "心搏過慢", "eng": "excessively slow heart rate"}, {"id": 13, "cht": "心絞痛", "eng": "anginal pain"}, {"id": 14, "cht": "心音異常", "eng": "abnormal heart sounds/murmurs"}, {"id": 15, "cht": "凝血異常", "eng": "abnormal clotting"}, {"id": 16, "cht": "心臟相關生理檢驗值異常", "eng": "abnormal cardiac laboratory results"}, {"id": 17, "cht": "其他", "eng": "Other"}]}, {"id": 12, "cht": "消化-水分補充", "eng": "Digestion-hydration", "sign": [{"id": 1, "cht": "噁心/嘔吐", "eng": "nausea/vomiting"}, {"id": 2, "cht": "難或無法咀嚼/吞嚥/消化", "eng": "difficulty/inability to chew/swallow/digest"}, {"id": 3, "cht": "消化不良", "eng": "indigestion"}, {"id": 4, "cht": "逆流", "eng": "reflux"}, {"id": 5, "cht": "厭食", "eng": "anorexia"}, {"id": 6, "cht": "貧血", "eng": "anemia"}, {"id": 7, "cht": "腹水", "eng": "ascites"}, {"id": 8, "cht": "黃疸/肝腫大", "eng": "jaundice/liver enlargement"}, {"id": 9, "cht": "皮膚乾癟", "eng": "decreased skin turgor"}, {"id": 10, "cht": "唇裂/口乾", "eng": "cracked lips/dry mouth"}, {"id": 11, "cht": "電解質不平衡", "eng": "electrolyte imbalance"}, {"id": 12, "cht": "其他", "eng": "Other"}]}, {"id": 13, "cht": "腸道功能", "eng": "Bowel function", "sign": [{"id": 1, "cht": "大便次數異於平常", "eng": "abnormal frequency/consistency of stool"}, {"id": 2, "cht": "大便時疼痛", "eng": "painful defecation"}, {"id": 3, "cht": "腸蠕動音變少", "eng": "decreased bowel sounds"}, {"id": 4, "cht": "血便", "eng": "blood in stools"}, {"id": 5, "cht": "大便顏色異常", "eng": "abnormal color"}, {"id": 6, "cht": "腹脹不舒服", "eng": "cramping/abdominal discomfort"}, {"id": 7, "cht": "大便失禁", "eng": "incontinent of stool"}, {"id": 8, "cht": "其他", "eng": "Other"}]}, {"id": 14, "cht": "排尿功能", "eng": "Urinary function", "sign": [{"id": 1, "cht": "排尿有灼熱感", "eng": "burning/painful urination"}, {"id": 2, "cht": "尿失禁", "eng": "incontinent of urine"}, {"id": 3, "cht": "頻尿", "eng": "urgency/frequency"}, {"id": 4, "cht": "剛開始尿不出來", "eng": "difficulty initiating urination"}, {"id": 5, "cht": "感覺尿不乾淨", "eng": "difficulty emptying bladder"}, {"id": 6, "cht": "尿量異常", "eng": "abnormal amount"}, {"id": 7, "cht": "血尿或不正常顏色", "eng": "hematuria/abnormal color"}, {"id": 8, "cht": "夜尿頻頻", "eng": "nocturia"}, {"id": 9, "cht": "尿液檢驗值異常", "eng": "abnormal urinary laboratory results"}, {"id": 10, "cht": "其他", "eng": "Other"}]}, {"id": 15, "cht": "生殖功能", "eng": "Reproductive function", "sign": [{"id": 1, "cht": "異常分泌物", "eng": "abnormal discharge"}, {"id": 2, "cht": "月經週期異常", "eng": "abnormal menstrual pattern"}, {"id": 3, "cht": "更年期停經滴滴答答不適", "eng": "difficulty managing menopause/andropause"}, {"id": 4, "cht": "生殖器與乳房有硬塊腫脹疼痛", "eng": "abnormal lumps/swelling/tenderness of genital organs or breasts"}, {"id": 5, "cht": "性交疼痛(包含過程與完事後)", "eng": "pain during or after sexual intercourse"}, {"id": 6, "cht": "不孕", "eng": "infertility"}, {"id": 7, "cht": "性無能", "eng": "impotency"}, {"id": 8, "cht": "其他", "eng": "Other"}]}, {"id": 16, "cht": "懷孕", "eng": "Pregnancy", "sign": [{"id": 1, "cht": "難與胎兒建立連結", "eng": "difficulty bonding with unborn baby"}, {"id": 2, "cht": "難適應身形改變", "eng": "difficulty coping with body changes"}, {"id": 3, "cht": "難以進行產前運動/休息/飲食/行為", "eng": "difficulty with prenatal exercise/rest/diet/behaviors"}, {"id": 4, "cht": "害怕生產過程", "eng": "fears delivery procedure"}, {"id": 5, "cht": "產前併發症/早產", "eng": "prenatal complications/preterm labory"}, {"id": 6, "cht": "社會支持不足", "eng": "inadequate social support"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 17, "cht": "產後", "eng": "Postpartum", "sign": [{"id": 1, "cht": "哺乳困難", "eng": "difficulty breast-feeding"}, {"id": 2, "cht": "難以適應產後變化", "eng": "difficulty coping with postpartum changes"}, {"id": 3, "cht": "難以進行產後運動/休息/飲食/行為", "eng": "difficulty with postpartum exercise/rest/diet/behaviors"}, {"id": 4, "cht": "不正常出血或白帶", "eng": "abnormal bleeding/vaginal discharge"}, {"id": 5, "cht": "產後併發症", "eng": "postpartum complications"}, {"id": 6, "cht": "異常沮喪感", "eng": "abnormal depressed feelings"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 18, "cht": "傳染/感染情況", "eng": "Communicable/infectious condition", "sign": [{"id": 1, "cht": "感染", "eng": "infection"}, {"id": 2, "cht": "寄生蟲侵染", "eng": "infestation"}, {"id": 3, "cht": "發燒", "eng": "fever"}, {"id": 4, "cht": "生物危害", "eng": "biological hazards"}, {"id": 5, "cht": "篩檢/培養/實驗室檢查呈陽性", "eng": "positive screening/culture/laboratory results"}, {"id": 6, "cht": "防止傳播的物資/設備/政策不足", "eng": "inadequat supplies to /equipment/policies prevent transmission"}, {"id": 7, "cht": "未遵循感控方案", "eng": "does not follow infection control regimen"}, {"id": 8, "cht": "免疫力低下", "eng": "inadequate immunity"}, {"id": 9, "cht": "其他", "eng": "other"}]}]}, "D4": {"name": "健康相關行為面向", "problem": [{"id": 1, "cht": "營養", "eng": "Nutrition", "sign": [{"id": 1, "cht": "過重", "eng": "overweight: adult BMI 25.0 or more; child BMI 95th percentile or more"}, {"id": 2, "cht": "過輕", "eng": "underweight: adult BMI 18.5 or less; child BMI 5th percentile or less"}, {"id": 3, "cht": "低於每日飲食準則(液體量/卡洛里)", "eng": "lacks established standards for daily caloric/fluid intake"}, {"id": 4, "cht": "高過每日飲食準則(液體量/卡洛里)", "eng": "exceeds established standards for daily caloric/fluid intake"}, {"id": 5, "cht": "不均衡飲食", "eng": "unbalanced diet"}, {"id": 6, "cht": "與年齡不合的進食餐數", "eng": "improper feeding schedule for age"}, {"id": 7, "cht": "無法遵從營養建議", "eng": "does not follow recommended nutrition plan"}, {"id": 8, "cht": "無法解釋的體重下降", "eng": "unexplained/progressive weight loss"}, {"id": 9, "cht": "無法備餐", "eng": "unable to obtain/prepare food"}, {"id": 10, "cht": "低血糖", "eng": "hypoglycemia"}, {"id": 11, "cht": "高血糖", "eng": "hyperglycemia"}, {"id": 12, "cht": "其他", "eng": "Other"}]}, {"id": 2, "cht": "睡覺與休息習慣", "eng": "Sleep and rest patterns", "sign": [{"id": 1, "cht": "睡眠/休息模式擾亂家庭", "eng": "sleep/rest pattern disrupts family"}, {"id": 2, "cht": "常在夜裡醒來", "eng": "frequently wakes during night"}, {"id": 3, "cht": "夢遊", "eng": "sleepwalking"}, {"id": 4, "cht": "失眠", "eng": "insomnia"}, {"id": 5, "cht": "噩夢", "eng": "nightmares"}, {"id": 6, "cht": "與年齡與身體狀況睡眠不足", "eng": "insufficient sleep/rest for age/physical condition"}, {"id": 7, "cht": "睡眠呼吸暫停", "eng": "sleep apnea"}, {"id": 8, "cht": "打鼾", "eng": "snoring"}, {"id": 9, "cht": "其他", "eng": "Other"}]}, {"id": 3, "cht": "體能活動", "eng": "Physical activity", "sign": [{"id": 1, "cht": "靜態生活型態", "eng": "sedentary life style"}, {"id": 2, "cht": "不適當/不​​持續的運動模式", "eng": "inadequate/inconsistent exercise routine"}, {"id": 3, "cht": "不適合現在體能狀況的運動型態或運動量", "eng": "inappropriate type/amount of exercise for age/physical condition"}, {"id": 4, "cht": "其他", "eng": "Other"}]}, {"id": 4, "cht": "個人照顧", "eng": "Personal care", "sign": [{"id": 1, "cht": "難以洗衣服", "eng": "difficulty laundering clothing"}, {"id": 2, "cht": "難以洗澡", "eng": "difficulty with bathing"}, {"id": 3, "cht": "難以上廁所", "eng": "difficulty with toileting activities"}, {"id": 4, "cht": "難以穿脫下半身衣服", "eng": "difficulty dressing lower body"}, {"id": 5, "cht": "難以穿脫上衣", "eng": "difficulty dressing upper body"}, {"id": 6, "cht": "身體惡臭", "eng": "foul body odor"}, {"id": 7, "cht": "無法洗頭/梳頭", "eng": "difficulty shampooing/combing hair"}, {"id": 8, "cht": "難以刷牙/使用牙線/口腔護理", "eng": "difficulty brushing/flossing/mouth care"}, {"id": 9, "cht": "不情願/無法/忘記完成自我照護", "eng": "unwilling/unable/forgets to complete personal care activities"}, {"id": 10, "cht": "其他", "eng": "Other"}]}, {"id": 5, "cht": "成癮藥物使用", "eng": "Substance use", "sign": [{"id": 1, "cht": "濫用非處方/處方藥物", "eng": "abuses over-the-counter/prescription medications"}, {"id": 2, "cht": "使用娛樂性藥物(幻覺劑、興奮劑、抗憂鬱劑)", "eng": "uses 'street' - recreatinal drugs"}, {"id": 3, "cht": "酒精濫用", "eng": "abuses alcohol"}, {"id": 4, "cht": "抽菸/使用菸草製品", "eng": "smokes/uses tobacco products"}, {"id": 5, "cht": "難以執行平日角色", "eng": "difficulty performing normal routines"}, {"id": 6, "cht": "反射異常", "eng": "reflex disturbances"}, {"id": 7, "cht": "行為改變", "eng": "behavior change"}, {"id": 8, "cht": "暴露在二手菸中", "eng": "exposure to cigarette/cigar smoke"}, {"id": 9, "cht": "買賣毒品", "eng": "buys/sells illegal substances"}, {"id": 10, "cht": "其他", "eng": "Other"}]}, {"id": 6, "cht": "家庭計畫", "eng": "Family planning", "sign": [{"id": 1, "cht": "育兒知識不足/不恰當", "eng": "inappropriate/insufficient knowledge about family planning methods"}, {"id": 2, "cht": "健康行為的知識不足/不恰當", "eng": "inappropriate/insufficient knowledge about preconception health practices"}, {"id": 3, "cht": "無法準確/一致性的執行家庭計畫", "eng": "inaccurate/inconsistent use of family planning methods"}, {"id": 4, "cht": "對目前家庭計畫進行方式不滿", "eng": "dissatisfied with present family planning method"}, {"id": 5, "cht": "擔心他人對家庭計畫選擇的反應", "eng": "fears others' reactions regarding family planning choices"}, {"id": 6, "cht": "難以執行家庭計畫", "eng": "difficulty obtaining family planning methods"}, {"id": 7, "cht": "其他", "eng": "Other"}]}, {"id": 7, "cht": "健康照顧督導", "eng": "Health care supervision", "sign": [{"id": 1, "cht": "未能獲得常規/預防性的健康照護", "eng": "fails to obtain routine/preventive health care"}, {"id": 2, "cht": "未能尋求徵狀的評估與治療", "eng": "fails to seek care for symptoms requiring evaluation/treatment"}, {"id": 3, "cht": "未能依照照護人員要求回診", "eng": "fails to return as requested to health care provider"}, {"id": 4, "cht": "無法配合不同專業的治療計畫", "eng": "inability to coordinate multiple appointments/treatment plans"}, {"id": 5, "cht": "健康照護資源來源不一致", "eng": "inconsistent source of health care"}, {"id": 6, "cht": "健康照護資源不足", "eng": "inadequate source of health care"}, {"id": 7, "cht": "治療計劃不足", "eng": "inadequate treatment plan"}, {"id": 8, "cht": "其他", "eng": "Other"}]}, {"id": 8, "cht": "用藥習慣", "eng": "Medication regimen", "sign": [{"id": 1, "cht": "難以遵循服藥劑量與時間", "eng": "does not follow recommended dosage/schedule"}, {"id": 2, "cht": "出現藥物副作用/不良反應", "eng": "evidence of side effects/adverse reactions"}, {"id": 3, "cht": "出現藥物副作用/不良反應", "eng": "inadequate system for taking medication"}, {"id": 4, "cht": "藥物存放不當", "eng": "improper storage of medication"}, {"id": 5, "cht": "無法獲得適當的藥物補充", "eng": "fails to obtain refills appropriately"}, {"id": 6, "cht": "未能獲得免疫接種", "eng": "fails to obtain immunizations"}, {"id": 7, "cht": "未能獲得藥物治療", "eng": "inadequate medication regimen"}, {"id": 8, "cht": "無他人協助無法服藥", "eng": "unable to take medications without help"}, {"id": 9, "cht": "其他", "eng": "Other"}]}]}}
+{
+  "version": 1,
+  "D1": {
+    "name": "環境面向",
+    "problem": [
+      {
+        "id": 1,
+        "cht": "收入",
+        "eng": "Income",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "低或無收入",
+            "eng": "low/no income"
+          },
+          {
+            "id": 2,
+            "cht": "沒有醫療保險",
+            "eng": "uninsured medical expenses"
+          },
+          {
+            "id": 3,
+            "cht": "無法管理金錢",
+            "eng": "inadequate money manaement"
+          },
+          {
+            "id": 4,
+            "cht": "只買得起必需品",
+            "eng": "able to buy only necessities"
+          },
+          {
+            "id": 5,
+            "cht": "買必需品有困難",
+            "eng": "difficulty buying necessities"
+          },
+          {
+            "id": 6,
+            "cht": "其他",
+            "eng": "other"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "cht": "清潔衛生",
+        "eng": "Sanitation",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "髒亂的生活區",
+            "eng": "soiled living area"
+          },
+          {
+            "id": 2,
+            "cht": "缺乏存糧/缺乏備餐能力",
+            "eng": "inadequate food storage/disposal"
+          },
+          {
+            "id": 3,
+            "cht": "昆蟲/囓齒動物(老鼠?)",
+            "eng": "insects/rodents"
+          },
+          {
+            "id": 4,
+            "cht": "惡臭",
+            "eng": "foul odor"
+          },
+          {
+            "id": 5,
+            "cht": "水源不足",
+            "eng": "inadequate water supply"
+          },
+          {
+            "id": 6,
+            "cht": "汙水處理不足",
+            "eng": "inadequate sewage disposal"
+          },
+          {
+            "id": 7,
+            "cht": "洗衣設施不足",
+            "eng": "inadequate laundry facilities"
+          },
+          {
+            "id": 8,
+            "cht": "過敏原",
+            "eng": "allergens"
+          },
+          {
+            "id": 9,
+            "cht": "傳染源/汙染物",
+            "eng": "infectious/contaminating agents"
+          },
+          {
+            "id": 10,
+            "cht": "出現黴菌",
+            "eng": "presence of mold"
+          },
+          {
+            "id": 11,
+            "cht": "過多寵物",
+            "eng": "excessive pets"
+          },
+          {
+            "id": 12,
+            "cht": "其他",
+            "eng": "other"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "cht": "住處",
+        "eng": "Residence",
+        "sign": [
+          {
+            "id": 2,
+            "cht": "不足的冷暖氣",
+            "eng": "inadequate heating/cooling"
+          },
+          {
+            "id": 3,
+            "cht": "很陡/不安全的階梯",
+            "eng": "steep/unsafe stairs"
+          },
+          {
+            "id": 4,
+            "cht": "缺乏/不通的進出口",
+            "eng": "inadequate/obstructed exits/entries"
+          },
+          {
+            "id": 5,
+            "cht": "雜物遍布",
+            "eng": "cluttered living space"
+          },
+          {
+            "id": 6,
+            "cht": "儲存危險物品/物質",
+            "eng": "unsafe storage of dangerous objects/substances"
+          },
+          {
+            "id": 7,
+            "cht": "不安全的地墊/滑動的地毯",
+            "eng": "unsafe mats/throw rugs"
+          },
+          {
+            "id": 8,
+            "cht": "缺乏安源的裝備",
+            "eng": "inadequate safety devices"
+          },
+          {
+            "id": 9,
+            "cht": "空間以鉛基油漆塗裝",
+            "eng": "presence of lead-based paint"
+          },
+          {
+            "id": 10,
+            "cht": "不安全的用具/設備",
+            "eng": "unsafe appliances/equiptment"
+          },
+          {
+            "id": 11,
+            "cht": "不足/擁擠的生活空間",
+            "eng": "inadequate/crowded living space"
+          },
+          {
+            "id": 12,
+            "cht": "管線外露",
+            "eng": "exposed wiring"
+          },
+          {
+            "id": 13,
+            "cht": "結構性障礙",
+            "eng": "structural barriers"
+          },
+          {
+            "id": 14,
+            "cht": "無家可歸",
+            "eng": "homeless"
+          },
+          {
+            "id": 15,
+            "cht": "其他",
+            "eng": "other"
+          },
+          {
+            "id": 1,
+            "cht": "不穩固的建築",
+            "eng": "structurally unsound"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "cht": "社區鄰里/工作場所安全",
+        "eng": "Neighborhood/workplace safety",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "高犯罪率",
+            "eng": "high crime rate"
+          },
+          {
+            "id": 2,
+            "cht": "高汙染等級",
+            "eng": "high pollution level"
+          },
+          {
+            "id": 3,
+            "cht": "不受控/危險的/帶病的動物",
+            "eng": "uncontrolled/dangerous/infected animals"
+          },
+          {
+            "id": 4,
+            "cht": "不足的/不安全遊戲場或運動場",
+            "eng": "inadequate/unsafe play/exercise areas"
+          },
+          {
+            "id": 5,
+            "cht": "不足的空間與資源促進健康",
+            "eng": "inadequate space/resources to foster health"
+          },
+          {
+            "id": 6,
+            "cht": "正在或被通報遭受暴力",
+            "eng": "threats/reports of violence"
+          },
+          {
+            "id": 7,
+            "cht": "物理性危害",
+            "eng": "physical hazards"
+          },
+          {
+            "id": 8,
+            "cht": "車輛/交通危害",
+            "eng": "vehicle/traffic hazards"
+          },
+          {
+            "id": 9,
+            "cht": "化學性危害",
+            "eng": "chemical hazards"
+          },
+          {
+            "id": 10,
+            "cht": "放射線危害",
+            "eng": "radiological hazards"
+          }
+        ]
+      }
+    ]
+  },
+  "D2": {
+    "name": "心理社會面向",
+    "problem": [
+      {
+        "id": 1,
+        "cht": "與 社區資源的整合",
+        "eng": "Communication with community resources",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難以理解服務提供者的角色與法規限制",
+            "eng": "unfamiliar with options/procedures for obtaining services"
+          },
+          {
+            "id": 2,
+            "cht": "不知如何向服務提供者提出訴求",
+            "eng": "difficulty understanding roles/regulations of service providers"
+          },
+          {
+            "id": 3,
+            "cht": "不滿服務",
+            "eng": "unable to communicate concerns to provider"
+          },
+          {
+            "id": 4,
+            "cht": "缺乏可及資源",
+            "eng": "dissatisfaction with services"
+          },
+          {
+            "id": 5,
+            "cht": "語言阻礙",
+            "eng": "inadequate/unavailable resources"
+          },
+          {
+            "id": 6,
+            "cht": "文化阻礙",
+            "eng": "language barrier"
+          },
+          {
+            "id": 7,
+            "cht": "教育阻礙",
+            "eng": "cultural barrier"
+          },
+          {
+            "id": 8,
+            "cht": "交通運輸阻礙",
+            "eng": "educational barrier"
+          },
+          {
+            "id": 9,
+            "cht": "求助管道有限(照顧、服務、物資)",
+            "eng": "transportation barrier"
+          },
+          {
+            "id": 10,
+            "cht": "不用會/沒有通訊設備",
+            "eng": "limited access to care/services/goods"
+          },
+          {
+            "id": 11,
+            "cht": "無法使用/擁有不合適的溝通器具/設備",
+            "eng": "unable to use/has inadequate communication devices/equiptment"
+          },
+          {
+            "id": 12,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "cht": "社交",
+        "eng": "Social contact",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "有限的社交",
+            "eng": "limited social contact"
+          },
+          {
+            "id": 2,
+            "cht": "耗用健康照護提供者當社交",
+            "eng": "uses health care provider for social contact"
+          },
+          {
+            "id": 3,
+            "cht": "很少戶外刺激與休閒活動",
+            "eng": "minimal outside stimulation/leisure time activities"
+          },
+          {
+            "id": 4,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "cht": "角色改變",
+        "eng": "Role change",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "非自願的角色轉換",
+            "eng": "involuntary role reversal"
+          },
+          {
+            "id": 2,
+            "cht": "承擔新角色",
+            "eng": "assumes new role"
+          },
+          {
+            "id": 3,
+            "cht": "失去過往角色功能",
+            "eng": "loses previous role"
+          },
+          {
+            "id": 4,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "cht": "人際關係",
+        "eng": "Interpersonal relationship",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難建立或維持關係",
+            "eng": "difficulty establishing/maintaining relationships"
+          },
+          {
+            "id": 2,
+            "cht": "吝於分享",
+            "eng": "minimal shared activities"
+          },
+          {
+            "id": 3,
+            "cht": "眼高手低",
+            "eng": "incongruent values/goals/expectations/schedules"
+          },
+          {
+            "id": 4,
+            "cht": "缺乏溝通技巧",
+            "eng": "inadequate interpersonal communication skills"
+          },
+          {
+            "id": 5,
+            "cht": "沒完沒了的僵局",
+            "eng": "prolonged, unrelieved tension"
+          },
+          {
+            "id": 6,
+            "cht": "控制狂",
+            "eng": "inappropriate suspicion/manipulation/control"
+          },
+          {
+            "id": 7,
+            "cht": "對伴侶進行身心虐待",
+            "eng": "physically/emotionally abusive to partner"
+          },
+          {
+            "id": 8,
+            "cht": "不動干戈解決難題",
+            "eng": "difficulty problem solving without conflict"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "cht": "信仰",
+        "eng": "Spirituality",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "表達靈性關注",
+            "eng": "expresses spiritual concerns"
+          },
+          {
+            "id": 2,
+            "cht": "具爭議的宗教儀式",
+            "eng": "disrupted spiritual rituals"
+          },
+          {
+            "id": 3,
+            "cht": "靈性上的信任被破壞",
+            "eng": "disrupted spiritual trust"
+          },
+          {
+            "id": 4,
+            "cht": "靈性信仰與醫療/照護衝突",
+            "eng": "conflicting spiritual beliefs and medical/health care regimen"
+          },
+          {
+            "id": 5,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "cht": "喪慟",
+        "eng": "Grief",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "無法辨識哀傷階段/癒合過程",
+            "eng": "fails to recognize stages of grief/process of healing"
+          },
+          {
+            "id": 2,
+            "cht": "難以調適的哀傷反應",
+            "eng": "difficulty coping with grief responses"
+          },
+          {
+            "id": 3,
+            "cht": "難以言表的哀傷反應",
+            "eng": "difficulty expressing grief responses"
+          },
+          {
+            "id": 4,
+            "cht": "個人/家人間哀傷矛盾階段",
+            "eng": "conflicting stages of grief among individuals/families"
+          },
+          {
+            "id": 5,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "cht": "精神健康",
+        "eng": "Mental health",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "悲傷/無望/低自尊",
+            "eng": "sadness/hopelessness/decreased self-esteem"
+          },
+          {
+            "id": 2,
+            "cht": "杞人憂天",
+            "eng": "apprehension/undefined fear"
+          },
+          {
+            "id": 3,
+            "cht": "對參與活動/自我照顧失去興趣",
+            "eng": "loss of interest/involvement in activities/self-care"
+          },
+          {
+            "id": 4,
+            "cht": "狹隘導致 分散注意力與焦點",
+            "eng": "narrowed to scattered attention/focus"
+          },
+          {
+            "id": 5,
+            "cht": "情感平淡",
+            "eng": "flat affect"
+          },
+          {
+            "id": 6,
+            "cht": "焦躁/激動/侵略性",
+            "eng": "irritable/agitated/aggressive"
+          },
+          {
+            "id": 7,
+            "cht": "強迫性無目的行為",
+            "eng": "purposeless/compulsive activity"
+          },
+          {
+            "id": 8,
+            "cht": "難控制壓力",
+            "eng": "difficulty managing stress"
+          },
+          {
+            "id": 9,
+            "cht": "難控制怒氣",
+            "eng": "difficulty managing anger"
+          },
+          {
+            "id": 10,
+            "cht": "身體症狀/疲勞",
+            "eng": "somatic complaints/fatigue"
+          },
+          {
+            "id": 11,
+            "cht": "妄想",
+            "eng": "delusions"
+          },
+          {
+            "id": 12,
+            "cht": "幻覺/幻想",
+            "eng": "hallucinations/illusions"
+          },
+          {
+            "id": 13,
+            "cht": "表達自傷傷人想法",
+            "eng": "expresses suicidal/homicidal thoughts"
+          },
+          {
+            "id": 14,
+            "cht": "企圖自傷/傷人",
+            "eng": "attempts suicide/homicide"
+          },
+          {
+            "id": 15,
+            "cht": "自殘",
+            "eng": "self-mutilation"
+          },
+          {
+            "id": 16,
+            "cht": "情緒波動",
+            "eng": "mood swings"
+          },
+          {
+            "id": 17,
+            "cht": "情境再現",
+            "eng": "flash-backs"
+          },
+          {
+            "id": 18,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "cht": "性",
+        "eng": "Sexuality",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "不考慮後果的性行為",
+            "eng": "difficulty recognizing consequences of sexual behavior"
+          },
+          {
+            "id": 2,
+            "cht": "難以表達親密",
+            "eng": "difficulty expressing intimacy"
+          },
+          {
+            "id": 3,
+            "cht": "性別認同混淆",
+            "eng": "sexual identity confusion"
+          },
+          {
+            "id": 4,
+            "cht": "性價值混亂",
+            "eng": "sexual value confusion"
+          },
+          {
+            "id": 5,
+            "cht": "性飢渴",
+            "eng": "dissatisfied with sexual relationships"
+          },
+          {
+            "id": 6,
+            "cht": "不安全性行為",
+            "eng": "unsafe sexual practices"
+          },
+          {
+            "id": 7,
+            "cht": "性衝動/性挑逗/性騷擾",
+            "eng": "sexual acting out/provocative behaviors/harassment"
+          },
+          {
+            "id": 8,
+            "cht": "性犯罪/毆打",
+            "eng": "sexual perpetration/assault"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "cht": "照顧/教養",
+        "eng": "Caretaking/parenting",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難以提供生理照護與安全",
+            "eng": "difficulty providing physical care/safety"
+          },
+          {
+            "id": 2,
+            "cht": "難以提供情感滋養",
+            "eng": "difficulty providing emotional nurturance"
+          },
+          {
+            "id": 3,
+            "cht": "難以提供認知學習經驗與活動",
+            "eng": "difficulty providing cognitive learning experiences and activities"
+          },
+          {
+            "id": 4,
+            "cht": "難以提供預防保健照護",
+            "eng": "difficulty providing preventive and therapeutic health care"
+          },
+          {
+            "id": 5,
+            "cht": "揠苗助長",
+            "eng": "expectations incongruent with stage of growth and development"
+          },
+          {
+            "id": 6,
+            "cht": "不滿/無法承擔責任",
+            "eng": "dissatisfaction/difficulty with responsibilities"
+          },
+          {
+            "id": 7,
+            "cht": "難有語言非語言之互動或回應",
+            "eng": "difficulty interpreting or responding to verbal/nonverbal communication"
+          },
+          {
+            "id": 8,
+            "cht": "忽視",
+            "eng": "neglectful"
+          },
+          {
+            "id": 9,
+            "cht": "辱罵",
+            "eng": "abusive"
+          },
+          {
+            "id": 10,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "cht": "疏忽",
+        "eng": "Neglect",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "身體照顧缺失",
+            "eng": "acks adequate physical care"
+          },
+          {
+            "id": 2,
+            "cht": "缺乏情緒滋養與支持",
+            "eng": "lacks emotional nurturance/support"
+          },
+          {
+            "id": 3,
+            "cht": "缺乏合式的刺激與認知經驗",
+            "eng": "lacks appropriate stimulation/cognitive experiences"
+          },
+          {
+            "id": 4,
+            "cht": "不合宜的任其獨處",
+            "eng": "inappropiately left alone"
+          },
+          {
+            "id": 5,
+            "cht": "放牛吃草",
+            "eng": "lacks necessary supervision"
+          },
+          {
+            "id": 6,
+            "cht": "不適當或延遲就醫",
+            "eng": "inadequate/delayed medical care"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "cht": "虐待",
+        "eng": "Abuse",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "苛刻/過度嚴格的管教",
+            "eng": "harsh/excessive discipline"
+          },
+          {
+            "id": 2,
+            "cht": "傷痕與燒傷或其他傷勢",
+            "eng": "welts/burns/other injuries"
+          },
+          {
+            "id": 3,
+            "cht": "不合理的傷勢",
+            "eng": "questionable explanation of injury"
+          },
+          {
+            "id": 4,
+            "cht": "語言暴力",
+            "eng": "attacked verbally"
+          },
+          {
+            "id": 5,
+            "cht": "恐懼/過度警覺",
+            "eng": "fearful/hypervigilant behavior"
+          },
+          {
+            "id": 6,
+            "cht": "暴力環境",
+            "eng": "violent environment"
+          },
+          {
+            "id": 7,
+            "cht": "持續的負面訊息",
+            "eng": "consistent negative messages"
+          },
+          {
+            "id": 8,
+            "cht": "性暴力",
+            "eng": "assaulted sexually"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "cht": "成長與發展",
+        "eng": "Growth and development",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "發展檢核量表有異常",
+            "eng": "abnormal results of developmental screening tests"
+          },
+          {
+            "id": 2,
+            "cht": "偏離該年齡生長發育平均值(體重/身高/頭圍)",
+            "eng": "abnormal weight/height/head circumference in relation growth/aging standards"
+          },
+          {
+            "id": 3,
+            "cht": "與年齡不相符的行為舉止",
+            "eng": "age-inappropriate behavior"
+          },
+          {
+            "id": 4,
+            "cht": "發育不足(不適當)",
+            "eng": "inadequate achieve"
+          },
+          {
+            "id": 5,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      }
+    ]
+  },
+  "D3": {
+    "name": "生理面向",
+    "problem": [
+      {
+        "id": 1,
+        "cht": "聽力",
+        "eng": "Hearing",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難以聽懂一般腔調",
+            "eng": "difficulty hearing normal speech tones"
+          },
+          {
+            "id": 2,
+            "cht": "在吵雜的環境中有障礙",
+            "eng": "difficulty hearing speech in large group settings"
+          },
+          {
+            "id": 3,
+            "cht": "難以聽見高頻音",
+            "eng": "difficulty hearing high frequency sounds"
+          },
+          {
+            "id": 4,
+            "cht": "對聲音反應異常",
+            "eng": "absent/abnormal response to sound"
+          },
+          {
+            "id": 5,
+            "cht": "聽力篩檢異常",
+            "eng": "abnormal results of hearing screening test"
+          },
+          {
+            "id": 6,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "cht": "視力8項",
+        "eng": "Vision",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "老花",
+            "eng": "difficulty seeing small print/calibrations"
+          },
+          {
+            "id": 2,
+            "cht": "近視",
+            "eng": "difficulty seeing distant objects"
+          },
+          {
+            "id": 3,
+            "cht": "遠視",
+            "eng": "difficulty seeing close objects"
+          },
+          {
+            "id": 4,
+            "cht": "對於視覺刺激沒反應/不正常反應",
+            "eng": "absent/abnormal response to visual stimuli"
+          },
+          {
+            "id": 5,
+            "cht": "視力篩檢異常",
+            "eng": "abnormal results of vision screening test"
+          },
+          {
+            "id": 6,
+            "cht": "瞇眼/閃爍/撕裂/模糊",
+            "eng": "squinting/blinking/tearing/blurring"
+          },
+          {
+            "id": 7,
+            "cht": "飛蚊症/閃光",
+            "eng": "floaters/flashes"
+          },
+          {
+            "id": 8,
+            "cht": "辨色力差",
+            "eng": "difficulty differentiating colors"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "cht": "談話、語言能力",
+        "eng": "Speech and language",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "缺乏/異常的談話或演講能力",
+            "eng": "absent/abnormal ability to speak/vocalize"
+          },
+          {
+            "id": 2,
+            "cht": "缺乏/異常的理解能力",
+            "eng": "absent/abnormal ability to understand"
+          },
+          {
+            "id": 3,
+            "cht": "缺交互溝通的技巧或手勢",
+            "eng": "lacks alternative communication skills/gestures"
+          },
+          {
+            "id": 4,
+            "cht": "句子結構不恰當",
+            "eng": "inappropriate sentence structure"
+          },
+          {
+            "id": 5,
+            "cht": "發音含糊不清",
+            "eng": "limited enunciation/clarity"
+          },
+          {
+            "id": 6,
+            "cht": "不當用字",
+            "eng": "inappropriate word usage"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "cht": "口腔健康",
+        "eng": "Oral health",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "缺失/斷裂/畸形牙齒",
+            "eng": "missing/broken/malformed teeth"
+          },
+          {
+            "id": 2,
+            "cht": "齲齒",
+            "eng": "caries"
+          },
+          {
+            "id": 3,
+            "cht": "牙菌斑",
+            "eng": "excess tartar"
+          },
+          {
+            "id": 4,
+            "cht": "疼痛/腫脹/牙齦出血",
+            "eng": "sore/swollen/bleeding gums"
+          },
+          {
+            "id": 5,
+            "cht": "咬合不正",
+            "eng": "malocclusion"
+          },
+          {
+            "id": 6,
+            "cht": "假牙不合/遺失",
+            "eng": "ill-fitting/missing dentures"
+          },
+          {
+            "id": 7,
+            "cht": "冷熱敏感",
+            "eng": "sensitivity to hot or cold"
+          },
+          {
+            "id": 8,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "cht": "認知",
+        "eng": "Cognition",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "判斷力變差",
+            "eng": "diminished judgment"
+          },
+          {
+            "id": 2,
+            "cht": "定向感有異 時/地/人",
+            "eng": "disoriented to time/place/person"
+          },
+          {
+            "id": 3,
+            "cht": "短期記憶缺失",
+            "eng": "limited recall of recent events"
+          },
+          {
+            "id": 4,
+            "cht": "長期記憶缺失",
+            "eng": "limited recall of long past events"
+          },
+          {
+            "id": 5,
+            "cht": "計算與排序能力差",
+            "eng": "limited calculating/sequencing skills"
+          },
+          {
+            "id": 6,
+            "cht": "難以專心",
+            "eng": "limited concentration"
+          },
+          {
+            "id": 7,
+            "cht": "推理/抽象思考能力差",
+            "eng": "limited reasoning/abstract thinking"
+          },
+          {
+            "id": 8,
+            "cht": "衝動",
+            "eng": "impulsiveness"
+          },
+          {
+            "id": 9,
+            "cht": "重複語言/行為",
+            "eng": "repetitious language/behavior"
+          },
+          {
+            "id": 10,
+            "cht": "遊走",
+            "eng": "wanders"
+          },
+          {
+            "id": 11,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "cht": "病痛",
+        "eng": "Pain",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "表達不舒服/痛",
+            "eng": "expresses discomfort/pain"
+          },
+          {
+            "id": 2,
+            "cht": "脈搏快/呼吸喘/血壓高",
+            "eng": "elevated pulse/respirations/blood pressure"
+          },
+          {
+            "id": 3,
+            "cht": "代償動作/防衛動作",
+            "eng": "compensated movement/guarding"
+          },
+          {
+            "id": 4,
+            "cht": "倉促不安",
+            "eng": "restless behavior"
+          },
+          {
+            "id": 5,
+            "cht": "臉部扭曲",
+            "eng": "facial grimaces"
+          },
+          {
+            "id": 6,
+            "cht": "蒼白/冒冷汗",
+            "eng": "pallor/perspiration"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "cht": "意識",
+        "eng": "Consciousness",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "倦怠",
+            "eng": "lethargic"
+          },
+          {
+            "id": 2,
+            "cht": "昏迷",
+            "eng": "stuporous"
+          },
+          {
+            "id": 3,
+            "cht": "沒有反應",
+            "eng": "unresponsive"
+          },
+          {
+            "id": 4,
+            "cht": "不省人事",
+            "eng": "comatose"
+          },
+          {
+            "id": 5,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "cht": "皮膚",
+        "eng": "Skin",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "完整性受損/壓瘡",
+            "eng": "lesion/pressure ulcer"
+          },
+          {
+            "id": 2,
+            "cht": "皮疹",
+            "eng": "rash"
+          },
+          {
+            "id": 3,
+            "cht": "乾燥",
+            "eng": "excessively dry"
+          },
+          {
+            "id": 4,
+            "cht": "出油",
+            "eng": "excessively oily"
+          },
+          {
+            "id": 5,
+            "cht": "發炎",
+            "eng": "inflammation"
+          },
+          {
+            "id": 6,
+            "cht": "搔癢",
+            "eng": "pruritus"
+          },
+          {
+            "id": 7,
+            "cht": "引流",
+            "eng": "drainage"
+          },
+          {
+            "id": 8,
+            "cht": "瘀血",
+            "eng": "bruising"
+          },
+          {
+            "id": 9,
+            "cht": "指甲肥大",
+            "eng": "hypertrophy of nails"
+          },
+          {
+            "id": 10,
+            "cht": "傷口難以癒合",
+            "eng": "delayed incisional healing"
+          },
+          {
+            "id": 11,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "cht": "神經-肌肉-骨骼功能",
+        "eng": "Neuro-musculo-skeletal function",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "活動範圍受限",
+            "eng": "limited range of motion"
+          },
+          {
+            "id": 2,
+            "cht": "肌力減弱",
+            "eng": "decreased muscle strength"
+          },
+          {
+            "id": 3,
+            "cht": "肌肉協調性下降",
+            "eng": "decreased coordination"
+          },
+          {
+            "id": 4,
+            "cht": "肌肉張力下降",
+            "eng": "decreased muscle tone"
+          },
+          {
+            "id": 5,
+            "cht": "肌肉張力增加",
+            "eng": "increased muscle tone"
+          },
+          {
+            "id": 6,
+            "cht": "麻木",
+            "eng": "decreased sensation"
+          },
+          {
+            "id": 7,
+            "cht": "敏感",
+            "eng": "increased sensation"
+          },
+          {
+            "id": 8,
+            "cht": "平衡功能下降",
+            "eng": "decreased balance"
+          },
+          {
+            "id": 9,
+            "cht": "步態/行走障礙",
+            "eng": "gait/ambulation disturbance"
+          },
+          {
+            "id": 10,
+            "cht": "難以移位",
+            "eng": "difficulty transferring"
+          },
+          {
+            "id": 11,
+            "cht": "骨折",
+            "eng": "fractures"
+          },
+          {
+            "id": 12,
+            "cht": "震顫/癲癇發作",
+            "eng": "tremors/seizures"
+          },
+          {
+            "id": 13,
+            "cht": "體溫調節困難",
+            "eng": "difficulty with thermoregulation"
+          },
+          {
+            "id": 14,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "cht": "呼吸",
+        "eng": "Respiration",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "呼吸型態異常",
+            "eng": "abnormal breath patterns"
+          },
+          {
+            "id": 2,
+            "cht": "無法自主呼吸",
+            "eng": "unable to breathe independently"
+          },
+          {
+            "id": 3,
+            "cht": "咳嗽",
+            "eng": "cough"
+          },
+          {
+            "id": 4,
+            "cht": "無法自咳痰",
+            "eng": "unable to cough/expectorate independently"
+          },
+          {
+            "id": 5,
+            "cht": "發紺(缺氧)",
+            "eng": "cyanosis"
+          },
+          {
+            "id": 6,
+            "cht": "異常痰",
+            "eng": "abnormal sputum"
+          },
+          {
+            "id": 7,
+            "cht": "呼嚕聲",
+            "eng": "noisy respirations"
+          },
+          {
+            "id": 8,
+            "cht": "流鼻水/鼻塞",
+            "eng": "rhinorrhea/nasal congestion"
+          },
+          {
+            "id": 9,
+            "cht": "不正常呼吸音",
+            "eng": "normal breath sounds"
+          },
+          {
+            "id": 10,
+            "cht": "呼吸生理學相關檢查異常",
+            "eng": "abnormal respiratory laboratory results"
+          },
+          {
+            "id": 11,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "cht": "循環",
+        "eng": "Circulation",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "水腫",
+            "eng": "edema"
+          },
+          {
+            "id": 2,
+            "cht": "四肢疼痛/痙攣",
+            "eng": "cramping/pain of extremities"
+          },
+          {
+            "id": 3,
+            "cht": "心搏減速",
+            "eng": "decreased pulses"
+          },
+          {
+            "id": 4,
+            "cht": "皮膚變色",
+            "eng": "discoloration of skin"
+          },
+          {
+            "id": 5,
+            "cht": "局部體溫改變",
+            "eng": "temperature change in affected area"
+          },
+          {
+            "id": 6,
+            "cht": "靜脈曲張",
+            "eng": "varicosities"
+          },
+          {
+            "id": 7,
+            "cht": "昏厥/頭暈",
+            "eng": "syncopal episodes (fainting)/dizziness"
+          },
+          {
+            "id": 8,
+            "cht": "血壓值異常",
+            "eng": "abnormal blood pressure reading"
+          },
+          {
+            "id": 9,
+            "cht": "脈搏微弱",
+            "eng": "pulse deficit"
+          },
+          {
+            "id": 10,
+            "cht": "心律不整",
+            "eng": "irregular heart rate"
+          },
+          {
+            "id": 11,
+            "cht": "心搏過速",
+            "eng": "excessively rapid heart rate"
+          },
+          {
+            "id": 12,
+            "cht": "心搏過慢",
+            "eng": "excessively slow heart rate"
+          },
+          {
+            "id": 13,
+            "cht": "心絞痛",
+            "eng": "anginal pain"
+          },
+          {
+            "id": 14,
+            "cht": "心音異常",
+            "eng": "abnormal heart sounds/murmurs"
+          },
+          {
+            "id": 15,
+            "cht": "凝血異常",
+            "eng": "abnormal clotting"
+          },
+          {
+            "id": 16,
+            "cht": "心臟相關生理檢驗值異常",
+            "eng": "abnormal cardiac laboratory results"
+          },
+          {
+            "id": 17,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "cht": "消化-水分補充",
+        "eng": "Digestion-hydration",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "噁心/嘔吐",
+            "eng": "nausea/vomiting"
+          },
+          {
+            "id": 2,
+            "cht": "難或無法咀嚼/吞嚥/消化",
+            "eng": "difficulty/inability to chew/swallow/digest"
+          },
+          {
+            "id": 3,
+            "cht": "消化不良",
+            "eng": "indigestion"
+          },
+          {
+            "id": 4,
+            "cht": "逆流",
+            "eng": "reflux"
+          },
+          {
+            "id": 5,
+            "cht": "厭食",
+            "eng": "anorexia"
+          },
+          {
+            "id": 6,
+            "cht": "貧血",
+            "eng": "anemia"
+          },
+          {
+            "id": 7,
+            "cht": "腹水",
+            "eng": "ascites"
+          },
+          {
+            "id": 8,
+            "cht": "黃疸/肝腫大",
+            "eng": "jaundice/liver enlargement"
+          },
+          {
+            "id": 9,
+            "cht": "皮膚乾癟",
+            "eng": "decreased skin turgor"
+          },
+          {
+            "id": 10,
+            "cht": "唇裂/口乾",
+            "eng": "cracked lips/dry mouth"
+          },
+          {
+            "id": 11,
+            "cht": "電解質不平衡",
+            "eng": "electrolyte imbalance"
+          },
+          {
+            "id": 12,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "cht": "腸道功能",
+        "eng": "Bowel function",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "大便次數異於平常",
+            "eng": "abnormal frequency/consistency of stool"
+          },
+          {
+            "id": 2,
+            "cht": "大便時疼痛",
+            "eng": "painful defecation"
+          },
+          {
+            "id": 3,
+            "cht": "腸蠕動音變少",
+            "eng": "decreased bowel sounds"
+          },
+          {
+            "id": 4,
+            "cht": "血便",
+            "eng": "blood in stools"
+          },
+          {
+            "id": 5,
+            "cht": "大便顏色異常",
+            "eng": "abnormal color"
+          },
+          {
+            "id": 6,
+            "cht": "腹脹不舒服",
+            "eng": "cramping/abdominal discomfort"
+          },
+          {
+            "id": 7,
+            "cht": "大便失禁",
+            "eng": "incontinent of stool"
+          },
+          {
+            "id": 8,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "cht": "排尿功能",
+        "eng": "Urinary function",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "排尿有灼熱感",
+            "eng": "burning/painful urination"
+          },
+          {
+            "id": 2,
+            "cht": "尿失禁",
+            "eng": "incontinent of urine"
+          },
+          {
+            "id": 3,
+            "cht": "頻尿",
+            "eng": "urgency/frequency"
+          },
+          {
+            "id": 4,
+            "cht": "剛開始尿不出來",
+            "eng": "difficulty initiating urination"
+          },
+          {
+            "id": 5,
+            "cht": "感覺尿不乾淨",
+            "eng": "difficulty emptying bladder"
+          },
+          {
+            "id": 6,
+            "cht": "尿量異常",
+            "eng": "abnormal amount"
+          },
+          {
+            "id": 7,
+            "cht": "血尿或不正常顏色",
+            "eng": "hematuria/abnormal color"
+          },
+          {
+            "id": 8,
+            "cht": "夜尿頻頻",
+            "eng": "nocturia"
+          },
+          {
+            "id": 9,
+            "cht": "尿液檢驗值異常",
+            "eng": "abnormal urinary laboratory results"
+          },
+          {
+            "id": 10,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "cht": "生殖功能",
+        "eng": "Reproductive function",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "異常分泌物",
+            "eng": "abnormal discharge"
+          },
+          {
+            "id": 2,
+            "cht": "月經週期異常",
+            "eng": "abnormal menstrual pattern"
+          },
+          {
+            "id": 3,
+            "cht": "更年期停經滴滴答答不適",
+            "eng": "difficulty managing menopause/andropause"
+          },
+          {
+            "id": 4,
+            "cht": "生殖器與乳房有硬塊腫脹疼痛",
+            "eng": "abnormal lumps/swelling/tenderness of genital organs or breasts"
+          },
+          {
+            "id": 5,
+            "cht": "性交疼痛(包含過程與完事後)",
+            "eng": "pain during or after sexual intercourse"
+          },
+          {
+            "id": 6,
+            "cht": "不孕",
+            "eng": "infertility"
+          },
+          {
+            "id": 7,
+            "cht": "性無能",
+            "eng": "impotency"
+          },
+          {
+            "id": 8,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "cht": "懷孕",
+        "eng": "Pregnancy",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難與胎兒建立連結",
+            "eng": "difficulty bonding with unborn baby"
+          },
+          {
+            "id": 2,
+            "cht": "難適應身形改變",
+            "eng": "difficulty coping with body changes"
+          },
+          {
+            "id": 3,
+            "cht": "難以進行產前運動/休息/飲食/行為",
+            "eng": "difficulty with prenatal exercise/rest/diet/behaviors"
+          },
+          {
+            "id": 4,
+            "cht": "害怕生產過程",
+            "eng": "fears delivery procedure"
+          },
+          {
+            "id": 5,
+            "cht": "產前併發症/早產",
+            "eng": "prenatal complications/preterm labory"
+          },
+          {
+            "id": 6,
+            "cht": "社會支持不足",
+            "eng": "inadequate social support"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "cht": "產後",
+        "eng": "Postpartum",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "哺乳困難",
+            "eng": "difficulty breast-feeding"
+          },
+          {
+            "id": 2,
+            "cht": "難以適應產後變化",
+            "eng": "difficulty coping with postpartum changes"
+          },
+          {
+            "id": 3,
+            "cht": "難以進行產後運動/休息/飲食/行為",
+            "eng": "difficulty with postpartum exercise/rest/diet/behaviors"
+          },
+          {
+            "id": 4,
+            "cht": "不正常出血或白帶",
+            "eng": "abnormal bleeding/vaginal discharge"
+          },
+          {
+            "id": 5,
+            "cht": "產後併發症",
+            "eng": "postpartum complications"
+          },
+          {
+            "id": 6,
+            "cht": "異常沮喪感",
+            "eng": "abnormal depressed feelings"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "cht": "傳染/感染情況",
+        "eng": "Communicable/infectious condition",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "感染",
+            "eng": "infection"
+          },
+          {
+            "id": 2,
+            "cht": "寄生蟲侵染",
+            "eng": "infestation"
+          },
+          {
+            "id": 3,
+            "cht": "發燒",
+            "eng": "fever"
+          },
+          {
+            "id": 4,
+            "cht": "生物危害",
+            "eng": "biological hazards"
+          },
+          {
+            "id": 5,
+            "cht": "篩檢/培養/實驗室檢查呈陽性",
+            "eng": "positive screening/culture/laboratory results"
+          },
+          {
+            "id": 6,
+            "cht": "防止傳播的物資/設備/政策不足",
+            "eng": "inadequat supplies to /equipment/policies prevent transmission"
+          },
+          {
+            "id": 7,
+            "cht": "未遵循感控方案",
+            "eng": "does not follow infection control regimen"
+          },
+          {
+            "id": 8,
+            "cht": "免疫力低下",
+            "eng": "inadequate immunity"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "D4": {
+    "name": "健康相關行為面向",
+    "problem": [
+      {
+        "id": 1,
+        "cht": "營養",
+        "eng": "Nutrition",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "過重",
+            "eng": "overweight: adult BMI 25.0 or more; child BMI 95th percentile or more"
+          },
+          {
+            "id": 2,
+            "cht": "過輕",
+            "eng": "underweight: adult BMI 18.5 or less; child BMI 5th percentile or less"
+          },
+          {
+            "id": 3,
+            "cht": "低於每日飲食準則(液體量/卡洛里)",
+            "eng": "lacks established standards for daily caloric/fluid intake"
+          },
+          {
+            "id": 4,
+            "cht": "高過每日飲食準則(液體量/卡洛里)",
+            "eng": "exceeds established standards for daily caloric/fluid intake"
+          },
+          {
+            "id": 5,
+            "cht": "不均衡飲食",
+            "eng": "unbalanced diet"
+          },
+          {
+            "id": 6,
+            "cht": "與年齡不合的進食餐數",
+            "eng": "improper feeding schedule for age"
+          },
+          {
+            "id": 7,
+            "cht": "無法遵從營養建議",
+            "eng": "does not follow recommended nutrition plan"
+          },
+          {
+            "id": 8,
+            "cht": "無法解釋的體重下降",
+            "eng": "unexplained/progressive weight loss"
+          },
+          {
+            "id": 9,
+            "cht": "無法備餐",
+            "eng": "unable to obtain/prepare food"
+          },
+          {
+            "id": 10,
+            "cht": "低血糖",
+            "eng": "hypoglycemia"
+          },
+          {
+            "id": 11,
+            "cht": "高血糖",
+            "eng": "hyperglycemia"
+          },
+          {
+            "id": 12,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "cht": "睡覺與休息習慣",
+        "eng": "Sleep and rest patterns",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "睡眠/休息模式擾亂家庭",
+            "eng": "sleep/rest pattern disrupts family"
+          },
+          {
+            "id": 2,
+            "cht": "常在夜裡醒來",
+            "eng": "frequently wakes during night"
+          },
+          {
+            "id": 3,
+            "cht": "夢遊",
+            "eng": "sleepwalking"
+          },
+          {
+            "id": 4,
+            "cht": "失眠",
+            "eng": "insomnia"
+          },
+          {
+            "id": 5,
+            "cht": "噩夢",
+            "eng": "nightmares"
+          },
+          {
+            "id": 6,
+            "cht": "與年齡與身體狀況睡眠不足",
+            "eng": "insufficient sleep/rest for age/physical condition"
+          },
+          {
+            "id": 7,
+            "cht": "睡眠呼吸暫停",
+            "eng": "sleep apnea"
+          },
+          {
+            "id": 8,
+            "cht": "打鼾",
+            "eng": "snoring"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "cht": "體能活動",
+        "eng": "Physical activity",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "靜態生活型態",
+            "eng": "sedentary life style"
+          },
+          {
+            "id": 2,
+            "cht": "不適當/不​​持續的運動模式",
+            "eng": "inadequate/inconsistent exercise routine"
+          },
+          {
+            "id": 3,
+            "cht": "不適合現在體能狀況的運動型態或運動量",
+            "eng": "inappropriate type/amount of exercise for age/physical condition"
+          },
+          {
+            "id": 4,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "cht": "個人照顧",
+        "eng": "Personal care",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難以洗衣服",
+            "eng": "difficulty laundering clothing"
+          },
+          {
+            "id": 2,
+            "cht": "難以洗澡",
+            "eng": "difficulty with bathing"
+          },
+          {
+            "id": 3,
+            "cht": "難以上廁所",
+            "eng": "difficulty with toileting activities"
+          },
+          {
+            "id": 4,
+            "cht": "難以穿脫下半身衣服",
+            "eng": "difficulty dressing lower body"
+          },
+          {
+            "id": 5,
+            "cht": "難以穿脫上衣",
+            "eng": "difficulty dressing upper body"
+          },
+          {
+            "id": 6,
+            "cht": "身體惡臭",
+            "eng": "foul body odor"
+          },
+          {
+            "id": 7,
+            "cht": "無法洗頭/梳頭",
+            "eng": "difficulty shampooing/combing hair"
+          },
+          {
+            "id": 8,
+            "cht": "難以刷牙/使用牙線/口腔護理",
+            "eng": "difficulty brushing/flossing/mouth care"
+          },
+          {
+            "id": 9,
+            "cht": "不情願/無法/忘記完成自我照護",
+            "eng": "unwilling/unable/forgets to complete personal care activities"
+          },
+          {
+            "id": 10,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "cht": "成癮藥物使用",
+        "eng": "Substance use",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "濫用非處方/處方藥物",
+            "eng": "abuses over-the-counter/prescription medications"
+          },
+          {
+            "id": 2,
+            "cht": "使用娛樂性藥物(幻覺劑、興奮劑、抗憂鬱劑)",
+            "eng": "uses 'street' - recreatinal drugs"
+          },
+          {
+            "id": 3,
+            "cht": "酒精濫用",
+            "eng": "abuses alcohol"
+          },
+          {
+            "id": 4,
+            "cht": "抽菸/使用菸草製品",
+            "eng": "smokes/uses tobacco products"
+          },
+          {
+            "id": 5,
+            "cht": "難以執行平日角色",
+            "eng": "difficulty performing normal routines"
+          },
+          {
+            "id": 6,
+            "cht": "反射異常",
+            "eng": "reflex disturbances"
+          },
+          {
+            "id": 7,
+            "cht": "行為改變",
+            "eng": "behavior change"
+          },
+          {
+            "id": 8,
+            "cht": "暴露在二手菸中",
+            "eng": "exposure to cigarette/cigar smoke"
+          },
+          {
+            "id": 9,
+            "cht": "買賣毒品",
+            "eng": "buys/sells illegal substances"
+          },
+          {
+            "id": 10,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "cht": "家庭計畫",
+        "eng": "Family planning",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "育兒知識不足/不恰當",
+            "eng": "inappropriate/insufficient knowledge about family planning methods"
+          },
+          {
+            "id": 2,
+            "cht": "健康行為的知識不足/不恰當",
+            "eng": "inappropriate/insufficient knowledge about preconception health practices"
+          },
+          {
+            "id": 3,
+            "cht": "無法準確/一致性的執行家庭計畫",
+            "eng": "inaccurate/inconsistent use of family planning methods"
+          },
+          {
+            "id": 4,
+            "cht": "對目前家庭計畫進行方式不滿",
+            "eng": "dissatisfied with present family planning method"
+          },
+          {
+            "id": 5,
+            "cht": "擔心他人對家庭計畫選擇的反應",
+            "eng": "fears others' reactions regarding family planning choices"
+          },
+          {
+            "id": 6,
+            "cht": "難以執行家庭計畫",
+            "eng": "difficulty obtaining family planning methods"
+          },
+          {
+            "id": 7,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "cht": "健康照顧督導",
+        "eng": "Health care supervision",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "未能獲得常規/預防性的健康照護",
+            "eng": "fails to obtain routine/preventive health care"
+          },
+          {
+            "id": 2,
+            "cht": "未能尋求徵狀的評估與治療",
+            "eng": "fails to seek care for symptoms requiring evaluation/treatment"
+          },
+          {
+            "id": 3,
+            "cht": "未能依照照護人員要求回診",
+            "eng": "fails to return as requested to health care provider"
+          },
+          {
+            "id": 4,
+            "cht": "無法配合不同專業的治療計畫",
+            "eng": "inability to coordinate multiple appointments/treatment plans"
+          },
+          {
+            "id": 5,
+            "cht": "健康照護資源來源不一致",
+            "eng": "inconsistent source of health care"
+          },
+          {
+            "id": 6,
+            "cht": "健康照護資源不足",
+            "eng": "inadequate source of health care"
+          },
+          {
+            "id": 7,
+            "cht": "治療計劃不足",
+            "eng": "inadequate treatment plan"
+          },
+          {
+            "id": 8,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "cht": "用藥習慣",
+        "eng": "Medication regimen",
+        "sign": [
+          {
+            "id": 1,
+            "cht": "難以遵循服藥劑量與時間",
+            "eng": "does not follow recommended dosage/schedule"
+          },
+          {
+            "id": 2,
+            "cht": "出現藥物副作用/不良反應",
+            "eng": "evidence of side effects/adverse reactions"
+          },
+          {
+            "id": 3,
+            "cht": "出現藥物副作用/不良反應",
+            "eng": "inadequate system for taking medication"
+          },
+          {
+            "id": 4,
+            "cht": "藥物存放不當",
+            "eng": "improper storage of medication"
+          },
+          {
+            "id": 5,
+            "cht": "無法獲得適當的藥物補充",
+            "eng": "fails to obtain refills appropriately"
+          },
+          {
+            "id": 6,
+            "cht": "未能獲得免疫接種",
+            "eng": "fails to obtain immunizations"
+          },
+          {
+            "id": 7,
+            "cht": "未能獲得藥物治療",
+            "eng": "inadequate medication regimen"
+          },
+          {
+            "id": 8,
+            "cht": "無他人協助無法服藥",
+            "eng": "unable to take medications without help"
+          },
+          {
+            "id": 9,
+            "cht": "其他",
+            "eng": "Other"
+          }
+        ]
+      }
+    ]
+  }
+}

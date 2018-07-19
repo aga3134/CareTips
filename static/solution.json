@@ -1,4 +1,5 @@
 {
+	"version": 1,
 	"quest": [
 		"* 針對此案例，您會為<span style='color: red'>「個案」</span>提供什麼照護計畫?",
 		"* 針對此案例，您會為<span style='color: red'>「家屬」</span>提供什麼協助?",

@@ -12,6 +12,7 @@ careCase.CreateCase = function(param){
 	
 	var info = {};
 	info.version = 1;
+	info.omahaVersion = param.data.omahaVersion;
 	info.desc = param.data.desc;
 	info.problem = param.data.problem;
 	newCase.info = JSON.stringify([info]);
@@ -107,6 +108,7 @@ careCase.EditCase = function(param){
 	var info = {};
 	info.desc = param.data.desc;
 	info.problem = problem;
+	info.omahaVersion = param.data.omahaVersion;
 	editCase.D1Num = problem.D1?problem.D1.length:0;
 	editCase.D2Num = problem.D2?problem.D2.length:0;
 	editCase.D3Num = problem.D3?problem.D3.length:0;

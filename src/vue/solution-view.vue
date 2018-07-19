@@ -182,7 +182,9 @@ export default {
 				if(result.status != "ok") return alert("無法讀取解方");
 				//console.log(result.data);
 				this.solutionInfo = result.data;
-				this.solutionInfo.info = JSON.parse(this.solutionInfo.info);
+				var info = JSON.parse(this.solutionInfo.info);
+				this.solutionInfo.serviceVersion = info.serviceVersion;
+				this.solutionInfo.info = info.data;
 				this.isMySolution = false;
 				if(result.data.liked) this.isLike = true;
 				if(this.user){

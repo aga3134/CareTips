@@ -90,10 +90,10 @@ caseSolution.ListSolution = function(param){
 caseSolution.EditSolution = function(param){
 	var editSolution = {};
 	editSolution.id = param.solutionID;
-	editSolution.caseID = param.caseID;
-	editSolution.caseVersion = param.caseVersion;
 	editSolution.ownerID = param.user.id;
-	editSolution.info = param.info;
+	editSolution.caseID = param.data.caseID;
+	editSolution.caseVersion = param.data.caseVersion;
+	editSolution.info = param.data.info;
 
 	DB.CaseSolution.update(editSolution, {where: {id:param.solutionID, ownerID:param.user.id}})
 	.then(function(result) {

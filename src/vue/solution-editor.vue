@@ -72,8 +72,8 @@
 		</div>
 
 		<div class="separator"></div>
-		<div class="input-bt" v-show="action=='edit'" v-on:click="ClearEditSolution(true);">取消修改</div>
 		<div class="input-bt" v-on:click="SubmitSolution();">{{action=="edit"?"完成修改":"完成解題"}}</div>
+		<div class="input-bt" v-show="action=='edit'" v-on:click="ClearEditSolution(true);">取消修改</div>
 	</div>
 
 	<transition name="fade">
@@ -163,7 +163,8 @@ export default {
 			modify: false,
 			modifyCategory: "",
 			modifyIndex: -1,
-			dirty: false
+			dirty: false,
+			serviceVersion: 0
 		};
 	},
 	components: {
@@ -191,7 +192,9 @@ export default {
 				if(result.status != "ok") return alert("讀取解方失敗");
 				this.solutionID = solutionID;
 				this.action = "edit";
-				this.solution = JSON.parse(result.data.info); 
+				var info = JSON.parse(result.data.info);
+				this.serviceVersion = info.serviceVersion;
+				this.solution = info.data;
 				this.step = 0;
 			}.bind(this));
 		},
@@ -366,7 +369,10 @@ export default {
 			var caseInfo = this.$parent.GetCaseInfo();
 			solution.caseID = caseInfo.caseID;
 			solution.caseVersion = caseInfo.caseVersion;
-			solution.info = JSON.stringify(this.solution);
+			var info = {};
+			info.data = this.solution;
+			info.serviceVersion = this.$refs.serviceSelect.GetServiceCode().version;
+			solution.info = JSON.stringify(info);
 
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			this.dirty = false;

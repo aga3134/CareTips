@@ -477,7 +477,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		if (solutionID) {
 			$.get("/solution/view?solution=" + solutionID, function (result) {
 				if (result.status != "ok") return alert("無法讀取解方");
-				var service = JSON.parse(result.data.info)[3][0];
+				var info = JSON.parse(result.data.info);
+				var service = info.data[3][0];
 				for (var i = 0; i < service.length; i++) {
 					var item = service[i];
 					this.items[item.category].push(item);
@@ -1400,6 +1401,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				return;
 			}
 			//console.log(this.target.profession);
+			this.caseInfo.omahaVersion = this.omaha.version;
 			this.dirty = false;
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			switch (this.action) {
@@ -2613,7 +2615,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			modify: false,
 			modifyCategory: "",
 			modifyIndex: -1,
-			dirty: false
+			dirty: false,
+			serviceVersion: 0
 		};
 	},
 	components: {
@@ -2641,7 +2644,9 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				if (result.status != "ok") return alert("讀取解方失敗");
 				this.solutionID = solutionID;
 				this.action = "edit";
-				this.solution = JSON.parse(result.data.info);
+				var info = JSON.parse(result.data.info);
+				this.serviceVersion = info.serviceVersion;
+				this.solution = info.data;
 				this.step = 0;
 			}.bind(this));
 		},
@@ -2811,7 +2816,10 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			var caseInfo = this.$parent.GetCaseInfo();
 			solution.caseID = caseInfo.caseID;
 			solution.caseVersion = caseInfo.caseVersion;
-			solution.info = JSON.stringify(this.solution);
+			var info = {};
+			info.data = this.solution;
+			info.serviceVersion = this.$refs.serviceSelect.GetServiceCode().version;
+			solution.info = JSON.stringify(info);
 
 			var csrfToken = $("meta[name='csrf-token']").attr("content");
 			this.dirty = false;
@@ -2965,7 +2973,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			}
 			//compute statistic data
 			for (var i = 0; i < this.preLoad.length; i++) {
-				this.preLoad[i].info = JSON.parse(this.preLoad[i].info);
+				this.preLoad[i].info = JSON.parse(this.preLoad[i].info).data;
 				var desc = "";
 				for (var step = 0; step < this.preLoad[i].info.length; step++) {
 					var sol = this.preLoad[i].info[step];
@@ -3193,7 +3201,9 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				if (result.status != "ok") return alert("無法讀取解方");
 				//console.log(result.data);
 				this.solutionInfo = result.data;
-				this.solutionInfo.info = JSON.parse(this.solutionInfo.info);
+				var info = JSON.parse(this.solutionInfo.info);
+				this.solutionInfo.serviceVersion = info.serviceVersion;
+				this.solutionInfo.info = info.data;
 				this.isMySolution = false;
 				if (result.data.liked) this.isLike = true;
 				if (this.user) {
@@ -10860,6 +10870,19 @@ var render = function() {
         _c(
           "div",
           {
+            staticClass: "input-bt",
+            on: {
+              click: function($event) {
+                _vm.SubmitSolution()
+              }
+            }
+          },
+          [_vm._v(_vm._s(_vm.action == "edit" ? "完成修改" : "完成解題"))]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
             directives: [
               {
                 name: "show",
@@ -10876,19 +10899,6 @@ var render = function() {
             }
           },
           [_vm._v("取消修改")]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "input-bt",
-            on: {
-              click: function($event) {
-                _vm.SubmitSolution()
-              }
-            }
-          },
-          [_vm._v(_vm._s(_vm.action == "edit" ? "完成修改" : "完成解題"))]
         )
       ]),
       _vm._v(" "),
