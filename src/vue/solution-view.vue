@@ -89,8 +89,8 @@
 				<img class="owner-icon" v-bind:src="solutionInfo.user.icon">
 				{{solutionInfo.user.profession}} - {{solutionInfo.user.name}}
 			</div>
-			<div class="owner-desc">{{solutionInfo.user.desc}}</div>
 		</a>
+		<div class="owner-desc">{{solutionInfo.user.desc}}</div>
 	</div>
 	<div class="solution-title">留言回饋</div>
 	<div class="message-box">
@@ -102,10 +102,12 @@
 	<div class="message-list" v-if="solutionInfo">
 		<a name="solMessageList"></a>
 		<div class="message" v-for="(m,i) in messageList">
-			<div class="owner-info">
-				<img class="owner-icon" v-bind:src="m.user.icon">
-				{{m.user.profession}} - {{m.user.name}}
-			</div>
+			<a v-bind:href="'/user?target='+m.user.id">
+				<div class="owner-info">
+					<img class="owner-icon" v-bind:src="m.user.icon">
+					{{m.user.profession}} - {{m.user.name}}
+				</div>
+			</a>
 			<div class="message-content">{{m.message}}</div>
 			<div class="sub-info">
 				<div class="info-item">{{m.time}}</div>

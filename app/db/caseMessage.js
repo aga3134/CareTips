@@ -14,6 +14,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.UUID,
 			references: { model: "users", key: "id" },
 		},
+		status: {
+			type: DataTypes.STRING,
+			alowNull: false,
+			defaultValue: 'valid'
+		},
 		message: DataTypes.TEXT
 	});
 };
