@@ -19,7 +19,14 @@
 	"session":{
 		"secret": "YourSessionSecret"
 	},
+	"jwt":{
+		"secret": "YourJwtSecret"
+	},
+	"elasticEmail":{
+		"apiKey":"YourElasticEmailAPIKey"
+	},
 	"hostname": "YourHostName",
+	"desc": "照護個案情況棘手不知該怎麼辦? 長照服務計算太複雜一個頭兩個大? 跨專業服務連結到底找誰才好? 「照服秘笈」提供不同工具協助大家分享照護經驗與跨專業交流，願在造福路上，所有人都不再孤單。",
 	"serverPort": 8001,
 	"version": "1.0.0"
 }
