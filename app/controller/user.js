@@ -6,7 +6,7 @@ var user = {};
 var numPerPage = 6;
 
 user.GetUserInfo = function(param){
-	var attr = ["id","name","profession","county","company","companyUrl","contactEmail",
+	var attr = ["id","name","profession","county","company","contactEmail",
 		"tel","desc","photo","icon","caseNum","solNum","msgNum"];
 	DB.User.findOne({where: {id: param.userID}, attributes:attr})
 	.then(function(result) {
@@ -24,7 +24,6 @@ user.EditUserInfo = function(param){
 	modify.profession = param.body.profession;
 	modify.county = param.body.county;
 	modify.company = param.body.company;
-	modify.companyUrl = param.body.companyUrl;
 	modify.contactEmail = param.body.contactEmail;
 	modify.tel = param.body.tel;
 	modify.desc = param.body.desc;
@@ -78,7 +77,7 @@ user.ListUser = function(param){
 			default: sort.push(['caseNum', 'DESC']); break;
 		}
 	}
-	var attr = ["id","name","profession","county","company","companyUrl","contactEmail",
+	var attr = ["id","name","profession","county","company","contactEmail",
 		"tel","desc","photo","icon","caseNum","solNum","msgNum"];
 
 	var offset = numPerPage*param.fetchPage;

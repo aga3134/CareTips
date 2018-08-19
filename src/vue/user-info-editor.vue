@@ -35,10 +35,6 @@
 				<input type="text" v-model="user.company" v-on:change="dirty=true;">
 			</div>
 			<div class="info-box">
-				<div class="info-label">公司或組織網址</div>
-				<input type="text" v-model="user.companyUrl" v-on:change="dirty=true;">
-			</div>
-			<div class="info-box">
 				<div class="info-label">服務聯絡信箱</div>
 				<input type="text" v-model="user.contactEmail" v-on:change="dirty=true;">
 			</div>

@@ -31,8 +31,8 @@
 			<li>
 				<div class="contact-item">公司或組織名稱：</div>
 				<div class="contact-info">
-					<div v-if="target.company && target.companyUrl">
-						<a v-bind:href="user.companyUrl" target="_blank">{{target.company}}</a>
+					<div v-if="target.company">
+						<a v-bind:href="'https://www.google.com/search?q='+target.company" target="_blank">{{target.company}}</a>
 					</div>
 					<div v-else>
 						{{target.company||"未提供"}}

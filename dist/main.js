@@ -3445,10 +3445,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
@@ -12338,34 +12334,6 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "info-box" }, [
-          _c("div", { staticClass: "info-label" }, [_vm._v("公司或組織網址")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.user.companyUrl,
-                expression: "user.companyUrl"
-              }
-            ],
-            attrs: { type: "text" },
-            domProps: { value: _vm.user.companyUrl },
-            on: {
-              change: function($event) {
-                _vm.dirty = true
-              },
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.user, "companyUrl", $event.target.value)
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "info-box" }, [
           _c("div", { staticClass: "info-label" }, [_vm._v("服務聯絡信箱")]),
           _vm._v(" "),
           _c("input", {
@@ -12742,12 +12710,17 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "contact-info" }, [
-              _vm.target.company && _vm.target.companyUrl
+              _vm.target.company
                 ? _c("div", [
                     _c(
                       "a",
                       {
-                        attrs: { href: _vm.user.companyUrl, target: "_blank" }
+                        attrs: {
+                          href:
+                            "https://www.google.com/search?q=" +
+                            _vm.target.company,
+                          target: "_blank"
+                        }
                       },
                       [_vm._v(_vm._s(_vm.target.company))]
                     )
