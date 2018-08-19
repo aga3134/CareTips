@@ -4,7 +4,7 @@ var ejs = require('ejs');
 
 var emailer = {};
 var fromName = "照服秘笈";
-var sender = "service@hcos.org";
+var sender = "service@hcos.tw";
 var headers = {
 	"Content-Type": "application/x-www-form-urlencoded"
 }
