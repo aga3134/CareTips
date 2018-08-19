@@ -1358,6 +1358,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 		UpdateFilterList: function () {
 			this.filterList = {};
 			for (var key in this.omaha) {
+				if (key == "version") continue;
 				var category = { "id": key, "name": this.omaha[key].name, "problem": [], "num": 0 };
 				for (var i = 0; i < this.omaha[key].problem.length; i++) {
 					var problem = this.omaha[key].problem[i];
