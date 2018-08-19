@@ -1205,6 +1205,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
@@ -1419,6 +1421,13 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 					});
 					break;
 			}
+		},
+		CancelEdit: function () {
+			if (this.dirty) {
+				if (confirm("確定取消案例編輯?")) {
+					window.location.href = "/";
+				}
+			} else window.location.href = "/";
 		}
 	}
 });
@@ -7628,6 +7637,19 @@ var render = function() {
                 [_vm._v("完成案例修改")]
               )
             ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "input-bt",
+              on: {
+                click: function($event) {
+                  _vm.CancelEdit()
+                }
+              }
+            },
+            [_vm._v("取消編輯")]
           )
         ]),
         _vm._v(" "),
@@ -7686,6 +7708,19 @@ var render = function() {
                 }
               },
               [_vm._v("完成案例修改")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "tab-bt",
+                on: {
+                  click: function($event) {
+                    _vm.CancelEdit()
+                  }
+                }
+              },
+              [_vm._v("取消編輯")]
             )
           ])
         ]),

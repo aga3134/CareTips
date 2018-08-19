@@ -42,12 +42,14 @@
 				<div v-show="action == 'create'">送出案例</div>
 				<div v-show="action == 'edit'">完成案例修改</div>
 			</div>
+			<div class="input-bt" v-on:click="CancelEdit();">取消編輯</div>
 		</div>
 		<div class="tab-bar">
 			<div class="tab-bt-container">
 				<div class="tab-bt" v-on:click="openInput = true;">新增問題</div>
 				<div v-show="action == 'create'" class="tab-bt" v-on:click="SubmitCase();">送出案例</div>
 				<div v-show="action == 'edit'" class="tab-bt" v-on:click="SubmitCase();">完成案例修改</div>
+				<div class="tab-bt" v-on:click="CancelEdit();">取消編輯</div>
 			</div>
 		</div>
 		
@@ -345,6 +347,14 @@ export default {
 					break;
 			}
 			
+		},
+		CancelEdit: function(){
+			if(this.dirty){
+				if(confirm("確定取消案例編輯?")){
+					window.location.href="/";
+				}
+			}
+			else window.location.href="/";
 		}
 	}
 }
