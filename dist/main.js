@@ -1790,6 +1790,15 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 
 			this.caseInfo = result.data;
 			this.caseInfo.info = JSON.parse(this.caseInfo.info);
+			//replace url to link
+			/*for(var i=0;i<this.caseInfo.info.length;i++){
+   	var info = this.caseInfo.info[i];
+   	var urlRegex = /(https?:\/\/[^\s]+)/g;
+   	info.desc = info.desc.replace(urlRegex, function(url){
+   		return '<a href="' + url + '" target="_blank">'+url+'</a>';
+   	});
+   }*/
+
 			this.vIndex = this.caseInfo.info.length - 1;
 			this.isMyCase = false;
 			if (result.data.liked) this.isLike = true;
@@ -3468,7 +3477,8 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			counties: [],
 			submitCallback: null,
 			finalCheck: false,
-			dirty: false
+			dirty: false,
+			uploadTitle: "變更圖片"
 		};
 	},
 	created: function () {
@@ -3487,10 +3497,12 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 			this.InitSelectProfession();
 		},
 		ChangePhoto: function () {
+			if (this.uploadTitle != "變更圖片") return;
 			var elem = this.$refs.uploadBt;
 			elem.click();
 		},
 		UploadPhoto: function (event) {
+			this.uploadTitle = "上傳中...";
 			var file = event.target.files[0];
 
 			var formData = new FormData();
@@ -3505,6 +3517,7 @@ var g_Util = __webpack_require__(/*! ../js/util */ "./src/js/util.js");
 				contentType: false,
 				success: function (result) {
 					if (result.status != "ok") return alert("更新圖片失敗");
+					this.uploadTitle = "變更圖片";
 					this.user.photo = result.data.photo;
 					this.user.icon = result.data.icon;
 					this.$root.ChangeUserPhoto(result.data);
@@ -7504,10 +7517,9 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "problem-body" }, [
-                          _c("div", {
-                            staticClass: "problem-desc",
-                            domProps: { innerHTML: _vm._s(p.desc) }
-                          }),
+                          _c("div", { staticClass: "problem-desc" }, [
+                            _vm._v(_vm._s(p.desc))
+                          ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "item-bt-container" }, [
                             _c(
@@ -8636,10 +8648,9 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "problem-body" }, [
-                    _c("div", {
-                      staticClass: "problem-desc",
-                      domProps: { innerHTML: _vm._s(p.desc) }
-                    }),
+                    _c("div", { staticClass: "problem-desc" }, [
+                      _vm._v(_vm._s(p.desc))
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "item-bt-container" }, [
                       _c(
@@ -10723,10 +10734,9 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "problem-body" }, [
-                              _c("div", {
-                                staticClass: "problem-desc",
-                                domProps: { innerHTML: _vm._s(s.desc) }
-                              }),
+                              _c("div", { staticClass: "problem-desc" }, [
+                                _vm._v(_vm._s(s.desc))
+                              ]),
                               _vm._v(" "),
                               _c("div", { staticClass: "item-bt-container" }, [
                                 _c(
@@ -10789,10 +10799,9 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "problem-body" }, [
-                            _c("div", {
-                              staticClass: "problem-desc",
-                              domProps: { innerHTML: _vm._s(s.desc) }
-                            }),
+                            _c("div", { staticClass: "problem-desc" }, [
+                              _vm._v(_vm._s(s.desc))
+                            ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "item-bt-container" }, [
                               _c(
@@ -10857,10 +10866,9 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "problem-body" }, [
-                            _c("div", {
-                              staticClass: "problem-desc",
-                              domProps: { innerHTML: _vm._s(s.desc) }
-                            }),
+                            _c("div", { staticClass: "problem-desc" }, [
+                              _vm._v(_vm._s(s.desc))
+                            ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "item-bt-container" }, [
                               _c(
@@ -11781,10 +11789,9 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "problem-body" }, [
-                              _c("div", {
-                                staticClass: "problem-desc",
-                                domProps: { innerHTML: _vm._s(s.desc) }
-                              })
+                              _c("div", { staticClass: "problem-desc" }, [
+                                _vm._v(_vm._s(s.desc))
+                              ])
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "target-info" }, [
@@ -11819,10 +11826,9 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "problem-body" }, [
-                            _c("div", {
-                              staticClass: "problem-desc",
-                              domProps: { innerHTML: _vm._s(s.desc) }
-                            }),
+                            _c("div", { staticClass: "problem-desc" }, [
+                              _vm._v(_vm._s(s.desc))
+                            ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "item-bt-container" }, [
                               _c(
@@ -11886,10 +11892,9 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "problem-body" }, [
-                            _c("div", {
-                              staticClass: "problem-desc",
-                              domProps: { innerHTML: _vm._s(s.desc) }
-                            })
+                            _c("div", { staticClass: "problem-desc" }, [
+                              _vm._v(_vm._s(s.desc))
+                            ])
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "target-info" }, [
@@ -12141,7 +12146,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("變更圖片")]
+            [_vm._v(_vm._s(_vm.uploadTitle))]
           ),
           _vm._v(" "),
           _c("input", {

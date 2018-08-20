@@ -4,7 +4,7 @@
 		<div class="info-container">
 			<div class="info-box">
 				<img class="user-photo" v-bind:src="user.photo">
-				<div class="photo-bt" v-on:click="ChangePhoto();">變更圖片</div>
+				<div class="photo-bt" v-on:click="ChangePhoto();">{{uploadTitle}}</div>
 				<input type="file" ref="uploadBt" v-on:change="UploadPhoto" hidden>
 			</div>
 			<div class="info-box grow">
@@ -68,7 +68,8 @@ export default {
 			counties: [],
 			submitCallback: null,
 			finalCheck: false,
-			dirty: false
+			dirty: false,
+			uploadTitle: "變更圖片"
 		};
 	},
 	created: function(){
@@ -87,10 +88,12 @@ export default {
 			this.InitSelectProfession();
 		},
 		ChangePhoto: function(){
+			if(this.uploadTitle != "變更圖片") return;
 			var elem = this.$refs.uploadBt;
 			elem.click();
 		},
 		UploadPhoto: function(event){
+			this.uploadTitle = "上傳中...";
 			var file = event.target.files[0];
 
 			var formData = new FormData();
@@ -105,6 +108,7 @@ export default {
 				contentType: false,
 				success: function(result) {
 					if(result.status != "ok") return alert("更新圖片失敗");
+					this.uploadTitle = "變更圖片";
 					this.user.photo = result.data.photo;
 					this.user.icon = result.data.icon;
 					this.$root.ChangeUserPhoto(result.data);

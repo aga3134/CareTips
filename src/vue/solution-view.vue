@@ -37,7 +37,7 @@
 					<div class="problem-item one-third-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solutionInfo.info[step][i]">
 						<div class="problem-title">{{intervention[s.intervention].name}}</div>
 						<div class="problem-body">
-							<div class="problem-desc" v-html="s.desc"></div>
+							<div class="problem-desc">{{s.desc}}</div>
 						</div>
 						<div class="target-info">針對問題 - {{s.targetName}}</div>
 					</div>
@@ -51,7 +51,7 @@
 					<div class="problem-item one-third-w cat-D4" v-for="(s,j) in solutionInfo.info[step][0]">
 						<div class="problem-title">{{s.profession}}</div>
 						<div class="problem-body">
-							<div class="problem-desc" v-html="s.desc"></div>
+							<div class="problem-desc">{{s.desc}}</div>
 							<div class="item-bt-container">
 								<div class="item-bt" v-on:click="SearchProfession(s.profession);">找人</div>
 							</div>
@@ -71,7 +71,7 @@
 					<div class="problem-item one-third-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solutionInfo.info[step][0]">
 						<div class="problem-title">{{s.code}} {{s.name}}</div>
 						<div class="problem-body">
-							<div class="problem-desc" v-html="s.desc"></div>
+							<div class="problem-desc">{{s.desc}}</div>
 						</div>
 						<div class="target-info">針對問題 - {{s.targetName}}</div>
 					</div>

@@ -17,7 +17,7 @@
 						<div class="problem-item one-third-w" v-bind:class="'cat-'+cat" v-for="(p,i) in caseInfo.problem[cat]">
 							<div class="problem-title">{{p.name}}</div>
 							<div class="problem-body">
-								<div class="problem-desc" v-html="p.desc"></div>
+								<div class="problem-desc">{{p.desc}}</div>
 								<div class="item-bt-container">
 									<div class="item-bt" v-on:click="ModifyItem(cat,i);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(cat,i);">刪除</div>

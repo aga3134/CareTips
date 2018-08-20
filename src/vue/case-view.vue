@@ -36,7 +36,7 @@
 			<div class="problem-item one-third-w" v-bind:class="'cat-'+cat" v-for="(p,i) in problem[cat]">
 				<div class="problem-title">{{p.name}}</div>
 				<div class="problem-body">
-					<div class="problem-desc" v-html="p.desc"></div>
+					<div class="problem-desc">{{p.desc}}</div>
 					<div class="item-bt-container">
 						<div class="item-bt" v-on:click="OpenSolutionPanel(cat,i);">解題</div>
 					</div>
@@ -209,6 +209,15 @@ export default {
 
 			this.caseInfo = result.data;
 			this.caseInfo.info = JSON.parse(this.caseInfo.info);
+			//replace url to link
+			/*for(var i=0;i<this.caseInfo.info.length;i++){
+				var info = this.caseInfo.info[i];
+				var urlRegex = /(https?:\/\/[^\s]+)/g;
+				info.desc = info.desc.replace(urlRegex, function(url){
+					return '<a href="' + url + '" target="_blank">'+url+'</a>';
+				});
+			}*/
+
 			this.vIndex = this.caseInfo.info.length-1;
 			this.isMyCase = false;
 			if(result.data.liked) this.isLike = true;

@@ -22,7 +22,7 @@
 						<div class="problem-item one-third-w" v-bind:class="'cat-D'+(i+1)" v-for="(s,j) in solution[step][i]">
 							<div class="problem-title">{{intervention[s.intervention].name}}</div>
 							<div class="problem-body">
-								<div class="problem-desc" v-html="s.desc"></div>
+								<div class="problem-desc">{{s.desc}}</div>
 								<div class="item-bt-container">
 									<div class="item-bt" v-on:click="ModifyItem(i,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(i,j);">刪除</div>
@@ -40,7 +40,7 @@
 						<div class="problem-item one-third-w cat-D4" v-for="(s,j) in solution[step][0]">
 							<div class="problem-title">{{s.profession}}</div>
 							<div class="problem-body">
-								<div class="problem-desc" v-html="s.desc"></div>
+								<div class="problem-desc">{{s.desc}}</div>
 								<div class="item-bt-container">
 									<div class="item-bt" v-on:click="ModifyItem(0,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(0,j);">刪除</div>
@@ -58,7 +58,7 @@
 						<div class="problem-item one-third-w" v-bind:class="'cat-'+s.category" v-for="(s,j) in solution[step][0]">
 							<div class="problem-title">{{s.code}} {{s.name}}</div>
 							<div class="problem-body">
-								<div class="problem-desc" v-html="s.desc"></div>
+								<div class="problem-desc">{{s.desc}}</div>
 								<div class="item-bt-container">
 									<div class="item-bt" v-on:click="ModifyItem(0,j);">修改</div>
 									<div class="item-bt" v-on:click="DeleteItem(0,j);">刪除</div>
