@@ -93,6 +93,7 @@ export default {
 			elem.click();
 		},
 		UploadPhoto: function(event){
+			if(event.target.files.length == 0) return;
 			this.uploadTitle = "上傳中...";
 			var file = event.target.files[0];
 
