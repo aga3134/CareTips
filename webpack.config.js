@@ -10,7 +10,7 @@ var extractCSSPlugin = new MiniCssExtractPlugin({
 });
 
 module.exports = {
-	mode: "development", // "production" | "development" | "none"
+	mode: "production", // "production" | "development" | "none"
 	entry: {
 		main: ["./src/js/main.js","./src/scss/main.scss"]
 	},
