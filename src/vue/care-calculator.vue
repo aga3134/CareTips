@@ -54,30 +54,47 @@
 			</div>
 		</div>
 		<div class="separator"></div>
-		<div class="price-final">
-			<div class="price-type">服務費用(月)</div>
-			<div class="final-item">總額: {{totalPrice.service.total}} 元</div>
-			<div class="final-item">補助: {{totalPrice.service.gov}} 元</div>
-			<div class="final-item">自費: {{totalPrice.service.own}} 元</div>
-		</div>
-		<div class="price-final">
-			<div class="price-type">輔具/設施購買</div>
-			<div class="final-item">總額: {{totalPrice.equipBuy.total}} 元</div>
-			<div class="final-item">補助: {{totalPrice.equipBuy.gov}} 元</div>
-			<div class="final-item">自費: {{totalPrice.equipBuy.own}} 元</div>
-		</div>
-		<div class="price-final">
-			<div class="price-type">輔具/設施租賃(月)</div>
-			<div class="final-item">總額: {{totalPrice.equipRent.total}} 元</div>
-			<div class="final-item">補助: {{totalPrice.equipRent.gov}} 元</div>
-			<div class="final-item">自費: {{totalPrice.equipRent.own}} 元</div>
-		</div>
-		<div class="remark" v-show="rentMonth < 36">剩餘額度僅可支持租賃補助 {{rentMonth}} 個月</div>
-		<div class="price-final">
-			<div class="price-type">喘息服務(年)</div>
-			<div class="final-item">總額: {{totalPrice.rest.total}} 元</div>
-			<div class="final-item">補助: {{totalPrice.rest.gov}} 元</div>
-			<div class="final-item">自費: {{totalPrice.rest.own}} 元</div>
+		<div class="table-container">
+			<table class="price-table">
+				<tr>
+					<th>項目</th>
+					<th>總額(元)</th>
+					<th>補助(元)</th>
+					<th>自費(元)</th>
+					<th>備註</th>
+				</tr>
+				<tr>
+					<td class="item-name">服務費用</td>
+					<td class="large">{{totalPrice.service.total}}</td>
+					<td class="large">{{totalPrice.service.gov}}</td>
+					<td class="large">{{totalPrice.service.own}}</td>
+					<td>每月費用</td>
+				</tr>
+				<tr>
+					<td class="item-name">輔具/設施購買</td>
+					<td class="large">{{totalPrice.equipBuy.total}}</td>
+					<td class="large">{{totalPrice.equipBuy.gov}}</td>
+					<td class="large">{{totalPrice.equipBuy.own}}</td>
+					<td>三年額度</td>
+				</tr>
+				<tr>
+					<td class="item-name">輔具/設施租賃</td>
+					<td class="large">{{totalPrice.equipRent.total}}</td>
+					<td class="large">{{totalPrice.equipRent.gov}}</td>
+					<td class="large">{{totalPrice.equipRent.own}}</td>
+					<td>
+						<div class="remark" v-if="rentMonth < 36">剩餘額度僅可支持租賃補助 {{rentMonth}} 個月</div>
+						<div v-else>每月租金</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="item-name">喘息服務</td>
+					<td class="large">{{totalPrice.rest.total}}</td>
+					<td class="large">{{totalPrice.rest.gov}}</td>
+					<td class="large">{{totalPrice.rest.own}}</td>
+					<td>每年額度</td>
+				</tr>
+			</table>
 		</div>
 
 		<div class="input-bt-container">
@@ -857,7 +874,43 @@ $link-hover-color: #FF3333;
 			font-size: 1em;
 			color: red;
 		}
-		
+		.table-container{
+			width: calc(100% - 20px);
+			margin: auto;
+			overflow-x: auto;
+		}
+		.price-table{
+			width: 100%;
+			border-collapse: collapse;
+			tr{
+				&:nth-child(even) {
+					background-color: #ffffff;
+				}
+				&:nth-child(odd) {
+					background-color: #eeeeee;
+				}
+			}
+			
+			th{
+				font-size: 1.2em;
+				text-align: center;
+				background-color: $head-bg-color;
+				color: $head-fg-color;
+				padding: 5px;
+			}
+			td{
+				text-align: center;
+				padding: 5px;
+				min-width: 100px;
+				&.large{
+					font-size: 1.5em;
+				}
+				&.item-name{
+					min-width: 200px;
+					font-size: 1.2em;
+				}
+			}
+		}
 	}
 	.service-list{
 		background-color: #eeeeee;
