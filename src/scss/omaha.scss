@@ -28,6 +28,8 @@
 		.problem-desc{
 			white-space: pre-wrap;
 			padding: 10px;
+			overflow: hidden;
+			border-right: 10px solid rgba(0,0,0,0);	//avoid overflow exceed padding
 		}
 		.problem-body{
 			color: black;

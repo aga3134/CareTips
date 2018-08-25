@@ -179,6 +179,7 @@ export default {
 			.info-desc{
 				padding: 10px;
 				white-space: pre-wrap;
+				overflow: hidden;
 			}
 		}
 	}

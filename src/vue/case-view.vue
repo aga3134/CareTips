@@ -448,6 +448,7 @@ export default {
 		font-size: 1.2em;
 		line-height: 1.5em;
 		white-space: pre-wrap;
+		overflow: hidden;
 	}
 
 	.owner{
