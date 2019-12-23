@@ -360,8 +360,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "../scss/main.scss";
+<style lang="scss">
+@import "../scss/variable.scss";
+@import "../scss/mixin.scss";
 
 $head-bg-color: #36688D;
 $head-fg-color: #ffffff;

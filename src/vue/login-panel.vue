@@ -145,8 +145,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "../scss/main.scss";
+<style lang="scss">
+@import "../scss/variable.scss";
+@import "../scss/mixin.scss";
 
 .loginPanel{
 	width: 300px;

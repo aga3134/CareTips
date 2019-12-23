@@ -7,3 +7,4 @@ node_modules/
 imageSrc/
 static/file/
 static/upload/
+package-lock.json

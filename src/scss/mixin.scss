@@ -1,0 +1,20 @@
+@mixin pc-width() {
+    @media only screen and (min-width: $pc-media) {
+        @content;
+    }
+}
+@mixin pad-width() {
+    @media only screen and (min-width: $pad-media) {
+        @content;
+    }
+}
+@mixin title{
+	padding: 5px;
+	margin: 10px auto 0px auto;
+	.bottom-line{
+		margin: auto;
+		width: 150px;
+		padding: 5px;
+		border-bottom: 1px solid #888888;
+	}
+}

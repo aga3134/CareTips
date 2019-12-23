@@ -1,0 +1,40 @@
+html, body {
+	height: 100%; margin: 0; padding: 0; 
+	overflow: visible;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "微軟正黑體", "Microsoft JhengHei";
+}
+
+.center{
+    display: block;
+    margin: auto;
+    clear: both;
+    text-align: center;
+}
+
+.hide{
+	display: none;
+}
+
+.warning{
+	color: red;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.inline-block{
+	display: inline-block;
+}
+
+a{
+	text-decoration: none;
+	color: #ff3333;
+	&:hover{
+		color: #ff8800;
+	}
+}

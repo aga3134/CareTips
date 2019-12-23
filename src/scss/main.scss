@@ -1,54 +1,9 @@
-$bt-fg-color: #ffffff;
-$bt-bg-color: #555555;
-$bt-hover-color: #888888;
-$action-fg-color: #ff5555;
-$action-bg-color: #ffffff;
-$action-hover-color: #ff8888;
-$trans-time: 0.5s;
 
-//===================General======================
-html, body {
-	height: 100%; margin: 0; padding: 0; 
-	overflow: visible;
-}
-
-* {
-    box-sizing: border-box;
-    font-family: "微軟正黑體", "Microsoft JhengHei";
-}
-
-.center{
-    display: block;
-    margin: auto;
-    clear: both;
-    text-align: center;
-}
-
-.hide{
-	display: none;
-}
-
-.warning{
-	color: red;
-}
-
-.bold{
-	font-weight: bold;
-}
-
-.inline-block{
-	display: inline-block;
-}
-
-a{
-	text-decoration: none;
-	color: #ff3333;
-	&:hover{
-		color: #ff8800;
-	}
-}
 
 //===================CareTips======================
+@import "./variable.scss";
+@import "./mixin.scss";
+@import "./general.scss";
 @import "./responsive.scss";
 @import "./omaha.scss";
 @import "./color-code.scss";
@@ -63,16 +18,7 @@ a{
 }
 
 .care-tips{
-	@mixin title{
-		padding: 5px;
-		margin: 10px auto 0px auto;
-		.bottom-line{
-			margin: auto;
-			width: 150px;
-			padding: 5px;
-			border-bottom: 1px solid #888888;
-		}
-	}
+	
 	.sub-title{
 		padding: 10px;
 		font-size: 1.5em;

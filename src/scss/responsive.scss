@@ -1,16 +1,6 @@
-$pc-media: 1024px;
-$pad-media: 640px;
 
-@mixin pc-width() {
-    @media only screen and (min-width: $pc-media) {
-        @content;
-    }
-}
-@mixin pad-width() {
-    @media only screen and (min-width: $pad-media) {
-        @content;
-    }
-}
+
+
 
 .one-third-w{
 	display: inline-block;

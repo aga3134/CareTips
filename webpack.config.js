@@ -19,6 +19,11 @@ module.exports = {
 		filename: "[name].js",
 		publicPath: "/dist"
 	},
+	optimization: {
+		splitChunks: {
+			chunks: 'all'
+		}
+	},
 	module:{
 		rules: [
 			{
@@ -34,7 +39,7 @@ module.exports = {
 				include: [
 					path.resolve(__dirname, "src/vue")
 				],
-				use: ["style-loader","css-loader","sass-loader"]
+				use: [MiniCssExtractPlugin.loader,"css-loader","sass-loader"]
 			},
 			{
 				test: /\.vue$/,
